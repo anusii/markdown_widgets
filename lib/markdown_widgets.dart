@@ -146,7 +146,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
-        '${value.year}-${value.month.toString().padLeft(2, '0')}-'
+            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
             '${value.day.toString().padLeft(2, '0')}';
       } else {
         responses[key] = null;
@@ -195,12 +195,12 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
     // Regular expression to match description blocks
     final RegExp descriptionBlockExp =
-    RegExp(r'%% Description-Begin([\s\S]*?)%% Description-End');
+        RegExp(r'%% Description-Begin([\s\S]*?)%% Description-End');
 
     // Regular expression to match heading blocks with alignment
     final RegExp headingAlignBlockExp =
-    RegExp(r'%% H([1-6])(Left|Right|Center|Justify)?'
-    r'-Begin([\s\S]*?)%% H\1(?:\2)?-End');
+        RegExp(r'%% H([1-6])(Left|Right|Center|Justify)?'
+            r'-Begin([\s\S]*?)%% H\1(?:\2)?-End');
 
     // Regular expression to match alignment blocks
     final RegExp alignBlockExp = RegExp(
@@ -254,14 +254,14 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
     // Regular expression to match custom commands
     final RegExp customCommandExp = RegExp(r'(%% Slider\([^\)]+\)|%% Submit|'
-    r'%% Radio\([^\)]+\)|%% Checkbox\([^\)]+\)|'
-    r'%% InputSL\([^\)]+\)|%% InputML\([^\)]+\)|'
-    r'%% Calendar\([^\)]+\)|%% Dropdown\([^\)]+\)|'
-    r'%% Image\([^\)]+\)|%% Video\([^\)]+\)|%% Audio\([^\)]+\)|'
-    r'%% Timer\([^\)]+\)|%% EmptyLine|'
-    r'%%DescriptionPlaceholder\d+%%|'
-    r'%%HeadingPlaceholder\d+%%|'
-    r'%%AlignPlaceholder\d+%%)');
+        r'%% Radio\([^\)]+\)|%% Checkbox\([^\)]+\)|'
+        r'%% InputSL\([^\)]+\)|%% InputML\([^\)]+\)|'
+        r'%% Calendar\([^\)]+\)|%% Dropdown\([^\)]+\)|'
+        r'%% Image\([^\)]+\)|%% Video\([^\)]+\)|%% Audio\([^\)]+\)|'
+        r'%% Timer\([^\)]+\)|%% EmptyLine|'
+        r'%%DescriptionPlaceholder\d+%%|'
+        r'%%HeadingPlaceholder\d+%%|'
+        r'%%AlignPlaceholder\d+%%)');
 
     final matches = customCommandExp.allMatches(content).toList();
 
@@ -401,7 +401,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
         // Parse the slider parameters
         final sliderExp = RegExp(r'%% Slider\(([^,]+),\s*([\d\.]+),'
-        r'\s*([\d\.]+),\s*([\d\.]+),\s*([\d\.]+)\)');
+            r'\s*([\d\.]+),\s*([\d\.]+),\s*([\d\.]+)\)');
         final sliderMatch = sliderExp.firstMatch(command);
 
         if (sliderMatch != null) {
@@ -522,7 +522,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         }
 
         final checkboxExp =
-        RegExp(r'%% Checkbox\(([^,]+),\s*([^,]+),\s*([^\)]+)\)');
+            RegExp(r'%% Checkbox\(([^,]+),\s*([^,]+),\s*([^\)]+)\)');
         final checkboxMatch = checkboxExp.firstMatch(command);
 
         if (checkboxMatch != null) {
@@ -758,7 +758,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     final lineHeight = DefaultTextStyle.of(context).style.fontSize ?? 16.0;
     widgets.add(SizedBox(height: lineHeight * endingLines));
 
-
     return widgets;
   }
 
@@ -872,11 +871,11 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     }
 
     TextStyle textStyle =
-    TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
+        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
 
     if (align.toLowerCase() == 'justify') {
       List<TextSpan> justifiedSpans =
-      _justifyText(content.trim(), textStyle, gridWidth);
+          _justifyText(content.trim(), textStyle, gridWidth);
 
       return Center(
         child: Container(
@@ -929,7 +928,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
     if (align.toLowerCase() == 'justify') {
       List<TextSpan> justifiedSpans =
-      _justifyText(content.trim(), textStyle, gridWidth);
+          _justifyText(content.trim(), textStyle, gridWidth);
 
       return Center(
         child: Container(
@@ -980,9 +979,8 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
       }
 
       if (units.length <= 1) {
-        justifiedSpans.add(TextSpan(
-            text: '$trimmedLine', style: blackTextStyle
-        ));
+        justifiedSpans
+            .add(TextSpan(text: '$trimmedLine', style: blackTextStyle));
         continue;
       }
 
@@ -1001,9 +999,8 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
       if (extraSpace <= 0) {
         // If there's no extra space, no need to adjust
-        justifiedSpans.add(TextSpan(
-            text: '$trimmedLine', style: blackTextStyle
-        ));
+        justifiedSpans
+            .add(TextSpan(text: '$trimmedLine', style: blackTextStyle));
         continue;
       }
 
@@ -1093,42 +1090,42 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         widthFactor: contentWidthFactor,
         child: controller.value.isInitialized
             ? Column(
-          children: [
-            AspectRatio(
-              aspectRatio: controller.value.aspectRatio,
-              child: VideoPlayer(controller),
-            ),
-            VideoProgressIndicator(controller, allowScrubbing: true),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    controller.value.isPlaying
-                        ? Icons.pause
-                        : Icons.play_arrow,
+                children: [
+                  AspectRatio(
+                    aspectRatio: controller.value.aspectRatio,
+                    child: VideoPlayer(controller),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      controller.value.isPlaying
-                          ? controller.pause()
-                          : controller.play();
-                    });
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.stop),
-                  onPressed: () {
-                    setState(() {
-                      controller.seekTo(Duration.zero);
-                      controller.pause();
-                    });
-                  },
-                ),
-              ],
-            ),
-          ],
-        )
+                  VideoProgressIndicator(controller, allowScrubbing: true),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          controller.value.isPlaying
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            controller.value.isPlaying
+                                ? controller.pause()
+                                : controller.play();
+                          });
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.stop),
+                        onPressed: () {
+                          setState(() {
+                            controller.seekTo(Duration.zero);
+                            controller.pause();
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              )
             : const CircularProgressIndicator(),
       ),
     );
@@ -1397,8 +1394,8 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
             controller: TextEditingController(
               text: _dateValues[name] != null
                   ? '${_dateValues[name]!.year}-'
-                  '${_dateValues[name]!.month.toString().padLeft(2, '0')}'
-                  '-${_dateValues[name]!.day.toString().padLeft(2, '0')}'
+                      '${_dateValues[name]!.month.toString().padLeft(2, '0')}'
+                      '-${_dateValues[name]!.day.toString().padLeft(2, '0')}'
                   : '',
             ),
           ),
@@ -1549,7 +1546,7 @@ class _TimerWidgetState extends State<TimerWidget> {
               children: [
                 ElevatedButton(
                   onPressed:
-                  _isRunning && !_isPaused ? _pauseTimer : _startTimer,
+                      _isRunning && !_isPaused ? _pauseTimer : _startTimer,
                   child: Text(_isRunning && !_isPaused ? 'Pause' : 'Start'),
                 ),
                 const SizedBox(width: 16),
