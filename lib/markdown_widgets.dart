@@ -40,11 +40,14 @@ class MarkdownWidgetBuilder extends StatefulWidget {
   final String title;
   final String? submitUrl;
 
+  final void Function(String title, String content)? onMenuItemSelected;
+
   const MarkdownWidgetBuilder({
     Key? key,
     required this.content,
     required this.title,
     this.submitUrl,
+    this.onMenuItemSelected,
   }) : super(key: key);
 
   @override
@@ -52,14 +55,17 @@ class MarkdownWidgetBuilder extends StatefulWidget {
 }
 
 class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
+  // Submit URL
+  String? _submitUrl;
+
+  // Whether the content has a menu
+  bool _hasMenu = false;
+
   // Store the slider values
   final Map<String, double> _sliderValues = {};
 
   // Store the slider parameters
   final Map<String, Map<String, dynamic>> _sliders = {};
-
-  // Submit URL
-  String? _submitUrl;
 
   // Store the radio values
   final Map<String, String?> _radioValues = {};
@@ -215,6 +221,36 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     // Regular expression to match audio commands
     final RegExp audioExp = RegExp(r'%% Audio\(([^)]+)\)');
 
+    // Regular expression to match %% Menu blocks
+    final RegExp menuBlockExp = RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End');
+
+    // Parse the menu blocks and replace with placeholders
+    int menuIndex = 0;
+    final Map<String, String> menuPlaceholders = {};
+    content = content.replaceAllMapped(menuBlockExp, (match) {
+      String placeholder = '%%MenuPlaceholder$menuIndex%%';
+      menuPlaceholders[placeholder] = match.group(1)!;
+      menuIndex++;
+      return placeholder;
+    });
+
+    // Check if the content has a menu
+    _hasMenu = menuIndex > 0;
+
+    // If there is a menu, trim the content to only process the menu part
+    if (_hasMenu) {
+      // If there is a menu, only process the menu part and ignore the rest
+      final menuPlaceholderPattern = RegExp(r'%%MenuPlaceholder\d+%%');
+      final menuMatch = menuPlaceholderPattern.firstMatch(content);
+
+      if (menuMatch != null) {
+        // Keep only the content before the menu placeholder
+        // (including the menu itself)
+        final menuEndIndex = menuMatch.end;
+        content = content.substring(0, menuEndIndex);
+      }
+    }
+
     // Parse the description blocks and replace with placeholders
     int descriptionIndex = 0;
     final Map<String, String> descriptionPlaceholders = {};
@@ -261,7 +297,8 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         r'%% Timer\([^\)]+\)|%% EmptyLine|'
         r'%%DescriptionPlaceholder\d+%%|'
         r'%%HeadingPlaceholder\d+%%|'
-        r'%%AlignPlaceholder\d+%%)');
+        r'%%AlignPlaceholder\d+%%|'
+        r'%%MenuPlaceholder\d+%%)');
 
     final matches = customCommandExp.allMatches(content).toList();
 
@@ -302,7 +339,13 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
       // Parse the command
       String command = match.group(0)!;
 
-      if (command.startsWith('%%DescriptionPlaceholder')) {
+      if (command.startsWith('%%MenuPlaceholder')) {
+        // Menu block placeholder to get the actual content
+        String menuContent = menuPlaceholders[command]!;
+
+        // Build the menu widget
+        widgets.add(_buildMenu(menuContent, widget.content));
+      } else if (command.startsWith('%%DescriptionPlaceholder')) {
         // Description block placeholder to get the actual content
         String descriptionContent = descriptionPlaceholders[command]!;
 
@@ -741,7 +784,11 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
           currentCheckboxOptions = [];
         }
 
-        widgets.add(_buildMarkdown(markdownContent));
+        // If there is no menu, the content after the menu will need to be
+        // shown
+        if (!_hasMenu) {
+          widgets.add(_buildMarkdown(markdownContent));
+        }
       }
     }
 
@@ -1432,6 +1479,102 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         ),
       ),
     );
+  }
+
+  // Build the menu
+  Widget _buildMenu(String menuContent, String fullContent) {
+    final lines = LineSplitter.split(menuContent).toList();
+    final menuItems = <String>[];
+
+    for (var line in lines) {
+      final trimmedLine = line.trim();
+      if (trimmedLine.startsWith('- ')) {
+        final item = trimmedLine.substring(2).trim();
+        menuItems.add(item);
+      }
+    }
+
+    final gridWidth = screenWidth(context) * contentWidthFactor;
+
+    return Center(
+      child: SizedBox(
+        width: gridWidth,
+        child: GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: menuItems.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, // 3 items per row
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 4, // Ratio of button block width to height
+          ),
+          itemBuilder: (context, index) {
+            final title = menuItems[index];
+            return InkWell(
+              onTap: () {
+                // Extract the content for the selected survey
+                final surveyContent =
+                _extractSurveyContent(fullContent, title);
+
+                // Call the callback to pass the menu item selection event to
+                // the caller
+                if (widget.onMenuItemSelected != null) {
+                  widget.onMenuItemSelected!(title, surveyContent);
+                }
+              },
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // Extract the content of the survey with the given title
+  String _extractSurveyContent(String markdownStr, String title) {
+    final pattern = RegExp(
+      r'^##\s+' + RegExp.escape(title) + r'\s*$',
+      multiLine: true,
+    );
+    final matches = pattern.allMatches(markdownStr);
+
+    if (matches.isEmpty) {
+      return '';
+    }
+
+    // Get the position of the title
+    final startIndex = matches.first.end;
+
+    // Find the next second-level title or the end of the document
+    final restOfDocument = markdownStr.substring(startIndex);
+    final nextHeadingPattern = RegExp(r'^##\s+', multiLine: true);
+    final nextMatch = nextHeadingPattern.firstMatch(restOfDocument);
+
+    int endIndex;
+    if (nextMatch != null) {
+      endIndex = startIndex + nextMatch.start;
+    } else {
+      endIndex = markdownStr.length;
+    }
+
+    final content = markdownStr.substring(startIndex, endIndex).trim();
+    return content;
   }
 
   @override
