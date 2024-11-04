@@ -456,7 +456,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
       } else if (command.startsWith('%% Slider')) {
         // Parse the slider parameters
         final sliderExp = RegExp(r'%% Slider\(([^,]+),\s*([\d\.]+),'
-        r'\s*([\d\.]+),\s*([\d\.]+),\s*([\d\.]+)\)');
+            r'\s*([\d\.]+),\s*([\d\.]+),\s*([\d\.]+)\)');
         final sliderMatch = sliderExp.firstMatch(command);
 
         if (sliderMatch != null) {
@@ -1372,31 +1372,15 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Build dropdown widget
   Widget _buildDropdown(String name, List<String> options) {
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              // hintText: 'Select an option',
-            ),
-            value: _dropdownValues[name],
-            items: options.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _dropdownValues[name] = newValue;
-              });
-            },
-          ),
-        ),
-      ),
+    return DropdownWidget(
+      name: name,
+      options: options,
+      value: _dropdownValues[name],
+      onChanged: (String? newValue) {
+        setState(() {
+          _dropdownValues[name] = newValue;
+        });
+      },
     );
   }
 

@@ -29,7 +29,8 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/constants.dart' show contentWidthFactor;
+import 'package:markdown_widgets/constants/constants.dart'
+    show contentWidthFactor;
 
 class SliderWidget extends StatelessWidget {
   final String name;

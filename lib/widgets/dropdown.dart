@@ -27,3 +27,75 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/constants/constants.dart'
+    show contentWidthFactor;
+
+class DropdownWidget extends StatefulWidget {
+  final String name;
+  final List<String> options;
+  final String? value;
+  final ValueChanged<String?> onChanged;
+
+  const DropdownWidget({
+    Key? key,
+    required this.name,
+    required this.options,
+    this.value,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _DropdownWidgetState createState() => _DropdownWidgetState();
+}
+
+class _DropdownWidgetState extends State<DropdownWidget> {
+  String? _selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedValue = widget.value;
+  }
+
+  @override
+  void didUpdateWidget(DropdownWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != oldWidget.value) {
+      setState(() {
+        _selectedValue = widget.value;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            value: _selectedValue,
+            items: widget.options.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                _selectedValue = newValue;
+              });
+              widget.onChanged(newValue);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}

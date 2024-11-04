@@ -1,6 +1,6 @@
 ########################################################################
 #
-# Generic Makefile
+# Makefile for markdown_widgets package.
 #
 # Time-stamp: <Sunday 2024-05-12 11:16:36 +1000 Graham Williams>
 #
@@ -32,7 +32,6 @@ DEST=/var/www/html/$(APP)
 # else installed in the local user's shares.
 
 INC_BASE=support
-INC_BASE=$(HOME)/.local/share/make
 
 # Specific Makefiles will be loaded if they are found in
 # INC_BASE. Sometimes the INC_BASE is shared by multiple local
