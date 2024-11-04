@@ -116,7 +116,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   // Store audio player states
   final Map<String, PlayerState> _audioPlayerStates = {};
 
-  List<Widget>? _contentWidgets;
   final Map<String, GlobalKey<InputFieldState>> _inputFieldKeys = {};
 
   @override
@@ -999,29 +998,14 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_contentWidgets == null) {
-      _contentWidgets = _buildContentWidgets(widget.content);
-    }
-  }
-
-  @override
-  void didUpdateWidget(MarkdownWidgetBuilder oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.content != widget.content) {
-      setState(() {
-        _contentWidgets = _buildContentWidgets(widget.content);
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Build content widgets every time to ensure UI updates
+    final contentWidgets = _buildContentWidgets(widget.content);
+
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: _contentWidgets ?? [],
+        children: contentWidgets,
       ),
     );
   }
