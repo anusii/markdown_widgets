@@ -1218,69 +1218,29 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Build radio group widget
   Widget _buildRadioGroup(String name, List<Map<String, String>> options) {
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.map((option) {
-            return Row(
-              children: [
-                Radio<String>(
-                  value: option['value']!,
-                  groupValue: _radioValues[name],
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _radioValues[name] = newValue;
-                    });
-                  },
-                ),
-                Expanded(
-                  child: Text(
-                    option['label']!,
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
-        ),
-      ),
+    return RadioGroup(
+      name: name,
+      options: options,
+      selectedValue: _radioValues[name],
+      onChanged: (String? newValue) {
+        setState(() {
+          _radioValues[name] = newValue;
+        });
+      },
     );
   }
 
   // Build checkbox group widget
   Widget _buildCheckboxGroup(String name, List<Map<String, String>> options) {
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.map((option) {
-            bool isChecked = _checkboxValues[name]!.contains(option['value']!);
-            return Row(
-              children: [
-                Checkbox(
-                  value: isChecked,
-                  onChanged: (bool? newValue) {
-                    setState(() {
-                      if (newValue == true) {
-                        _checkboxValues[name]!.add(option['value']!);
-                      } else {
-                        _checkboxValues[name]!.remove(option['value']!);
-                      }
-                    });
-                  },
-                ),
-                Expanded(
-                  child: Text(
-                    option['label']!,
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
-        ),
-      ),
+    return CheckboxGroup(
+      name: name,
+      options: options,
+      selectedValues: _checkboxValues[name]!,
+      onChanged: (Set<String> selectedValues) {
+        setState(() {
+          _checkboxValues[name] = selectedValues;
+        });
+      },
     );
   }
 
@@ -1312,61 +1272,14 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Build calendar field widget
   Widget _buildCalendarField(String name) {
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextFormField(
-            readOnly: true,
-            decoration: InputDecoration(
-              // labelText: name,
-              border: const OutlineInputBorder(),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.calendar_today),
-                onPressed: () async {
-                  DateTime initialDate = _dateValues[name] ?? DateTime.now();
-                  final DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: initialDate,
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime(2100),
-                    builder: (BuildContext context, Widget? child) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(child: child!),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                _dateValues[name] = DateTime.now();
-                              });
-                            },
-                            child: const Text('Today'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  if (pickedDate != null && pickedDate != _dateValues[name]) {
-                    setState(() {
-                      _dateValues[name] = pickedDate;
-                    });
-                  }
-                },
-              ),
-            ),
-            controller: TextEditingController(
-              text: _dateValues[name] != null
-                  ? '${_dateValues[name]!.year}-'
-                      '${_dateValues[name]!.month.toString().padLeft(2, '0')}'
-                      '-${_dateValues[name]!.day.toString().padLeft(2, '0')}'
-                  : '',
-            ),
-          ),
-        ),
-      ),
+    return CalendarField(
+      name: name,
+      initialDate: _dateValues[name],
+      onDateSelected: (DateTime? selectedDate) {
+        setState(() {
+          _dateValues[name] = selectedDate;
+        });
+      },
     );
   }
 

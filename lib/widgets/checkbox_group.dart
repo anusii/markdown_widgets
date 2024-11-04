@@ -27,3 +27,85 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/constants/constants.dart' show contentWidthFactor;
+
+class CheckboxGroup extends StatefulWidget {
+  final String name;
+  final List<Map<String, String>> options;
+  final Set<String> selectedValues;
+  final ValueChanged<Set<String>> onChanged;
+
+  const CheckboxGroup({
+    Key? key,
+    required this.name,
+    required this.options,
+    required this.selectedValues,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _CheckboxGroupState createState() => _CheckboxGroupState();
+}
+
+class _CheckboxGroupState extends State<CheckboxGroup> {
+  late Set<String> _selectedValues;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedValues = Set<String>.from(widget.selectedValues);
+  }
+
+  @override
+  void didUpdateWidget(CheckboxGroup oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedValues != oldWidget.selectedValues) {
+      setState(() {
+        _selectedValues = Set<String>.from(widget.selectedValues);
+      });
+    }
+  }
+
+  void _onChanged(String value, bool? isChecked) {
+    setState(() {
+      if (isChecked == true) {
+        _selectedValues.add(value);
+      } else {
+        _selectedValues.remove(value);
+      }
+    });
+    widget.onChanged(_selectedValues);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widget.options.map((option) {
+            bool isChecked = _selectedValues.contains(option['value']!);
+            return Row(
+              children: [
+                Checkbox(
+                  value: isChecked,
+                  onChanged: (bool? newValue) {
+                    _onChanged(option['value']!, newValue);
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    option['label']!,
+                  ),
+                ),
+              ],
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
