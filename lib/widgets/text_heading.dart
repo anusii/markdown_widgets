@@ -27,3 +27,99 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/utils/text_utils.dart';
+import 'package:markdown_widgets/constants/constants.dart'
+    show contentWidthFactor, screenWidth;
+
+class TextHeadingWidget extends StatelessWidget {
+  final int level;
+  final String content;
+  final String align;
+
+  const TextHeadingWidget({
+    Key? key,
+    required this.level,
+    required this.content,
+    required this.align,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final gridWidth = screenWidth(context) * contentWidthFactor;
+
+    double fontSize;
+    switch (level) {
+      case 1:
+        fontSize = 64.0;
+        break;
+      case 2:
+        fontSize = 48.0;
+        break;
+      case 3:
+        fontSize = 36.0;
+        break;
+      case 4:
+        fontSize = 24.0;
+        break;
+      case 5:
+        fontSize = 16.0;
+        break;
+      case 6:
+        fontSize = 12.0;
+        break;
+      default:
+        fontSize = 16.0;
+    }
+
+    TextAlign textAlign;
+    switch (align.toLowerCase()) {
+      case 'left':
+        textAlign = TextAlign.left;
+        break;
+      case 'right':
+        textAlign = TextAlign.right;
+        break;
+      case 'center':
+        textAlign = TextAlign.center;
+        break;
+      case 'justify':
+        textAlign = TextAlign.left;
+        break;
+      default:
+        textAlign = TextAlign.left;
+    }
+
+    TextStyle textStyle =
+        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
+
+    if (align.toLowerCase() == 'justify') {
+      List<TextSpan> justifiedSpans =
+          justifyText(content.trim(), textStyle, gridWidth);
+
+      return Center(
+        child: Container(
+          width: gridWidth,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: RichText(
+            text: TextSpan(children: justifiedSpans),
+            textAlign: textAlign,
+          ),
+        ),
+      );
+    } else {
+      return Center(
+        child: Container(
+          width: gridWidth,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            content,
+            textAlign: textAlign,
+            style: textStyle,
+          ),
+        ),
+      );
+    }
+  }
+}

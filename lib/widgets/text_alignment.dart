@@ -27,3 +27,70 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/utils/text_utils.dart';
+import 'package:markdown_widgets/constants/constants.dart'
+    show contentWidthFactor, screenWidth;
+
+class TextAlignmentWidget extends StatelessWidget {
+  final String align;
+  final String content;
+
+  const TextAlignmentWidget(
+      {Key? key, required this.align, required this.content})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final gridWidth = screenWidth(context) * contentWidthFactor;
+
+    TextAlign textAlign;
+    switch (align.toLowerCase()) {
+      case 'left':
+        textAlign = TextAlign.left;
+        break;
+      case 'right':
+        textAlign = TextAlign.right;
+        break;
+      case 'center':
+        textAlign = TextAlign.center;
+        break;
+      case 'justify':
+        textAlign = TextAlign.left;
+        break;
+      default:
+        textAlign = TextAlign.left;
+    }
+
+    TextStyle textStyle = const TextStyle(fontSize: 16);
+
+    if (align.toLowerCase() == 'justify') {
+      List<TextSpan> justifiedSpans =
+          justifyText(content.trim(), textStyle, gridWidth);
+
+      return Center(
+        child: Container(
+          width: gridWidth,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: RichText(
+            text: TextSpan(children: justifiedSpans),
+            textAlign: textAlign,
+          ),
+        ),
+      );
+    } else {
+      return Center(
+        child: Container(
+          width: gridWidth,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            content,
+            textAlign: textAlign,
+            style: textStyle,
+          ),
+        ),
+      );
+    }
+  }
+}

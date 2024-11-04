@@ -27,3 +27,31 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/constants/constants.dart'
+    show contentWidthFactor, mediaPath;
+
+class ImageWidget extends StatelessWidget {
+  final String filename;
+
+  const ImageWidget({Key? key, required this.filename}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final String imgPath = '$mediaPath/$filename';
+
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
+        child: Image.asset(
+          imgPath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return const Text('Image not found');
+          },
+        ),
+      ),
+    );
+  }
+}

@@ -77,6 +77,9 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   // Whether the content has a menu
   bool _hasMenu = false;
 
+  // Store the input values
+  final Map<String, String> _inputValues = {};
+
   // Store the slider values
   final Map<String, double> _sliderValues = {};
 
@@ -88,9 +91,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Store the checkbox values
   final Map<String, Set<String>> _checkboxValues = {};
-
-  // Store the text input controllers
-  final Map<String, TextEditingController> _textControllers = {};
 
   // Store the date values
   final Map<String, DateTime?> _dateValues = {};
@@ -132,10 +132,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     _audioPlayers.forEach((key, player) {
       player.dispose();
     });
-    // Dispose of text controllers
-    _textControllers.forEach((key, controller) {
-      controller.dispose();
-    });
     super.dispose();
   }
 
@@ -159,11 +155,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
       responses[key] = value.toList();
     });
 
-    // Add text input values
-    _textControllers.forEach((key, controller) {
-      responses[key] = controller.text;
-    });
-
     // Add date values
     _dateValues.forEach((key, value) {
       if (value != null) {
@@ -177,6 +168,11 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
     // Add dropdown values
     _dropdownValues.forEach((key, value) {
+      responses[key] = value;
+    });
+
+    // Add text input values
+    _inputValues.forEach((key, value) {
       responses[key] = value;
     });
 
@@ -740,8 +736,9 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         if (inputSLMatch != null) {
           final name = inputSLMatch.group(1)!.trim();
 
-          if (!_textControllers.containsKey(name)) {
-            _textControllers[name] = TextEditingController();
+          // Initialise the input value
+          if (!_inputValues.containsKey(name)) {
+            _inputValues[name] = '';
           }
 
           widgets.add(_buildInputField(name, isMultiLine: false));
@@ -766,8 +763,9 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         if (inputMLMatch != null) {
           final name = inputMLMatch.group(1)!.trim();
 
-          if (!_textControllers.containsKey(name)) {
-            _textControllers[name] = TextEditingController();
+          // Initialise the input value
+          if (!_inputValues.containsKey(name)) {
+            _inputValues[name] = '';
           }
 
           widgets.add(_buildInputField(name, isMultiLine: true));
@@ -850,238 +848,17 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Build description block widget
   Widget _buildDescriptionBox(String content) {
-    final gridWidth = screenWidth(context) * contentWidthFactor;
-
-    return Center(
-      child: Container(
-        width: gridWidth,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        padding: const EdgeInsets.all(16.0),
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        child: MarkdownBody(
-          data: content,
-          onTapLink: (text, href, title) async {
-            if (href != null) {
-              final uri = Uri.parse(href);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Cannot launch $href')),
-                );
-              }
-            }
-          },
-          styleSheet: MarkdownStyleSheet(
-            p: const TextStyle(fontSize: 16),
-          ),
-        ),
-      ),
-    );
+    return DescriptionBox(content: content);
   }
 
   // Build heading widget with alignment
   Widget _buildHeading(int level, String content, String align) {
-    final gridWidth = screenWidth(context) * contentWidthFactor;
-
-    double fontSize;
-    switch (level) {
-      case 1:
-        fontSize = 64.0;
-        break;
-      case 2:
-        fontSize = 48.0;
-        break;
-      case 3:
-        fontSize = 36.0;
-        break;
-      case 4:
-        fontSize = 24.0;
-        break;
-      case 5:
-        fontSize = 16.0;
-        break;
-      case 6:
-        fontSize = 12.0;
-        break;
-      default:
-        fontSize = 16.0;
-    }
-
-    TextAlign textAlign;
-    switch (align.toLowerCase()) {
-      case 'left':
-        textAlign = TextAlign.left;
-        break;
-      case 'right':
-        textAlign = TextAlign.right;
-        break;
-      case 'center':
-        textAlign = TextAlign.center;
-        break;
-      case 'justify':
-        textAlign = TextAlign.left; // We'll handle justification manually
-        break;
-      default:
-        textAlign = TextAlign.left;
-    }
-
-    TextStyle textStyle =
-        TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
-
-    if (align.toLowerCase() == 'justify') {
-      List<TextSpan> justifiedSpans =
-          _justifyText(content.trim(), textStyle, gridWidth);
-
-      return Center(
-        child: Container(
-          width: gridWidth,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: RichText(
-            text: TextSpan(children: justifiedSpans),
-            textAlign: textAlign,
-          ),
-        ),
-      );
-    } else {
-      return Center(
-        child: Container(
-          width: gridWidth,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            content,
-            textAlign: textAlign,
-            style: textStyle,
-          ),
-        ),
-      );
-    }
+    return TextHeadingWidget(level: level, content: content, align: align);
   }
 
   // Build aligned text widget
   Widget _buildAlignedText(String align, String content) {
-    final gridWidth = screenWidth(context) * contentWidthFactor;
-
-    TextAlign textAlign;
-    switch (align.toLowerCase()) {
-      case 'left':
-        textAlign = TextAlign.left;
-        break;
-      case 'right':
-        textAlign = TextAlign.right;
-        break;
-      case 'center':
-        textAlign = TextAlign.center;
-        break;
-      case 'justify':
-        textAlign = TextAlign.left;
-        break;
-      default:
-        textAlign = TextAlign.left;
-    }
-
-    TextStyle textStyle = const TextStyle(fontSize: 16);
-
-    if (align.toLowerCase() == 'justify') {
-      List<TextSpan> justifiedSpans =
-          _justifyText(content.trim(), textStyle, gridWidth);
-
-      return Center(
-        child: Container(
-          width: gridWidth,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: RichText(
-            text: TextSpan(children: justifiedSpans),
-            textAlign: textAlign,
-          ),
-        ),
-      );
-    } else {
-      return Center(
-        child: Container(
-          width: gridWidth,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            content,
-            textAlign: textAlign,
-            style: textStyle,
-          ),
-        ),
-      );
-    }
-  }
-
-  // Function to manually justify text
-  List<TextSpan> _justifyText(String text, TextStyle style, double maxWidth) {
-    List<String> lines = text.split('\n');
-    List<TextSpan> justifiedSpans = [];
-
-    // Update the style with black color
-    TextStyle blackTextStyle = style.copyWith(color: Colors.black);
-
-    for (String line in lines) {
-      // Trim the line and check if it contains any whitespace
-      String trimmedLine = line.trim();
-      bool hasWhitespace = trimmedLine.contains(RegExp(r'\s'));
-
-      List<String> units;
-
-      if (hasWhitespace) {
-        // If the line contains spaces, split into words
-        units = trimmedLine.split(RegExp(r'\s+'));
-      } else {
-        // If no spaces, split into individual characters (grapheme clusters)
-        units = trimmedLine.characters.toList();
-      }
-
-      if (units.length <= 1) {
-        justifiedSpans
-            .add(TextSpan(text: '$trimmedLine', style: blackTextStyle));
-        continue;
-      }
-
-      // Create a TextPainter to measure the text width
-      TextPainter textPainter = TextPainter(
-        textDirection: TextDirection.ltr,
-        text: TextSpan(text: trimmedLine, style: blackTextStyle),
-      );
-
-      // Set the maximum width
-      textPainter.layout(minWidth: 0, maxWidth: maxWidth);
-      double textWidth = textPainter.width;
-
-      // Calculate the extra space needed
-      double extraSpace = maxWidth - textWidth;
-
-      if (extraSpace <= 0) {
-        // If there's no extra space, no need to adjust
-        justifiedSpans
-            .add(TextSpan(text: '$trimmedLine', style: blackTextStyle));
-        continue;
-      }
-
-      // Calculate the additional space to add between units
-      int gapCount = units.length - 1;
-      double additionalSpacePerGap = extraSpace / gapCount;
-
-      // Build the adjusted line using InlineSpans
-      List<InlineSpan> spanChildren = [];
-      for (int i = 0; i < units.length; i++) {
-        spanChildren.add(TextSpan(text: units[i], style: blackTextStyle));
-        if (i < units.length - 1) {
-          spanChildren.add(WidgetSpan(
-            child: SizedBox(width: additionalSpacePerGap),
-          ));
-        }
-      }
-
-      justifiedSpans.add(TextSpan(children: spanChildren));
-    }
-
-    return justifiedSpans;
+    return TextAlignmentWidget(align: align, content: content);
   }
 
   // Build Markdown widget
@@ -1113,81 +890,12 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Build image widget
   Widget _buildImageWidget(String filename) {
-    final String imgPath = '$mediaPath/$filename';
-
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Image.asset(
-          imgPath,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            return const Text('Image not found');
-          },
-        ),
-      ),
-    );
+    return ImageWidget(filename: filename);
   }
 
   // Build video widget
   Widget _buildVideoWidget(String filename) {
-    final String videoPath = '$mediaPath/$filename';
-    VideoPlayerController controller;
-
-    if (!_videoControllers.containsKey(filename)) {
-      controller = VideoPlayerController.asset(videoPath)
-        ..initialize().then((_) {
-          setState(() {});
-        });
-      _videoControllers[filename] = controller;
-    } else {
-      controller = _videoControllers[filename]!;
-    }
-
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: controller.value.isInitialized
-            ? Column(
-                children: [
-                  AspectRatio(
-                    aspectRatio: controller.value.aspectRatio,
-                    child: VideoPlayer(controller),
-                  ),
-                  VideoProgressIndicator(controller, allowScrubbing: true),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          controller.value.isPlaying
-                              ? Icons.pause
-                              : Icons.play_arrow,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            controller.value.isPlaying
-                                ? controller.pause()
-                                : controller.play();
-                          });
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.stop),
-                        onPressed: () {
-                          setState(() {
-                            controller.seekTo(Duration.zero);
-                            controller.pause();
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              )
-            : const CircularProgressIndicator(),
-      ),
-    );
+    return VideoWidget(filename: filename);
   }
 
   // Build audio widget
@@ -1246,27 +954,15 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Build input field widget
   Widget _buildInputField(String name, {bool isMultiLine = false}) {
-    // Ensure the controller is initialised
-    if (!_textControllers.containsKey(name)) {
-      _textControllers[name] = TextEditingController();
-    }
-
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextField(
-            key: ValueKey('inputField_$name'),
-            controller: _textControllers[name],
-            maxLines: isMultiLine ? null : 1,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: name,
-            ),
-          ),
-        ),
-      ),
+    return InputField(
+      name: name,
+      initialValue: _inputValues[name],
+      isMultiLine: isMultiLine,
+      onChanged: (value) {
+        setState(() {
+          _inputValues[name] = value;
+        });
+      },
     );
   }
 

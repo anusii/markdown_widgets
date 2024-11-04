@@ -27,3 +27,73 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/constants/constants.dart'
+    show contentWidthFactor;
+
+class InputField extends StatefulWidget {
+  final String name;
+  final String? initialValue;
+  final bool isMultiLine;
+  final ValueChanged<String> onChanged;
+
+  const InputField({
+    Key? key,
+    required this.name,
+    this.initialValue,
+    this.isMultiLine = false,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _InputFieldState createState() => _InputFieldState();
+}
+
+class _InputFieldState extends State<InputField> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue ?? '');
+    _controller.addListener(() {
+      widget.onChanged(_controller.text);
+    });
+  }
+
+  @override
+  void didUpdateWidget(InputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue) {
+      _controller.text = widget.initialValue ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: TextField(
+            key: ValueKey('inputField_${widget.name}'),
+            controller: _controller,
+            maxLines: widget.isMultiLine ? null : 1,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: widget.name,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
