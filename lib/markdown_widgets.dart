@@ -35,6 +35,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:markdown_widgets/constants/constants.dart'
     show contentWidthFactor, screenWidth, mediaPath, endingLines;
 
+import 'package:markdown_widgets/utils/command_parser.dart';
 import 'package:markdown_widgets/widgets/audio_widget.dart';
 import 'package:markdown_widgets/widgets/calendar_field.dart';
 import 'package:markdown_widgets/widgets/checkbox_group.dart';
@@ -43,7 +44,7 @@ import 'package:markdown_widgets/widgets/description_box.dart';
 import 'package:markdown_widgets/widgets/dropdown.dart';
 import 'package:markdown_widgets/widgets/image_widget.dart';
 import 'package:markdown_widgets/widgets/input_field.dart';
-import 'package:markdown_widgets/widgets/markdown_body.dart';
+import 'package:markdown_widgets/widgets/markdown_text.dart';
 import 'package:markdown_widgets/widgets/menu.dart';
 import 'package:markdown_widgets/widgets/radio_group.dart';
 import 'package:markdown_widgets/widgets/slider.dart';
@@ -346,7 +347,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
             currentCheckboxOptions = [];
           }
 
-          widgets.add(_buildMarkdown(markdownContent));
+          widgets.add(MarkdownText(data: markdownContent));
         }
       }
 
@@ -799,7 +800,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         // If there is no menu, the content after the menu will need to be
         // shown
         if (!_hasMenu) {
-          widgets.add(_buildMarkdown(markdownContent));
+          widgets.add(MarkdownText(data: markdownContent));
         }
       }
     }
@@ -861,33 +862,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   // Build aligned text widget
   Widget _buildAlignedText(String align, String content) {
     return TextAlignmentWidget(align: align, content: content);
-  }
-
-  // Build Markdown widget
-  Widget _buildMarkdown(String data) {
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: MarkdownBody(
-          data: data,
-          onTapLink: (text, href, title) async {
-            if (href != null) {
-              final uri = Uri.parse(href);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Could not launch $href')),
-                );
-              }
-            }
-          },
-          styleSheet: MarkdownStyleSheet(
-            p: const TextStyle(fontSize: 16),
-          ),
-        ),
-      ),
-    );
   }
 
   // Build image widget
