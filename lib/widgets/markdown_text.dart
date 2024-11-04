@@ -1,4 +1,4 @@
-/// Markdown body processing.
+/// Markdown text formatting.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
