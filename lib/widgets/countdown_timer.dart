@@ -27,3 +27,121 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/constants/constants.dart'
+    show contentWidthFactor, screenWidth;
+
+class TimerWidget extends StatefulWidget {
+  final int totalSeconds;
+
+  const TimerWidget({Key? key, required this.totalSeconds}) : super(key: key);
+
+  @override
+  _TimerWidgetState createState() => _TimerWidgetState();
+}
+
+class _TimerWidgetState extends State<TimerWidget> {
+  late int _remainingSeconds;
+  Timer? _timer;
+  bool _isRunning = false;
+  bool _isPaused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _remainingSeconds = widget.totalSeconds;
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    if (_isRunning && !_isPaused) return;
+
+    if (_isPaused) {
+      // Resume the timer
+      setState(() {
+        _isPaused = false;
+      });
+    } else {
+      // Start a new timer
+      _isRunning = true;
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          if (_remainingSeconds > 0 && !_isPaused) {
+            _remainingSeconds--;
+          } else if (_remainingSeconds == 0) {
+            _timer?.cancel();
+            _isRunning = false;
+          }
+        });
+      });
+    }
+  }
+
+  void _pauseTimer() {
+    if (_isRunning && !_isPaused) {
+      setState(() {
+        _isPaused = true;
+      });
+    }
+  }
+
+  void _resetTimer() {
+    _timer?.cancel();
+    setState(() {
+      _remainingSeconds = widget.totalSeconds;
+      _isRunning = false;
+      _isPaused = false;
+    });
+  }
+
+  String _formatTime(int seconds) {
+    final hours = seconds ~/ 3600;
+    final minutes = (seconds % 3600) ~/ 60;
+    final secs = seconds % 60;
+    return '${hours.toString().padLeft(2, '0')}:'
+        '${minutes.toString().padLeft(2, '0')}:'
+        '${secs.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gridWidth = screenWidth(context) * contentWidthFactor;
+
+    return Center(
+      child: Container(
+        width: gridWidth,
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Column(
+          children: [
+            Text(
+              _formatTime(_remainingSeconds),
+              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _isRunning && !_isPaused ? _pauseTimer : _startTimer,
+                  child: Text(_isRunning && !_isPaused ? 'Pause' : 'Start'),
+                ),
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: _resetTimer,
+                  child: const Text('Reset'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
