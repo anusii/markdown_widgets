@@ -116,6 +116,9 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   // Store audio player states
   final Map<String, PlayerState> _audioPlayerStates = {};
 
+  List<Widget>? _contentWidgets;
+  final Map<String, GlobalKey<InputFieldState>> _inputFieldKeys = {};
+
   @override
   void initState() {
     super.initState();
@@ -954,14 +957,16 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Build input field widget
   Widget _buildInputField(String name, {bool isMultiLine = false}) {
+    if (!_inputFieldKeys.containsKey(name)) {
+      _inputFieldKeys[name] = GlobalKey<InputFieldState>();
+    }
     return InputField(
+      key: _inputFieldKeys[name],
       name: name,
       initialValue: _inputValues[name],
       isMultiLine: isMultiLine,
       onChanged: (value) {
-        setState(() {
-          _inputValues[name] = value;
-        });
+        _inputValues[name] = value;
       },
     );
   }
@@ -994,14 +999,29 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    // Build content widgets every time to ensure UI updates
-    final contentWidgets = _buildContentWidgets(widget.content);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_contentWidgets == null) {
+      _contentWidgets = _buildContentWidgets(widget.content);
+    }
+  }
 
+  @override
+  void didUpdateWidget(MarkdownWidgetBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.content != widget.content) {
+      setState(() {
+        _contentWidgets = _buildContentWidgets(widget.content);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: contentWidgets,
+        children: _contentWidgets ?? [],
       ),
     );
   }

@@ -47,10 +47,10 @@ class InputField extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _InputFieldState createState() => _InputFieldState();
+  InputFieldState createState() => InputFieldState();
 }
 
-class _InputFieldState extends State<InputField> {
+class InputFieldState extends State<InputField> {
   late TextEditingController _controller;
 
   @override
@@ -65,7 +65,8 @@ class _InputFieldState extends State<InputField> {
   @override
   void didUpdateWidget(InputField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.initialValue != oldWidget.initialValue) {
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
       _controller.text = widget.initialValue ?? '';
     }
   }
@@ -84,7 +85,6 @@ class _InputFieldState extends State<InputField> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextField(
-            key: ValueKey('inputField_${widget.name}'),
             controller: _controller,
             maxLines: widget.isMultiLine ? null : 1,
             decoration: InputDecoration(
