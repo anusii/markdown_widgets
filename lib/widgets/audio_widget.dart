@@ -27,3 +27,121 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+import 'package:markdown_widgets/constants/constants.dart'
+    show contentWidthFactor;
+
+class AudioWidget extends StatefulWidget {
+  final String filename;
+
+  const AudioWidget({Key? key, required this.filename}) : super(key: key);
+
+  @override
+  _AudioWidgetState createState() => _AudioWidgetState();
+}
+
+class _AudioWidgetState extends State<AudioWidget> {
+  late AudioPlayer _player;
+  Duration? _duration;
+  Duration _position = Duration.zero;
+  PlayerState? _playerState;
+
+  @override
+  void initState() {
+    super.initState();
+    _player = AudioPlayer();
+
+    _initAudioPlayer();
+  }
+
+  void _initAudioPlayer() async {
+    final String audioAssetPath = 'media/${widget.filename}';
+
+    // Load the audio file
+    await _player.setSource(AssetSource(audioAssetPath));
+
+    // Listen for audio duration
+    _player.onDurationChanged.listen((Duration d) {
+      setState(() {
+        _duration = d;
+      });
+    });
+
+    // Listen for audio position
+    _player.onPositionChanged.listen((Duration p) {
+      setState(() {
+        _position = p;
+      });
+    });
+
+    // Listen for player state changes
+    _player.onPlayerStateChanged.listen((PlayerState s) {
+      setState(() {
+        _playerState = s;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isPlaying = _playerState == PlayerState.playing;
+
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
+        child: Column(
+          children: [
+            // Progress bar
+            Slider(
+              value: _position.inMilliseconds.toDouble(),
+              min: 0.0,
+              max: (_duration?.inMilliseconds ?? 0).toDouble(),
+              onChanged: (double value) {
+                final newPosition = Duration(milliseconds: value.toInt());
+                _player.seek(newPosition);
+              },
+            ),
+            // Button row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Play/pause button
+                IconButton(
+                  icon: Icon(
+                    isPlaying ? Icons.pause : Icons.play_arrow,
+                  ),
+                  onPressed: () {
+                    if (isPlaying) {
+                      _player.pause();
+                    } else {
+                      _player.resume();
+                    }
+                  },
+                ),
+                // Stop button
+                IconButton(
+                  icon: const Icon(Icons.stop),
+                  onPressed: () {
+                    _player.stop();
+                    setState(() {
+                      _position = Duration.zero;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

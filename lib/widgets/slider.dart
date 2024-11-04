@@ -27,3 +27,42 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/constants/constants.dart' show contentWidthFactor;
+
+class SliderWidget extends StatelessWidget {
+  final String name;
+  final double value;
+  final double min;
+  final double max;
+  final double step;
+  final ValueChanged<double> onChanged;
+
+  const SliderWidget({
+    Key? key,
+    required this.name,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.step,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
+        child: Slider(
+          value: value,
+          min: min,
+          max: max,
+          divisions: ((max - min) / step).round(),
+          label: value.toStringAsFixed(0),
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+}

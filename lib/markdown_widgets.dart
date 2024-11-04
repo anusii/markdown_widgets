@@ -35,6 +35,22 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:markdown_widgets/constants/constants.dart'
     show contentWidthFactor, screenWidth, mediaPath, endingLines;
 
+import 'package:markdown_widgets/widgets/audio_widget.dart';
+import 'package:markdown_widgets/widgets/calendar_field.dart';
+import 'package:markdown_widgets/widgets/checkbox_group.dart';
+import 'package:markdown_widgets/widgets/countdown_timer.dart';
+import 'package:markdown_widgets/widgets/description_box.dart';
+import 'package:markdown_widgets/widgets/dropdown.dart';
+import 'package:markdown_widgets/widgets/image_widget.dart';
+import 'package:markdown_widgets/widgets/input_field.dart';
+import 'package:markdown_widgets/widgets/markdown_body.dart';
+import 'package:markdown_widgets/widgets/menu.dart';
+import 'package:markdown_widgets/widgets/radio_group.dart';
+import 'package:markdown_widgets/widgets/slider.dart';
+import 'package:markdown_widgets/widgets/text_alignment.dart';
+import 'package:markdown_widgets/widgets/text_heading.dart';
+import 'package:markdown_widgets/widgets/video_widget.dart';
+
 class MarkdownWidgetBuilder extends StatefulWidget {
   final String content;
   final String title;
@@ -340,11 +356,21 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
       String command = match.group(0)!;
 
       if (command.startsWith('%%MenuPlaceholder')) {
-        // Menu block placeholder to get the actual content
+        // Get the actual menu content
         String menuContent = menuPlaceholders[command]!;
 
-        // Build the menu widget
-        widgets.add(_buildMenu(menuContent, widget.content));
+        // Use the MenuWidget to build the menu
+        widgets.add(
+          MenuWidget(
+            menuContent: menuContent,
+            fullContent: widget.content,
+            onMenuItemSelected: (title, surveyContent) {
+              if (widget.onMenuItemSelected != null) {
+                widget.onMenuItemSelected!(title, surveyContent);
+              }
+            },
+          ),
+        );
       } else if (command.startsWith('%%DescriptionPlaceholder')) {
         // Description block placeholder to get the actual content
         String descriptionContent = descriptionPlaceholders[command]!;
@@ -428,23 +454,9 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         final lineHeight = DefaultTextStyle.of(context).style.fontSize ?? 16.0;
         widgets.add(SizedBox(height: lineHeight));
       } else if (command.startsWith('%% Slider')) {
-        // Build any unfinished radio or checkbox groups
-        if (currentRadioGroupName != null) {
-          widgets.add(
-              _buildRadioGroup(currentRadioGroupName, currentRadioOptions));
-          currentRadioGroupName = null;
-          currentRadioOptions = [];
-        }
-        if (currentCheckboxGroupName != null) {
-          widgets.add(_buildCheckboxGroup(
-              currentCheckboxGroupName, currentCheckboxOptions));
-          currentCheckboxGroupName = null;
-          currentCheckboxOptions = [];
-        }
-
         // Parse the slider parameters
         final sliderExp = RegExp(r'%% Slider\(([^,]+),\s*([\d\.]+),'
-            r'\s*([\d\.]+),\s*([\d\.]+),\s*([\d\.]+)\)');
+        r'\s*([\d\.]+),\s*([\d\.]+),\s*([\d\.]+)\)');
         final sliderMatch = sliderExp.firstMatch(command);
 
         if (sliderMatch != null) {
@@ -467,7 +479,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
             _sliderValues[name] = defaultValue;
           }
 
-          // Build the slider widget
+          // Use the _buildSlider method to build the slider
           widgets.add(_buildSlider(name));
         }
       } else if (command.startsWith('%% Submit')) {
@@ -1180,95 +1192,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   // Build audio widget
   Widget _buildAudioWidget(String filename) {
-    final String audioAssetPath = 'media/$filename';
-    AudioPlayer player;
-    Duration? duration = _audioDurations[filename];
-    Duration position = _audioPositions[filename] ?? Duration.zero;
-    PlayerState? playerState = _audioPlayerStates[filename];
-
-    if (!_audioPlayers.containsKey(filename)) {
-      player = AudioPlayer();
-      _audioPlayers[filename] = player;
-
-      // Load the audio file
-      player.setSource(AssetSource(audioAssetPath));
-
-      // Listen for audio duration
-      player.onDurationChanged.listen((Duration d) {
-        setState(() {
-          _audioDurations[filename] = d;
-        });
-      });
-
-      // Listen for audio position
-      player.onPositionChanged.listen((Duration p) {
-        setState(() {
-          _audioPositions[filename] = p;
-        });
-      });
-
-      // Listen for player state changes
-      player.onPlayerStateChanged.listen((PlayerState s) {
-        setState(() {
-          _audioPlayerStates[filename] = s;
-        });
-      });
-    } else {
-      player = _audioPlayers[filename]!;
-    }
-
-    // Get the current playing state
-    playerState = _audioPlayerStates[filename];
-    final isPlaying = playerState == PlayerState.playing;
-
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Column(
-          children: [
-            // Progress bar
-            Slider(
-              value: position.inMilliseconds.toDouble(),
-              min: 0.0,
-              max: (duration?.inMilliseconds ?? 0).toDouble(),
-              onChanged: (double value) {
-                final newPosition = Duration(milliseconds: value.toInt());
-                player.seek(newPosition);
-              },
-            ),
-            // Button row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Play/pause button
-                IconButton(
-                  icon: Icon(
-                    isPlaying ? Icons.pause : Icons.play_arrow,
-                  ),
-                  onPressed: () {
-                    if (isPlaying) {
-                      player.pause();
-                    } else {
-                      player.resume();
-                    }
-                  },
-                ),
-                // Stop button
-                IconButton(
-                  icon: const Icon(Icons.stop),
-                  onPressed: () {
-                    player.stop();
-                    setState(() {
-                      _audioPositions[filename] = Duration.zero;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+    return AudioWidget(filename: filename);
   }
 
   // Build the slider widget
@@ -1278,22 +1202,17 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     final max = sliderInfo['max'];
     final step = sliderInfo['step'];
 
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Slider(
-          value: _sliderValues[name]!,
-          min: min,
-          max: max,
-          divisions: ((max - min) / step).round(),
-          label: _sliderValues[name]!.toStringAsFixed(0),
-          onChanged: (newValue) {
-            setState(() {
-              _sliderValues[name] = newValue;
-            });
-          },
-        ),
-      ),
+    return SliderWidget(
+      name: name,
+      value: _sliderValues[name]!,
+      min: min,
+      max: max,
+      step: step,
+      onChanged: (newValue) {
+        setState(() {
+          _sliderValues[name] = newValue;
+        });
+      },
     );
   }
 
@@ -1479,102 +1398,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         ),
       ),
     );
-  }
-
-  // Build the menu
-  Widget _buildMenu(String menuContent, String fullContent) {
-    final lines = LineSplitter.split(menuContent).toList();
-    final menuItems = <String>[];
-
-    for (var line in lines) {
-      final trimmedLine = line.trim();
-      if (trimmedLine.startsWith('- ')) {
-        final item = trimmedLine.substring(2).trim();
-        menuItems.add(item);
-      }
-    }
-
-    final gridWidth = screenWidth(context) * contentWidthFactor;
-
-    return Center(
-      child: SizedBox(
-        width: gridWidth,
-        child: GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: menuItems.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, // 3 items per row
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 4, // Ratio of button block width to height
-          ),
-          itemBuilder: (context, index) {
-            final title = menuItems[index];
-            return InkWell(
-              onTap: () {
-                // Extract the content for the selected survey
-                final surveyContent =
-                _extractSurveyContent(fullContent, title);
-
-                // Call the callback to pass the menu item selection event to
-                // the caller
-                if (widget.onMenuItemSelected != null) {
-                  widget.onMenuItemSelected!(title, surveyContent);
-                }
-              },
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Center(
-                  child: Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  // Extract the content of the survey with the given title
-  String _extractSurveyContent(String markdownStr, String title) {
-    final pattern = RegExp(
-      r'^##\s+' + RegExp.escape(title) + r'\s*$',
-      multiLine: true,
-    );
-    final matches = pattern.allMatches(markdownStr);
-
-    if (matches.isEmpty) {
-      return '';
-    }
-
-    // Get the position of the title
-    final startIndex = matches.first.end;
-
-    // Find the next second-level title or the end of the document
-    final restOfDocument = markdownStr.substring(startIndex);
-    final nextHeadingPattern = RegExp(r'^##\s+', multiLine: true);
-    final nextMatch = nextHeadingPattern.firstMatch(restOfDocument);
-
-    int endIndex;
-    if (nextMatch != null) {
-      endIndex = startIndex + nextMatch.start;
-    } else {
-      endIndex = markdownStr.length;
-    }
-
-    final content = markdownStr.substring(startIndex, endIndex).trim();
-    return content;
   }
 
   @override
