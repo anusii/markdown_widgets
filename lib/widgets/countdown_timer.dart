@@ -129,7 +129,8 @@ class _TimerWidgetState extends State<TimerWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: _isRunning && !_isPaused ? _pauseTimer : _startTimer,
+                  onPressed:
+                      _isRunning && !_isPaused ? _pauseTimer : _startTimer,
                   child: Text(_isRunning && !_isPaused ? 'Pause' : 'Start'),
                 ),
                 const SizedBox(width: 16),
