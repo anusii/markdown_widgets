@@ -1,4 +1,4 @@
-/// Input field widget.
+/// Dropdown widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,52 +29,44 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/constants.dart'
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
-class InputField extends StatefulWidget {
+class DropdownWidget extends StatefulWidget {
   final String name;
-  final String? initialValue;
-  final bool isMultiLine;
-  final ValueChanged<String> onChanged;
+  final List<String> options;
+  final String? value;
+  final ValueChanged<String?> onChanged;
 
-  const InputField({
+  const DropdownWidget({
     Key? key,
     required this.name,
-    this.initialValue,
-    this.isMultiLine = false,
+    required this.options,
+    this.value,
     required this.onChanged,
   }) : super(key: key);
 
   @override
-  InputFieldState createState() => InputFieldState();
+  _DropdownWidgetState createState() => _DropdownWidgetState();
 }
 
-class InputFieldState extends State<InputField> {
-  late TextEditingController _controller;
+class _DropdownWidgetState extends State<DropdownWidget> {
+  String? _selectedValue;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.initialValue ?? '');
-    _controller.addListener(() {
-      widget.onChanged(_controller.text);
-    });
+    _selectedValue = widget.value;
   }
 
   @override
-  void didUpdateWidget(InputField oldWidget) {
+  void didUpdateWidget(DropdownWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.initialValue != oldWidget.initialValue &&
-        widget.initialValue != _controller.text) {
-      _controller.text = widget.initialValue ?? '';
+    if (widget.value != oldWidget.value) {
+      setState(() {
+        _selectedValue = widget.value;
+      });
     }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -84,13 +76,23 @@ class InputFieldState extends State<InputField> {
         widthFactor: contentWidthFactor,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextField(
-            controller: _controller,
-            maxLines: widget.isMultiLine ? null : 1,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: widget.name,
+          child: DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
             ),
+            value: _selectedValue,
+            items: widget.options.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                _selectedValue = newValue;
+              });
+              widget.onChanged(newValue);
+            },
           ),
         ),
       ),

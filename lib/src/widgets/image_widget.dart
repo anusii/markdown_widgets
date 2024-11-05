@@ -1,4 +1,4 @@
-/// Markdown text formatting.
+/// Image widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,39 +29,27 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:markdown_widgets/src/constants/pkg.dart'
+    show contentWidthFactor, mediaPath;
 
-import 'package:markdown_widgets/constants/constants.dart'
-    show contentWidthFactor;
+class ImageWidget extends StatelessWidget {
+  final String filename;
 
-class MarkdownText extends StatelessWidget {
-  final String data;
-
-  const MarkdownText({Key? key, required this.data}) : super(key: key);
+  const ImageWidget({Key? key, required this.filename}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final String imgPath = '$mediaPath/$filename';
+
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: MarkdownBody(
-          data: data,
-          onTapLink: (text, href, title) async {
-            if (href != null) {
-              final uri = Uri.parse(href);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Could not launch $href')),
-                );
-              }
-            }
+        child: Image.asset(
+          imgPath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return const Text('Image not found');
           },
-          styleSheet: MarkdownStyleSheet(
-            p: const TextStyle(fontSize: 16),
-          ),
         ),
       ),
     );

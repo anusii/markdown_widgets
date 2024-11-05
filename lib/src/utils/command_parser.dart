@@ -29,11 +29,11 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/utils/helpers.dart';
-import 'package:markdown_widgets/widgets/markdown_text.dart';
-import 'package:markdown_widgets/widgets/menu.dart';
-import 'package:markdown_widgets/widgets/input_field.dart';
-import 'package:markdown_widgets/constants/constants.dart' show endingLines;
+import 'package:markdown_widgets/src/utils/helpers.dart';
+import 'package:markdown_widgets/src/widgets/markdown_text.dart';
+import 'package:markdown_widgets/src/widgets/menu.dart';
+import 'package:markdown_widgets/src/widgets/input_field.dart';
+import 'package:markdown_widgets/src/constants/pkg.dart' show endingLines;
 
 class CommandParser {
   final BuildContext context;
@@ -568,7 +568,6 @@ class CommandParser {
           // Look ahead to find where the options list ends
           // It ends when a line does not start with '-' or the next command
           // starts
-          int currentIndex = optionsStartIndex;
           final lines =
               modifiedContent.substring(optionsStartIndex).split('\n');
           final List<String> options = [];

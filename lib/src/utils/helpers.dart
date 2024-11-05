@@ -29,20 +29,20 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/widgets/description_box.dart';
-import 'package:markdown_widgets/widgets/text_heading.dart';
-import 'package:markdown_widgets/widgets/text_alignment.dart';
-import 'package:markdown_widgets/widgets/image_widget.dart';
-import 'package:markdown_widgets/widgets/video_widget.dart';
-import 'package:markdown_widgets/widgets/audio_widget.dart';
-import 'package:markdown_widgets/widgets/countdown_timer.dart';
-import 'package:markdown_widgets/widgets/slider.dart';
-import 'package:markdown_widgets/widgets/input_field.dart';
-import 'package:markdown_widgets/widgets/calendar_field.dart';
-import 'package:markdown_widgets/widgets/dropdown.dart';
-import 'package:markdown_widgets/widgets/radio_group.dart';
-import 'package:markdown_widgets/widgets/checkbox_group.dart';
-import 'package:markdown_widgets/utils/time_parser.dart';
+import 'package:markdown_widgets/src/widgets/description_box.dart';
+import 'package:markdown_widgets/src/widgets/text_heading.dart';
+import 'package:markdown_widgets/src/widgets/text_alignment.dart';
+import 'package:markdown_widgets/src/widgets/image_widget.dart';
+import 'package:markdown_widgets/src/widgets/video_widget.dart';
+import 'package:markdown_widgets/src/widgets/audio_widget.dart';
+import 'package:markdown_widgets/src/widgets/countdown_timer.dart';
+import 'package:markdown_widgets/src/widgets/slider.dart';
+import 'package:markdown_widgets/src/widgets/input_field.dart';
+import 'package:markdown_widgets/src/widgets/calendar_field.dart';
+import 'package:markdown_widgets/src/widgets/dropdown.dart';
+import 'package:markdown_widgets/src/widgets/radio_group.dart';
+import 'package:markdown_widgets/src/widgets/checkbox_group.dart';
+import 'package:markdown_widgets/src/utils/time_parser.dart';
 
 class Helpers {
   final BuildContext context;

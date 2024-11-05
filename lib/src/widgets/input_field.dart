@@ -1,4 +1,4 @@
-/// Radio button group widget.
+/// Input field widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,46 +29,69 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/constants.dart'
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
-class RadioGroup extends StatelessWidget {
+class InputField extends StatefulWidget {
   final String name;
-  final List<Map<String, String>> options;
-  final String? selectedValue;
-  final ValueChanged<String?> onChanged;
+  final String? initialValue;
+  final bool isMultiLine;
+  final ValueChanged<String> onChanged;
 
-  const RadioGroup({
+  const InputField({
     Key? key,
     required this.name,
-    required this.options,
-    this.selectedValue,
+    this.initialValue,
+    this.isMultiLine = false,
     required this.onChanged,
   }) : super(key: key);
+
+  @override
+  InputFieldState createState() => InputFieldState();
+}
+
+class InputFieldState extends State<InputField> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue ?? '');
+    _controller.addListener(() {
+      widget.onChanged(_controller.text);
+    });
+  }
+
+  @override
+  void didUpdateWidget(InputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.map((option) {
-            return Row(
-              children: [
-                Radio<String>(
-                  value: option['value']!,
-                  groupValue: selectedValue,
-                  onChanged: onChanged,
-                ),
-                Expanded(
-                  child: Text(
-                    option['label']!,
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: TextField(
+            controller: _controller,
+            maxLines: widget.isMultiLine ? null : 1,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: widget.name,
+            ),
+          ),
         ),
       ),
     );

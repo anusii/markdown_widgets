@@ -1,4 +1,4 @@
-/// Slider bar widget.
+/// Markdown text formatting.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,39 +29,39 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/constants.dart'
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
-class SliderWidget extends StatelessWidget {
-  final String name;
-  final double value;
-  final double min;
-  final double max;
-  final double step;
-  final ValueChanged<double> onChanged;
+class MarkdownText extends StatelessWidget {
+  final String data;
 
-  const SliderWidget({
-    Key? key,
-    required this.name,
-    required this.value,
-    required this.min,
-    required this.max,
-    required this.step,
-    required this.onChanged,
-  }) : super(key: key);
+  const MarkdownText({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: Slider(
-          value: value,
-          min: min,
-          max: max,
-          divisions: ((max - min) / step).round(),
-          label: value.toStringAsFixed(0),
-          onChanged: onChanged,
+        child: MarkdownBody(
+          data: data,
+          onTapLink: (text, href, title) async {
+            if (href != null) {
+              final uri = Uri.parse(href);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Could not launch $href')),
+                );
+              }
+            }
+          },
+          styleSheet: MarkdownStyleSheet(
+            p: const TextStyle(fontSize: 16),
+          ),
         ),
       ),
     );

@@ -1,4 +1,4 @@
-/// Dropdown widget.
+/// Slider bar widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,71 +29,39 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/constants.dart'
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
-class DropdownWidget extends StatefulWidget {
+class SliderWidget extends StatelessWidget {
   final String name;
-  final List<String> options;
-  final String? value;
-  final ValueChanged<String?> onChanged;
+  final double value;
+  final double min;
+  final double max;
+  final double step;
+  final ValueChanged<double> onChanged;
 
-  const DropdownWidget({
+  const SliderWidget({
     Key? key,
     required this.name,
-    required this.options,
-    this.value,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.step,
     required this.onChanged,
   }) : super(key: key);
-
-  @override
-  _DropdownWidgetState createState() => _DropdownWidgetState();
-}
-
-class _DropdownWidgetState extends State<DropdownWidget> {
-  String? _selectedValue;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedValue = widget.value;
-  }
-
-  @override
-  void didUpdateWidget(DropdownWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.value != oldWidget.value) {
-      setState(() {
-        _selectedValue = widget.value;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-            ),
-            value: _selectedValue,
-            items: widget.options.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedValue = newValue;
-              });
-              widget.onChanged(newValue);
-            },
-          ),
+        child: Slider(
+          value: value,
+          min: min,
+          max: max,
+          divisions: ((max - min) / step).round(),
+          label: value.toStringAsFixed(0),
+          onChanged: onChanged,
         ),
       ),
     );

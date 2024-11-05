@@ -1,4 +1,4 @@
-/// Image widget.
+/// Radio button group widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,27 +29,46 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/constants.dart'
-    show contentWidthFactor, mediaPath;
+import 'package:markdown_widgets/src/constants/pkg.dart'
+    show contentWidthFactor;
 
-class ImageWidget extends StatelessWidget {
-  final String filename;
+class RadioGroup extends StatelessWidget {
+  final String name;
+  final List<Map<String, String>> options;
+  final String? selectedValue;
+  final ValueChanged<String?> onChanged;
 
-  const ImageWidget({Key? key, required this.filename}) : super(key: key);
+  const RadioGroup({
+    Key? key,
+    required this.name,
+    required this.options,
+    this.selectedValue,
+    required this.onChanged,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final String imgPath = '$mediaPath/$filename';
-
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: Image.asset(
-          imgPath,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            return const Text('Image not found');
-          },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: options.map((option) {
+            return Row(
+              children: [
+                Radio<String>(
+                  value: option['value']!,
+                  groupValue: selectedValue,
+                  onChanged: onChanged,
+                ),
+                Expanded(
+                  child: Text(
+                    option['label']!,
+                  ),
+                ),
+              ],
+            );
+          }).toList(),
         ),
       ),
     );
