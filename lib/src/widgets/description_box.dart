@@ -1,4 +1,4 @@
-/// Markdown text formatting.
+/// Description box widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -31,22 +31,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:markdown_widgets/src/constants/pkg.dart'
+    show contentWidthFactor, screenWidth;
 
-import 'package:markdown_widgets/constants/pkg.dart'
-    show contentWidthFactor;
+class DescriptionBox extends StatelessWidget {
+  final String content;
 
-class MarkdownText extends StatelessWidget {
-  final String data;
-
-  const MarkdownText({Key? key, required this.data}) : super(key: key);
+  const DescriptionBox({Key? key, required this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final gridWidth = screenWidth(context) * contentWidthFactor;
+
     return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
+      child: Container(
+        width: gridWidth,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        padding: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
         child: MarkdownBody(
-          data: data,
+          data: content,
           onTapLink: (text, href, title) async {
             if (href != null) {
               final uri = Uri.parse(href);
@@ -54,7 +61,7 @@ class MarkdownText extends StatelessWidget {
                 await launchUrl(uri);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Could not launch $href')),
+                  SnackBar(content: Text('Cannot launch $href')),
                 );
               }
             }

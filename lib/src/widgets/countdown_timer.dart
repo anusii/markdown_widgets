@@ -30,7 +30,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/pkg.dart'
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor, screenWidth;
 
 class TimerWidget extends StatefulWidget {

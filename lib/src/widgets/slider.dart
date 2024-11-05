@@ -1,4 +1,4 @@
-/// Radio button group widget.
+/// Slider bar widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,20 +29,24 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/pkg.dart'
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
-class RadioGroup extends StatelessWidget {
+class SliderWidget extends StatelessWidget {
   final String name;
-  final List<Map<String, String>> options;
-  final String? selectedValue;
-  final ValueChanged<String?> onChanged;
+  final double value;
+  final double min;
+  final double max;
+  final double step;
+  final ValueChanged<double> onChanged;
 
-  const RadioGroup({
+  const SliderWidget({
     Key? key,
     required this.name,
-    required this.options,
-    this.selectedValue,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.step,
     required this.onChanged,
   }) : super(key: key);
 
@@ -51,24 +55,13 @@ class RadioGroup extends StatelessWidget {
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.map((option) {
-            return Row(
-              children: [
-                Radio<String>(
-                  value: option['value']!,
-                  groupValue: selectedValue,
-                  onChanged: onChanged,
-                ),
-                Expanded(
-                  child: Text(
-                    option['label']!,
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
+        child: Slider(
+          value: value,
+          min: min,
+          max: max,
+          divisions: ((max - min) / step).round(),
+          label: value.toStringAsFixed(0),
+          onChanged: onChanged,
         ),
       ),
     );

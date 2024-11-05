@@ -37,8 +37,8 @@ import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import 'package:markdown_widgets/utils/command_parser.dart';
-import 'package:markdown_widgets/widgets/input_field.dart';
+import 'package:markdown_widgets/src/utils/command_parser.dart';
+import 'package:markdown_widgets/src/widgets/input_field.dart';
 
 class MarkdownWidgetBuilder extends StatefulWidget {
   final String content;

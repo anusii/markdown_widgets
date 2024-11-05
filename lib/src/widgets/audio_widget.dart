@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import 'package:markdown_widgets/constants/pkg.dart'
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
 class AudioWidget extends StatefulWidget {

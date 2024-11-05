@@ -1,4 +1,4 @@
-/// Input field widget.
+/// Image widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,69 +29,27 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/pkg.dart'
-    show contentWidthFactor;
+import 'package:markdown_widgets/src/constants/pkg.dart'
+    show contentWidthFactor, mediaPath;
 
-class InputField extends StatefulWidget {
-  final String name;
-  final String? initialValue;
-  final bool isMultiLine;
-  final ValueChanged<String> onChanged;
+class ImageWidget extends StatelessWidget {
+  final String filename;
 
-  const InputField({
-    Key? key,
-    required this.name,
-    this.initialValue,
-    this.isMultiLine = false,
-    required this.onChanged,
-  }) : super(key: key);
-
-  @override
-  InputFieldState createState() => InputFieldState();
-}
-
-class InputFieldState extends State<InputField> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.initialValue ?? '');
-    _controller.addListener(() {
-      widget.onChanged(_controller.text);
-    });
-  }
-
-  @override
-  void didUpdateWidget(InputField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.initialValue != oldWidget.initialValue &&
-        widget.initialValue != _controller.text) {
-      _controller.text = widget.initialValue ?? '';
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  const ImageWidget({Key? key, required this.filename}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final String imgPath = '$mediaPath/$filename';
+
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextField(
-            controller: _controller,
-            maxLines: widget.isMultiLine ? null : 1,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: widget.name,
-            ),
-          ),
+        child: Image.asset(
+          imgPath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return const Text('Image not found');
+          },
         ),
       ),
     );

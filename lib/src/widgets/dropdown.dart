@@ -1,4 +1,4 @@
-/// Checkbox group widget.
+/// Dropdown widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,55 +29,44 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:markdown_widgets/constants/pkg.dart'
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
-class CheckboxGroup extends StatefulWidget {
+class DropdownWidget extends StatefulWidget {
   final String name;
-  final List<Map<String, String>> options;
-  final Set<String> selectedValues;
-  final ValueChanged<Set<String>> onChanged;
+  final List<String> options;
+  final String? value;
+  final ValueChanged<String?> onChanged;
 
-  const CheckboxGroup({
+  const DropdownWidget({
     Key? key,
     required this.name,
     required this.options,
-    required this.selectedValues,
+    this.value,
     required this.onChanged,
   }) : super(key: key);
 
   @override
-  _CheckboxGroupState createState() => _CheckboxGroupState();
+  _DropdownWidgetState createState() => _DropdownWidgetState();
 }
 
-class _CheckboxGroupState extends State<CheckboxGroup> {
-  late Set<String> _selectedValues;
+class _DropdownWidgetState extends State<DropdownWidget> {
+  String? _selectedValue;
 
   @override
   void initState() {
     super.initState();
-    _selectedValues = Set<String>.from(widget.selectedValues);
+    _selectedValue = widget.value;
   }
 
   @override
-  void didUpdateWidget(CheckboxGroup oldWidget) {
+  void didUpdateWidget(DropdownWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selectedValues != oldWidget.selectedValues) {
+    if (widget.value != oldWidget.value) {
       setState(() {
-        _selectedValues = Set<String>.from(widget.selectedValues);
+        _selectedValue = widget.value;
       });
     }
-  }
-
-  void _onChanged(String value, bool? isChecked) {
-    setState(() {
-      if (isChecked == true) {
-        _selectedValues.add(value);
-      } else {
-        _selectedValues.remove(value);
-      }
-    });
-    widget.onChanged(_selectedValues);
   }
 
   @override
@@ -85,26 +74,26 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: widget.options.map((option) {
-            bool isChecked = _selectedValues.contains(option['value']!);
-            return Row(
-              children: [
-                Checkbox(
-                  value: isChecked,
-                  onChanged: (bool? newValue) {
-                    _onChanged(option['value']!, newValue);
-                  },
-                ),
-                Expanded(
-                  child: Text(
-                    option['label']!,
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            value: _selectedValue,
+            items: widget.options.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                _selectedValue = newValue;
+              });
+              widget.onChanged(newValue);
+            },
+          ),
         ),
       ),
     );

@@ -1,4 +1,4 @@
-/// Description box widget.
+/// Text alignment processing.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -29,48 +29,68 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:markdown_widgets/constants/pkg.dart'
+import 'package:markdown_widgets/src/utils/text_utils.dart';
+import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor, screenWidth;
 
-class DescriptionBox extends StatelessWidget {
+class TextAlignmentWidget extends StatelessWidget {
+  final String align;
   final String content;
 
-  const DescriptionBox({Key? key, required this.content}) : super(key: key);
+  const TextAlignmentWidget(
+      {Key? key, required this.align, required this.content})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final gridWidth = screenWidth(context) * contentWidthFactor;
 
-    return Center(
-      child: Container(
-        width: gridWidth,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        padding: const EdgeInsets.all(16.0),
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        child: MarkdownBody(
-          data: content,
-          onTapLink: (text, href, title) async {
-            if (href != null) {
-              final uri = Uri.parse(href);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Cannot launch $href')),
-                );
-              }
-            }
-          },
-          styleSheet: MarkdownStyleSheet(
-            p: const TextStyle(fontSize: 16),
+    TextAlign textAlign;
+    switch (align.toLowerCase()) {
+      case 'left':
+        textAlign = TextAlign.left;
+        break;
+      case 'right':
+        textAlign = TextAlign.right;
+        break;
+      case 'center':
+        textAlign = TextAlign.center;
+        break;
+      case 'justify':
+        textAlign = TextAlign.left;
+        break;
+      default:
+        textAlign = TextAlign.left;
+    }
+
+    TextStyle textStyle = const TextStyle(fontSize: 16);
+
+    if (align.toLowerCase() == 'justify') {
+      List<TextSpan> justifiedSpans =
+          justifyText(content.trim(), textStyle, gridWidth);
+
+      return Center(
+        child: Container(
+          width: gridWidth,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: RichText(
+            text: TextSpan(children: justifiedSpans),
+            textAlign: textAlign,
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Center(
+        child: Container(
+          width: gridWidth,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            content,
+            textAlign: textAlign,
+            style: textStyle,
+          ),
+        ),
+      );
+    }
   }
 }
