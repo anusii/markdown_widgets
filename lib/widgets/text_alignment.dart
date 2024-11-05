@@ -30,7 +30,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:markdown_widgets/utils/text_utils.dart';
-import 'package:markdown_widgets/constants/constants.dart'
+import 'package:markdown_widgets/constants/pkg.dart'
     show contentWidthFactor, screenWidth;
 
 class TextAlignmentWidget extends StatelessWidget {

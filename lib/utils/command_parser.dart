@@ -33,7 +33,7 @@ import 'package:markdown_widgets/utils/helpers.dart';
 import 'package:markdown_widgets/widgets/markdown_text.dart';
 import 'package:markdown_widgets/widgets/menu.dart';
 import 'package:markdown_widgets/widgets/input_field.dart';
-import 'package:markdown_widgets/constants/constants.dart' show endingLines;
+import 'package:markdown_widgets/constants/pkg.dart' show endingLines;
 
 class CommandParser {
   final BuildContext context;

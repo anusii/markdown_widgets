@@ -30,7 +30,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:markdown_widgets/constants/constants.dart'
+import 'package:markdown_widgets/constants/pkg.dart'
     show contentWidthFactor, mediaPath;
 
 class VideoWidget extends StatefulWidget {
