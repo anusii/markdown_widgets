@@ -138,7 +138,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
-        '${value.year}-${value.month.toString().padLeft(2, '0')}-'
+            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
             '${value.day.toString().padLeft(2, '0')}';
       } else {
         responses[key] = null;

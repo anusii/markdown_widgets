@@ -568,7 +568,6 @@ class CommandParser {
           // Look ahead to find where the options list ends
           // It ends when a line does not start with '-' or the next command
           // starts
-          int currentIndex = optionsStartIndex;
           final lines =
               modifiedContent.substring(optionsStartIndex).split('\n');
           final List<String> options = [];
