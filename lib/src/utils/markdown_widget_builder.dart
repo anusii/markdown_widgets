@@ -35,7 +35,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:markdown_widgets/src/utils/command_parser.dart';
@@ -140,7 +139,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
-        '${value.year}-${value.month.toString().padLeft(2, '0')}-'
+            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
             '${value.day.toString().padLeft(2, '0')}';
       } else {
         responses[key] = null;

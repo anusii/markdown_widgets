@@ -28,6 +28,9 @@
 ///
 /// Authors: Tony Chen
 
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -50,10 +53,7 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   void initState() {
     super.initState();
-    final String videoPath = '$mediaPath/${widget.filename}';
-    _player = Player();
-    _controller = VideoController(_player);
-    _player.open(Media(videoPath));
+    _initializeVideo();
   }
 
   @override
@@ -62,8 +62,44 @@ class _VideoWidgetState extends State<VideoWidget> {
     super.dispose();
   }
 
+  Future<void> _initializeVideo() async {
+    final String videoAssetPath = '$mediaPath/${widget.filename}';
+
+    // Load asset data
+    ByteData bytes = await rootBundle.load(videoAssetPath);
+
+    // Get the temporary directory
+    String dir = (await getTemporaryDirectory()).path;
+
+    // Create a file in the temporary directory
+    File tempVideo = File('$dir/${widget.filename}');
+
+    // Write bytes to the file
+    await tempVideo.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
+
+    // Initialise the player
+    _player = Player();
+    _controller = VideoController(_player);
+
+    // Open the video file from the temporary directory
+    await _player.open(Media(tempVideo.path));
+  }
+
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _initializeVideo(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return _buildVideoPlayer();
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  Widget _buildVideoPlayer() {
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
