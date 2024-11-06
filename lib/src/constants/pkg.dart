@@ -1,4 +1,4 @@
-/// Widgets for survey questionnaires defined using markdown-like syntax.
+/// Package-wide constants.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -28,10 +28,20 @@
 ///
 /// Authors: Tony Chen
 
-library markdown_widgets;
+import 'package:flutter/material.dart';
 
-// Command parser
-export 'src/utils/command_parser.dart' show CommandParser;
+const String applicationName = 'MarkDown Widgets';
+const String applicationVersion = '0.1.0';
+const String applicationRepo = 'https://github.com/anusii/markdown_widgets';
+const String siiUrl = 'https://sii.anu.edu.au';
+const String assetsPath = 'assets';
+const String mediaPath = 'assets/media';
+const String surveyAsset = 'assets/surveys.md';
 
-// Markdown widget builder
-export 'src/utils/markdown_widget_builder.dart' show MarkdownWidgetBuilder;
+double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
+double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;
+
+// Formatting constants used in the survey page.
+
+const double contentWidthFactor = 0.6;
+const double endingLines = 2;

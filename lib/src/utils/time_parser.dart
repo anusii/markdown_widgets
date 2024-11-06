@@ -1,4 +1,4 @@
-/// Widgets for survey questionnaires defined using markdown-like syntax.
+/// Time parser for countdown timer widgets.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -28,10 +28,26 @@
 ///
 /// Authors: Tony Chen
 
-library markdown_widgets;
+// Parse the time string and return the total number of seconds.
+// Supported formats include:
+// - "1h30m45s"
+// - "0h45m20s"
+// - "45m20s"
+// - "30s"
+// - "1h 30m 45s"
+// - "45m 20s"
+int parseTimeString(String timeString) {
+  final timeRegExp = RegExp(r'(?:(\d+)h)?\s*(?:(\d+)m)?\s*(?:(\d+)s)?');
+  final match = timeRegExp.firstMatch(timeString);
+  if (match != null) {
+    final hours = int.tryParse(match.group(1) ?? '0') ?? 0;
+    final minutes = int.tryParse(match.group(2) ?? '0') ?? 0;
+    final seconds = int.tryParse(match.group(3) ?? '0') ?? 0;
 
-// Command parser
-export 'src/utils/command_parser.dart' show CommandParser;
-
-// Markdown widget builder
-export 'src/utils/markdown_widget_builder.dart' show MarkdownWidgetBuilder;
+    final totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    return totalSeconds;
+  } else {
+    // If parsing fails, return 0
+    return 0;
+  }
+}

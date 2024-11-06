@@ -1,2 +1,263 @@
-# markdown_widgets
+# Markdown Widgets
 
+This package is designed to define human-computer interaction widgets within 
+Flutter markdown pages using a markdown-like syntax, making it suitable for use
+in survey questionnaires and similar scenarios.
+
+## Syntax of the Survey Markdown File
+
+The `Surveys` page and `Survey Details` page, in addition to supporting the
+general Markdown formatting syntax, also support the following special syntax to
+generate interactive surveys.
+
+### Survey Menu
+
+`%% Menu-Begin` and `%% Menu-End` will be recognised as the beginning and
+end of the menu. The content between this group of tags must be a list, and
+each item in the list will be recognised as a separate survey. The content of
+each survey needs to be defined in the subsequent sections of the markdown
+file, with the same name used as the title.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Menu-Begin
+- GAD-7 Survey
+- PHQ-9 Survey
+- Symptom Checker
+%% Menu-End
+
+## GAD-7 Survey
+Description: The Generalized Anxiety Disorder 7 (GAD-7) is a self-report
+questionnaire used to assess the severity of generalized anxiety disorder (GAD).
+
+## PHQ-9 Survey
+Description: The Patient Health Questionnaire 9 (PHQ-9) is a self-report
+questionnaire used to assess the severity of depression.
+
+## Symptom Checker
+Description: The Symptom Checker is a self-report questionnaire used to assess
+the severity of symptoms.
+```
+
+will generate a list of surveys with the titles `GAD-7 Survey`, `PHQ-9 Survey`,
+and `Symptom Checker`. If users click on any of these surveys, they will be
+redirected to the `Survey Details` page with the corresponding survey details.
+
+## Slider Bar
+
+`%% Slider(name,min,max,defaultValue,step)` will be recognised as a slider bar
+with the given `name`, `min`, `max`, `defaultValue`, and `step` values. The
+slider bar will be displayed on the `Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Slider(Question 1,1,4,1,1)
+```
+
+## Submit Button
+
+`%% Submit` will be recognised as a submit button. The submit button will be
+displayed on the `Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Submit
+```
+
+## Radio Button
+
+`%% Radio(name,value,label)` will be recognised as a radio button with
+the given `name`, `value`, and `label`. The radio button will be displayed
+on the `Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Radio(Radio1,1,Option 1)
+%% Radio(Radio1,2,Option 2)
+```
+
+## Checkbox
+
+`%% Checkbox(name,value,label)` will be recognised as a checkbox with
+the given `name`, `value`, and `label`. The checkbox will be displayed
+on the `Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Checkbox(Checkbox1,A,Option 1)
+%% Checkbox(Checkbox1,B,Option 2)
+%% Checkbox(Checkbox1,C,Option 3)
+```
+
+## Input Box
+
+`%% InputSL(name)` will be recognised as a single-line input box with the
+given `name`, and `%% InputML(name)` will be recognised as a multi-line input
+box with the given `name`. The input box will be displayed on the `Survey 
+Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+Your name:
+%% InputSL(Name)
+Your feedback:
+%% InputML(Feedback)
+```
+
+## Description Box
+
+`%% Description-Begin` and `%% Description-End` will be recognised as the
+beginning and end of the description box. The content between these tags will
+be displayed on the `Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Description-Begin
+
+Over the **last 2 weeks**, how often have you been bothered by the following
+problems? Tap your answers.
+
+%% Description-End
+```
+
+## Calendar
+
+`%% Calendar(name)` will be recognised as a calendar with the name `name` and
+will be displayed on the `Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Calendar(Date)
+```
+
+## Dropdown
+
+`%% Dropdown(name)` will be recognised as a dropdown with the name `name` and
+will be displayed on the `Survey Details` page. The content of the dropdown
+needs to be defined in the subsequent sections of the markdown file as a list.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+
+%% Dropdown(Dropdown1)
+- Option 1
+- Option 2
+- Option 3
+```
+
+## Font Size
+
+`%% H1-Begin` and `%% H1-End` will be recognised as the beginning and end of
+the H1 font size. The content between these tags will be displayed in H1 font
+size on the `Survey Details` page. Similarly, H2 to H6 font sizes are also
+supported here.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% H1-Begin
+Text in H1 font size
+%% H1-End
+```
+
+## Text Alignment
+
+`%% AlignRight-Begin` and `%% AlignRight-End` will be recognised as the
+beginning and end of the right-aligned text. The content between these tags
+will be displayed as right-aligned text on the `Survey Details` page. Similarly,
+left-aligned, center-aligned and justified text alignments are also supported
+here. The syntax for these are `%% AlignLeft-Begin`, `%% AlignCenter-Begin`, and
+`%% AlignJust-Begin` respectively.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% AlignRight-Begin
+Text aligned to the right
+%% AlignRight-End
+```
+
+## Adjust Font Size and Text Alignment at the Same Time
+
+`% H1Right-Begin` and `%% H1Right-End` will be recognised as the beginning and
+end of the H1 font size and right-aligned text. The content between these tags
+will be displayed in H1 font size and right-aligned on the `Survey Details`
+page. Similarly, H2 to H6 font sizes and left/right/center/justify-aligned text
+are also supported here. The syntax for these are `% H1Left-Begin`,
+`%% H1Center-Begin`, and `%% H1Just-Begin` respectively.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% H1Right-Begin
+Text in H1 font size and right-aligned
+%% H1Right-End
+```
+
+## Image
+
+`%% Image(filename.jpg)` will be recognised as an image with the given
+filename in `assets/media` folder. The image will be displayed on the `Survey
+Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Image(image.jpg)
+```
+
+## Video
+
+`%% Video(filename.mp4)` will be recognised as a video with the given
+filename in `assets/media` folder. The video will be displayed on the `Survey
+Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Video(video.mp4)
+```
+
+## Audio
+
+`%% Audio(filename.mp3)` will be recognised as an audio file with the given
+filename in `assets/media` folder. The audio file will be displayed on the
+`Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Audio(audio.mp3)
+```
+
+## Countdown Timer
+
+`%% Timer(time)` will be recognised as a countdown timer with the given
+`time` in the format of 1h0m0s. The countdown timer will be displayed on the
+`Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% Timer(1h0m0s)
+```
+
+## Empty Line
+
+`%% EmptyLine` will be recognised as an empty line. An empty line will be
+displayed on the `Survey Details` page.
+
+For example, the following snippet from `assets/surveys.md`:
+
+```markdown
+%% EmptyLine
+```

@@ -1,4 +1,4 @@
-/// Widgets for survey questionnaires defined using markdown-like syntax.
+/// Image widget.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -28,10 +28,30 @@
 ///
 /// Authors: Tony Chen
 
-library markdown_widgets;
+import 'package:flutter/material.dart';
+import 'package:markdown_widgets/src/constants/pkg.dart'
+    show contentWidthFactor, mediaPath;
 
-// Command parser
-export 'src/utils/command_parser.dart' show CommandParser;
+class ImageWidget extends StatelessWidget {
+  final String filename;
 
-// Markdown widget builder
-export 'src/utils/markdown_widget_builder.dart' show MarkdownWidgetBuilder;
+  const ImageWidget({Key? key, required this.filename}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final String imgPath = '$mediaPath/$filename';
+
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
+        child: Image.asset(
+          imgPath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return const Text('Image not found');
+          },
+        ),
+      ),
+    );
+  }
+}

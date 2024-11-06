@@ -1,4 +1,4 @@
-/// Widgets for survey questionnaires defined using markdown-like syntax.
+/// Markdown text formatting.
 ///
 // Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
 ///
@@ -28,10 +28,42 @@
 ///
 /// Authors: Tony Chen
 
-library markdown_widgets;
+import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-// Command parser
-export 'src/utils/command_parser.dart' show CommandParser;
+import 'package:markdown_widgets/src/constants/pkg.dart'
+    show contentWidthFactor;
 
-// Markdown widget builder
-export 'src/utils/markdown_widget_builder.dart' show MarkdownWidgetBuilder;
+class MarkdownText extends StatelessWidget {
+  final String data;
+
+  const MarkdownText({Key? key, required this.data}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
+        child: MarkdownBody(
+          data: data,
+          onTapLink: (text, href, title) async {
+            if (href != null) {
+              final uri = Uri.parse(href);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Could not launch $href')),
+                );
+              }
+            }
+          },
+          styleSheet: MarkdownStyleSheet(
+            p: const TextStyle(fontSize: 16),
+          ),
+        ),
+      ),
+    );
+  }
+}
