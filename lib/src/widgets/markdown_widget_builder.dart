@@ -40,13 +40,46 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:markdown_widgets/src/utils/command_parser.dart';
 import 'package:markdown_widgets/src/widgets/input_field.dart';
 
+/// A widget that builds markdown content with interactive elements.
+///
+/// This widget parses the provided markdown content and commands, and renders
+/// it with interactive elements such as sliders, radio buttons, checkboxes,
+/// date pickers and dropdown menus. It also handles the submission of user
+/// inputs to a specified server.
+///
+/// ```dart
+/// MarkdownWidgetBuilder(
+///   content: '# Sample Markdown',
+///   title: 'Sample Title',
+///   submitUrl: 'https://example.com/submit',
+///   onMenuItemSelected: (title, content) {
+///     // Handle menu item selection.
+///   },
+/// );
+/// ```
 class MarkdownWidgetBuilder extends StatefulWidget {
+  /// The markdown content to be displayed.
   final String content;
-  final String title;
-  final String? submitUrl;
 
+  /// The title of the form page.
+  final String title;
+
+  /// The URL to which the user responses are submitted.
+  ///
+  /// If not provided, defaults to `'http://127.0.0.1/feedback'`.
+  final String? submitUrl; // TODO: Change to POD
+
+  /// Callback when a menu item is selected.
+  ///
+  /// Provides the selected item's [title] and [content].
   final void Function(String title, String content)? onMenuItemSelected;
 
+  /// Creates a [MarkdownWidgetBuilder] widget.
+  ///
+  /// [content] is required and represents the markdown content to be displayed.
+  /// [title] is required and represents the title of the form page.
+  /// [submitUrl] is optional and specifies the URL for form submission.
+  /// [onMenuItemSelected] is an optional callback for menu item selection.
   const MarkdownWidgetBuilder({
     Key? key,
     required this.content,
@@ -60,45 +93,26 @@ class MarkdownWidgetBuilder extends StatefulWidget {
 }
 
 class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
-  // Submit URL
+  /// The URL to which the user inputs are submitted.
   String? _submitUrl;
 
-  // Store the input values
   final Map<String, String> _inputValues = {};
-
-  // Store the slider values
   final Map<String, double> _sliderValues = {};
-
-  // Store the slider parameters
   final Map<String, Map<String, dynamic>> _sliders = {};
-
-  // Store the radio values
   final Map<String, String?> _radioValues = {};
-
-  // Store the checkbox values
   final Map<String, Set<String>> _checkboxValues = {};
-
-  // Store the date values
   final Map<String, DateTime?> _dateValues = {};
-
-  // Store dropdown values
   final Map<String, String?> _dropdownValues = {};
-
-  // Store dropdown options
   final Map<String, List<String>> _dropdownOptions = {};
-
-  // Store video controllers
   final Map<String, Player> _videoPlayers = {};
-
-  // Store audio players
   final Map<String, AudioPlayer> _audioPlayers = {};
-
   final Map<String, GlobalKey<InputFieldState>> _inputFieldKeys = {};
 
   @override
   void initState() {
     super.initState();
-    MediaKit.ensureInitialized(); // Ensure media_kit is initialised before use
+    // Ensure media_kit is initialised before use
+    MediaKit.ensureInitialized();
     _submitUrl = widget.submitUrl ?? 'http://127.0.0.1/feedback';
   }
 
@@ -115,7 +129,11 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     super.dispose();
   }
 
-  // Send data method
+  /// Sends the collected user input data to the submission URL.
+  ///
+  /// Collects values from sliders, radio buttons, checkboxes, date pickers,
+  /// dropdown menus, and text inputs. Sends a POST request with the data in
+  /// JSON format to the specified submission URL.
   Future<void> _sendData() async {
     final Map<String, dynamic> responses = {};
 
@@ -200,6 +218,11 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     );
   }
 
+  /// Parses the markdown content and builds a list of widgets.
+  ///
+  /// [content] is the markdown content to parse.
+  ///
+  /// Returns a list of widgets representing the parsed content.
   List<Widget> _buildContentWidgets(String content) {
     final parser = CommandParser(
       context: context,
