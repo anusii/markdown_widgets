@@ -34,7 +34,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:video_player/video_player.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:markdown_widgets/src/utils/command_parser.dart';
@@ -88,7 +88,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   final Map<String, List<String>> _dropdownOptions = {};
 
   // Store video controllers
-  final Map<String, VideoPlayerController> _videoControllers = {};
+  final Map<String, Player> _videoPlayers = {};
 
   // Store audio players
   final Map<String, AudioPlayer> _audioPlayers = {};
@@ -98,14 +98,15 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   @override
   void initState() {
     super.initState();
+    MediaKit.ensureInitialized(); // Ensure media_kit is initialised before use
     _submitUrl = widget.submitUrl ?? 'http://127.0.0.1/feedback';
   }
 
   @override
   void dispose() {
-    // Dispose of video controllers
-    _videoControllers.forEach((key, controller) {
-      controller.dispose();
+    // Dispose of video players
+    _videoPlayers.forEach((key, player) {
+      player.dispose();
     });
     // Release audio players
     _audioPlayers.forEach((key, player) {
