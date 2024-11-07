@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_widgets/src/utils/helpers.dart';
 import 'package:markdown_widgets/src/widgets/markdown_text.dart';
-import 'package:markdown_widgets/src/widgets/menu.dart';
+import 'package:markdown_widgets/src/widgets/menu_widget.dart';
 import 'package:markdown_widgets/src/widgets/input_field.dart';
 import 'package:markdown_widgets/src/constants/pkg.dart' show endingLines;
 

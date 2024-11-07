@@ -30,8 +30,5 @@
 
 library markdown_widgets;
 
-// Command parser
-export 'src/utils/command_parser.dart' show CommandParser;
-
 // Markdown widget builder
-export 'src/utils/markdown_widget_builder.dart' show MarkdownWidgetBuilder;
+export 'src/widgets/markdown_widget_builder.dart' show MarkdownWidgetBuilder;
