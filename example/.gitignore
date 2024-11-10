@@ -5,11 +5,13 @@
 *.swp
 Thumbs.db
 .DS_Store
+.metadata
 .atom/
 .buildlog/
 .history
 .svn/
 migrate_working_dir/
+analysis_options.yaml
 
 # IntelliJ related
 *.iml

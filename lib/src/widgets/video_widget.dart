@@ -49,6 +49,7 @@ class VideoWidget extends StatefulWidget {
 class _VideoWidgetState extends State<VideoWidget> {
   late final Player _player;
   late final VideoController _controller;
+  bool _isVideoInitialized = false;
 
   @override
   void initState() {
@@ -68,35 +69,35 @@ class _VideoWidgetState extends State<VideoWidget> {
     // Load asset data
     ByteData bytes = await rootBundle.load(videoAssetPath);
 
-    // Get the temporary directory
+    // Get temporary directory
     String dir = (await getTemporaryDirectory()).path;
 
-    // Create a file in the temporary directory
+    // Create file in temporary directory
     File tempVideo = File('$dir/${widget.filename}');
 
-    // Write bytes to the file
+    // Write bytes to file
     await tempVideo.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
 
-    // Initialise the player
+    // Initialise player
     _player = Player();
     _controller = VideoController(_player);
 
-    // Open the video file from the temporary directory
-    await _player.open(Media(tempVideo.path));
+    // Open video file but do not autoplay
+    await _player.open(Media(tempVideo.path), play: false);
+
+    // Set video initialised
+    setState(() {
+      _isVideoInitialized = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeVideo(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return _buildVideoPlayer();
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+    if (_isVideoInitialized) {
+      return _buildVideoPlayer();
+    } else {
+      return Center(child: CircularProgressIndicator());
+    }
   }
 
   Widget _buildVideoPlayer() {
@@ -105,9 +106,13 @@ class _VideoWidgetState extends State<VideoWidget> {
         widthFactor: contentWidthFactor,
         child: AspectRatio(
           aspectRatio: 16 / 9, // Default aspect ratio
-          child: Video(controller: _controller),
+          child: Focus(
+            canRequestFocus: false,
+            child: Video(controller: _controller),
+          ),
         ),
       ),
     );
   }
 }
+
