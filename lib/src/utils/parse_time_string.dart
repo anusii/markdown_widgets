@@ -37,7 +37,8 @@
 // - "1h 30m 45s"
 // - "45m 20s"
 int parseTimeString(String timeString) {
-  final timeRegExp = RegExp(r'(?:(\d+)h)?\s*(?:(\d+)m)?\s*(?:(\d+)s)?');
+  final timeRegExp = RegExp(r'(?:(\d+)h)?\s*(?:(\d+)m)?\s*(?:(\d+)s)?',
+      caseSensitive: false);
   final match = timeRegExp.firstMatch(timeString);
   if (match != null) {
     final hours = int.tryParse(match.group(1) ?? '0') ?? 0;
