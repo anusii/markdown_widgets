@@ -80,7 +80,7 @@ Markdown.
 
 %% EmptyLine
 
-%% Submit
+%% Button(Save,0,result.json)
 
 ## Survey 2
 
@@ -120,7 +120,7 @@ Thank you.
 
 %% EmptyLine
 
-%% Submit
+%% Button(Save,0,result.json)
 
 ## Survey 3
 
@@ -163,4 +163,4 @@ and the default value is 5.
 
 %% EmptyLine
 
-%% Submit
+%% Button(Submit,1,https://127.0.0.1/feedback)

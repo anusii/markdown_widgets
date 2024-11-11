@@ -32,7 +32,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
+import 'package:file_selector/file_selector.dart';
 
 class ButtonWidget extends StatelessWidget {
   final String command;
@@ -57,22 +57,22 @@ class ButtonWidget extends StatelessWidget {
       final args = _parseArguments(argsString);
 
       if (args.isNotEmpty) {
-        buttonText = args.length > 0 ? args[0] : 'Submit';
+        buttonText = args.length > 0 ? args[0] : 'Save';
         actionType = args.length > 1 ? int.tryParse(args[1]) ?? 0 : 0;
         actionParameter = args.length > 2 ? args[2] : 'result.json';
       } else {
-        buttonText = 'Submit';
+        buttonText = 'Save';
         actionType = 0;
         actionParameter = 'result.json';
       }
     } else {
-      buttonText = 'Submit';
+      buttonText = 'Save';
       actionType = 0;
       actionParameter = 'result.json';
     }
   }
 
-  /// Submits the user responses to the specified URL.
+  /// Collects the user responses from the state map.
   Map<String, dynamic> _collectData() {
     // Access the state variables and collect data
     final Map<String, dynamic> responses = {};
@@ -80,8 +80,7 @@ class ButtonWidget extends StatelessWidget {
     final _inputValues = state['_inputValues'] as Map<String, String>;
     final _sliderValues = state['_sliderValues'] as Map<String, double>;
     final _radioValues = state['_radioValues'] as Map<String, String?>;
-    final _checkboxValues =
-        state['_checkboxValues'] as Map<String, Set<String>>;
+    final _checkboxValues = state['_checkboxValues'] as Map<String, Set<String>>;
     final _dateValues = state['_dateValues'] as Map<String, DateTime?>;
     final _dropdownValues = state['_dropdownValues'] as Map<String, String?>;
 
@@ -132,54 +131,35 @@ class ButtonWidget extends StatelessWidget {
       // Save data locally as JSON
       String filename = actionParameter;
 
-      // Prompt dialog to confirm or change filename
-      final TextEditingController _controller =
-      TextEditingController(text: filename);
-
-      await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Save File'),
-            content: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(labelText: 'Filename'),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  String fileName = _controller.text;
-                  Navigator.pop(context);
-
-                  // Get the directory to save the file
-                  Directory directory;
-                  if (Platform.isAndroid || Platform.isIOS) {
-                    directory = await getApplicationDocumentsDirectory();
-                  } else {
-                    directory = await getDownloadsDirectory() ??
-                        await getApplicationDocumentsDirectory();
-                  }
-
-                  final filePath = '${directory.path}/$fileName';
-
-                  // Write the data to the file
-                  final file = File(filePath);
-                  await file.writeAsString(json.encode(data));
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Data saved as $fileName')),
-                  );
-                },
-                child: const Text('Save'),
-              ),
-            ],
-          );
-        },
+      // Show save file dialog
+      final FileSaveLocation? saveLocation = await getSaveLocation(
+        suggestedName: filename
       );
+
+      if (saveLocation == null) {
+        print("Save cancelled by user.");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Save cancelled.')),
+        );
+        return;
+      }
+
+      final String? path = saveLocation?.path;
+
+      if (path != null) {
+        // Write the data to the file
+        final file = File(path);
+        await file.writeAsString(json.encode(data));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Data saved as ${file.path}')),
+        );
+      } else {
+        // User canceled the save dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Save cancelled.')),
+        );
+      }
     } else if (actionType == 1) {
       // Submit data via POST to URL
       String url = actionParameter;
@@ -251,11 +231,13 @@ class ButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     _parseCommand();
 
-    return ElevatedButton(
-      onPressed: () {
-        _handleButtonPress(context);
-      },
-      child: Text(buttonText),
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          _handleButtonPress(context);
+        },
+        child: Text(buttonText),
+      ),
     );
   }
 }
