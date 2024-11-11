@@ -129,82 +129,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     super.dispose();
   }
 
-  /// Sends the collected user input data to the submission URL.
-  ///
-  /// Collects values from sliders, radio buttons, checkboxes, date pickers,
-  /// dropdown menus, and text inputs. Sends a POST request with the data in
-  /// JSON format to the specified submission URL.
-  Future<void> _sendData() async {
-    final Map<String, dynamic> responses = {};
-
-    // Add slider values
-    _sliderValues.forEach((key, value) {
-      responses[key] = value;
-    });
-
-    // Add radio values
-    _radioValues.forEach((key, value) {
-      responses[key] = value;
-    });
-
-    // Add checkbox values
-    _checkboxValues.forEach((key, value) {
-      // Convert Set to List
-      responses[key] = value.toList();
-    });
-
-    // Add date values
-    _dateValues.forEach((key, value) {
-      if (value != null) {
-        responses[key] =
-            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
-            '${value.day.toString().padLeft(2, '0')}';
-      } else {
-        responses[key] = null;
-      }
-    });
-
-    // Add dropdown values
-    _dropdownValues.forEach((key, value) {
-      responses[key] = value;
-    });
-
-    // Add text input values
-    _inputValues.forEach((key, value) {
-      responses[key] = value;
-    });
-
-    final Map<String, dynamic> data = {
-      'title': widget.title,
-      'responses': responses,
-    };
-
-    print('Submitting the following data: $data');
-
-    try {
-      final response = await http.post(
-        Uri.parse(_submitUrl!),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(data),
-      );
-
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Submission successful')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Submission failed: ${response.reasonPhrase}')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Submission failed: $e')),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     // Build content widgets every time to ensure UI updates
@@ -239,7 +163,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         '_dropdownValues': _dropdownValues,
         '_dropdownOptions': _dropdownOptions,
         '_inputFieldKeys': _inputFieldKeys,
-        '_sendData': _sendData,
       },
       setStateCallback: () => setState(() {}),
     );

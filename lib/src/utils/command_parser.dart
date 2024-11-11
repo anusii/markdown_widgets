@@ -33,6 +33,7 @@ import 'package:markdown_widgets/src/utils/helpers.dart';
 import 'package:markdown_widgets/src/widgets/markdown_text.dart';
 import 'package:markdown_widgets/src/widgets/menu_widget.dart';
 import 'package:markdown_widgets/src/widgets/input_field.dart';
+import 'package:markdown_widgets/src/widgets/button_widget.dart';
 import 'package:markdown_widgets/src/constants/pkg.dart' show endingLines;
 
 class CommandParser {
@@ -187,7 +188,7 @@ class CommandParser {
         r'%% InputSL\([^\)]+\)|%% InputML\([^\)]+\)|'
         r'%% Calendar\([^\)]+\)|%% Dropdown\([^\)]+\)|'
         r'%% Image\([^\)]+\)|%% Video\([^\)]+\)|%% Audio\([^\)]+\)|'
-        r'%% Timer\([^\)]+\)|%% EmptyLine|'
+        r'%% Timer\([^\)]+\)|%% Button\([^\)]+\)|%% EmptyLine|'
         r'%%DescriptionPlaceholder\d+%%|'
         r'%%HeadingPlaceholder\d+%%|'
         r'%%AlignPlaceholder\d+%%|'
@@ -360,7 +361,7 @@ class CommandParser {
           // Build the slider widget
           widgets.add(helpers.buildSlider(name));
         }
-      } else if (command.startsWith('%% Submit')) {
+      } else if (command.startsWith('%% Button')) {
         // Build any unfinished radio or checkbox groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -375,16 +376,11 @@ class CommandParser {
           currentCheckboxOptions = [];
         }
 
-        // Build the submit button
+        // Create the ButtonWidget, passing the command and state variables
         widgets.add(
-          Center(
-            child: SizedBox(
-              width: 100.0,
-              child: ElevatedButton(
-                onPressed: state['_sendData'] as VoidCallback,
-                child: const Text('Submit'),
-              ),
-            ),
+          ButtonWidget(
+            command: command,
+            state: state,
           ),
         );
       } else if (command.startsWith('%% Radio')) {
