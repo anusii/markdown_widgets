@@ -179,8 +179,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
       'responses': responses,
     };
 
-    print('Submitting the following data: $data');
-
     try {
       final response = await http.post(
         Uri.parse(_submitUrl!),
