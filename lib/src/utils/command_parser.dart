@@ -32,7 +32,6 @@ import 'package:flutter/material.dart';
 import 'package:markdown_widgets/src/utils/helpers.dart';
 import 'package:markdown_widgets/src/widgets/markdown_text.dart';
 import 'package:markdown_widgets/src/widgets/menu_widget.dart';
-import 'package:markdown_widgets/src/widgets/input_field.dart';
 import 'package:markdown_widgets/src/widgets/button_widget.dart';
 import 'package:markdown_widgets/src/constants/pkg.dart' show endingLines;
 
@@ -54,7 +53,6 @@ class CommandParser {
   late final Map<String, DateTime?> _dateValues;
   late final Map<String, String?> _dropdownValues;
   late final Map<String, List<String>> _dropdownOptions;
-  late final Map<String, GlobalKey<InputFieldState>> _inputFieldKeys;
 
   bool _hasMenu = false;
 
@@ -82,8 +80,6 @@ class CommandParser {
     _dateValues = state['_dateValues'] as Map<String, DateTime?>;
     _dropdownValues = state['_dropdownValues'] as Map<String, String?>;
     _dropdownOptions = state['_dropdownOptions'] as Map<String, List<String>>;
-    _inputFieldKeys =
-        state['_inputFieldKeys'] as Map<String, GlobalKey<InputFieldState>>;
   }
 
   List<Widget> parse() {

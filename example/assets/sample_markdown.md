@@ -34,7 +34,8 @@ Markdown.
 
 %% Video(sample_video.mp4)
 
-%% H6Right-Begin 📍The Birch Building. Filmed by @tonypioneer. %% H6Right-End
+%% H6Right-Begin 📍The Birch Building, ANU. Filmed by @tonypioneer.
+%% H6Right-End
 
 %% EmptyLine
 
@@ -157,7 +158,7 @@ and the default value is 5.
 
 %% Image(sample_image.jpg)
 
-%% H6Right-Begin 📍Hancock Library. Photo by @tonypioneer. %% H6Right-End
+%% H6Right-Begin 📍Hancock Library, ANU. Photo by @tonypioneer. %% H6Right-End
 
 %% EmptyLine
 
