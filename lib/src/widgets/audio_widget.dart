@@ -1,6 +1,6 @@
 /// Audio playback widget.
 ///
-// Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
+// Time-stamp: <Tuesday 2024-11-12 20:23:32 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -29,6 +29,7 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
+
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:markdown_widgets/src/constants/pkg.dart'
@@ -60,24 +61,28 @@ class _AudioWidgetState extends State<AudioWidget> {
   void _initAudioPlayer() async {
     final String audioAssetPath = 'media/${widget.filename}';
 
-    // Load the audio file
+    // Load the audio file.
+
     await _player.setSource(AssetSource(audioAssetPath));
 
-    // Listen for audio duration
+    // A listener for the audio duration.
+
     _player.onDurationChanged.listen((Duration d) {
       setState(() {
         _duration = d;
       });
     });
 
-    // Listen for audio position
+    // A listener for the audio position.
+
     _player.onPositionChanged.listen((Duration p) {
       setState(() {
         _position = p;
       });
     });
 
-    // Listen for player state changes
+    // A listener for player state changes.
+
     _player.onPlayerStateChanged.listen((PlayerState s) {
       setState(() {
         _playerState = s;
@@ -100,7 +105,7 @@ class _AudioWidgetState extends State<AudioWidget> {
         widthFactor: contentWidthFactor,
         child: Column(
           children: [
-            // Progress bar
+            // Progress bar.
             Slider(
               value: _position.inMilliseconds.toDouble(),
               min: 0.0,
@@ -110,11 +115,11 @@ class _AudioWidgetState extends State<AudioWidget> {
                 _player.seek(newPosition);
               },
             ),
-            // Button row
+            // Button row.
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Play/pause button
+                // Play/pause button.
                 IconButton(
                   icon: Icon(
                     isPlaying ? Icons.pause : Icons.play_arrow,
@@ -127,7 +132,7 @@ class _AudioWidgetState extends State<AudioWidget> {
                     }
                   },
                 ),
-                // Stop button
+                // Stop button.
                 IconButton(
                   icon: const Icon(Icons.stop),
                   onPressed: () {
