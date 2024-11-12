@@ -89,12 +89,12 @@ class _AudioWidgetState extends State<AudioWidget> {
     // Listen for player state changes
     _playerStateSubscription =
         _player.onPlayerStateChanged.listen((PlayerState s) {
-          if (mounted) {
-            setState(() {
-              _playerState = s;
-            });
-          }
+      if (mounted) {
+        setState(() {
+          _playerState = s;
         });
+      }
+    });
   }
 
   @override
