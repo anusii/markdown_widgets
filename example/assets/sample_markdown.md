@@ -34,8 +34,8 @@ Markdown.
 
 %% Video(sample_video.mp4)
 
-%% H6Right-Begin 📍The Birch Building, ANU. Filmed by @tonypioneer. %% 
-H6Right-End
+%% H6Right-Begin 📍The Birch Building, ANU. Filmed by @tonypioneer.
+%% H6Right-End
 
 %% EmptyLine
 
