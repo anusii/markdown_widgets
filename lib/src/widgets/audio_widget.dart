@@ -1,6 +1,6 @@
 /// Audio playback widget.
 ///
-// Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
+// Time-stamp: <Tuesday 2024-11-12 20:23:32 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -65,7 +65,8 @@ class _AudioWidgetState extends State<AudioWidget> {
   void _initAudioPlayer() async {
     final String audioAssetPath = 'media/${widget.filename}';
 
-    // Load the audio file
+    // Load the audio file.
+
     await _player.setSource(AssetSource(audioAssetPath));
 
     // Listen for audio duration

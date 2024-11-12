@@ -1,6 +1,6 @@
 /// Video playback widget.
 ///
-// Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
+// Time-stamp: <Tuesday 2024-11-12 20:18:13 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -29,11 +29,14 @@
 /// Authors: Tony Chen
 
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
+
 import 'package:flutter/material.dart';
+
+import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:path_provider/path_provider.dart';
+
 import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor, mediaPath;
 
@@ -49,6 +52,7 @@ class VideoWidget extends StatefulWidget {
 class _VideoWidgetState extends State<VideoWidget> {
   late final Player _player;
   late final VideoController _controller;
+  bool _isVideoInitialized = false;
 
   @override
   void initState() {
@@ -65,38 +69,45 @@ class _VideoWidgetState extends State<VideoWidget> {
   Future<void> _initializeVideo() async {
     final String videoAssetPath = '$mediaPath/${widget.filename}';
 
-    // Load asset data
+    // Load asset data.
+
     ByteData bytes = await rootBundle.load(videoAssetPath);
 
-    // Get the temporary directory
+    // Get temporary directory.
+
     String dir = (await getTemporaryDirectory()).path;
 
-    // Create a file in the temporary directory
+    // Create a file in the temporary directory.
+
     File tempVideo = File('$dir/${widget.filename}');
 
-    // Write bytes to the file
+    // Write bytes to file.
+
     await tempVideo.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
 
-    // Initialise the player
+    // Initialise the player.
+
     _player = Player();
     _controller = VideoController(_player);
 
-    // Open the video file from the temporary directory
-    await _player.open(Media(tempVideo.path));
+    // Open the video file but do not autoplay.
+
+    await _player.open(Media(tempVideo.path), play: false);
+
+    // Set video initialised.
+
+    setState(() {
+      _isVideoInitialized = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeVideo(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return _buildVideoPlayer();
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+    if (_isVideoInitialized) {
+      return _buildVideoPlayer();
+    } else {
+      return Center(child: CircularProgressIndicator());
+    }
   }
 
   Widget _buildVideoPlayer() {
@@ -104,8 +115,12 @@ class _VideoWidgetState extends State<VideoWidget> {
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
         child: AspectRatio(
-          aspectRatio: 16 / 9, // Default aspect ratio
-          child: Video(controller: _controller),
+          // Default aspect ratio
+          aspectRatio: 16 / 9,
+          child: Focus(
+            canRequestFocus: false,
+            child: Video(controller: _controller),
+          ),
         ),
       ),
     );
