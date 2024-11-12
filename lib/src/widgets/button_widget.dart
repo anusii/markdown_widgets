@@ -29,12 +29,15 @@
 /// Authors: Tony Chen
 
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' show File;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:file_selector/file_selector.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:solidpod/solidpod.dart' show writePod;
 
-class ButtonWidget extends StatelessWidget {
+class ButtonWidget extends StatefulWidget {
   final String command;
   final Map<String, dynamic> state;
 
@@ -44,13 +47,24 @@ class ButtonWidget extends StatelessWidget {
     required this.state,
   }) : super(key: key);
 
+  @override
+  _ButtonWidgetState createState() => _ButtonWidgetState();
+}
+
+class _ButtonWidgetState extends State<ButtonWidget> {
   late final String buttonText;
   late final int actionType;
   late final String actionParameter;
 
+  @override
+  void initState() {
+    super.initState();
+    _parseCommand();
+  }
+
   void _parseCommand() {
     final buttonExp = RegExp(r'%% Button\((.+)\)');
-    final buttonMatch = buttonExp.firstMatch(command);
+    final buttonMatch = buttonExp.firstMatch(widget.command);
 
     if (buttonMatch != null) {
       final argsString = buttonMatch.group(1)!;
@@ -77,12 +91,12 @@ class ButtonWidget extends StatelessWidget {
     // Access the state variables and collect data
     final Map<String, dynamic> responses = {};
 
-    final _inputValues = state['_inputValues'] as Map<String, String>;
-    final _sliderValues = state['_sliderValues'] as Map<String, double>;
-    final _radioValues = state['_radioValues'] as Map<String, String?>;
-    final _checkboxValues = state['_checkboxValues'] as Map<String, Set<String>>;
-    final _dateValues = state['_dateValues'] as Map<String, DateTime?>;
-    final _dropdownValues = state['_dropdownValues'] as Map<String, String?>;
+    final _inputValues = widget.state['_inputValues'] as Map<String, String>;
+    final _sliderValues = widget.state['_sliderValues'] as Map<String, double>;
+    final _radioValues = widget.state['_radioValues'] as Map<String, String?>;
+    final _checkboxValues = widget.state['_checkboxValues'] as Map<String, Set<String>>;
+    final _dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
+    final _dropdownValues = widget.state['_dropdownValues'] as Map<String, String?>;
 
     // Add slider values
     _sliderValues.forEach((key, value) {
@@ -124,41 +138,59 @@ class ButtonWidget extends StatelessWidget {
     return responses;
   }
 
-  Future<void> _handleButtonPress(BuildContext context) async {
+  Future<void> _handleButtonPress() async {
     final data = _collectData();
 
     if (actionType == 0) {
       // Save data locally as JSON
       String filename = actionParameter;
 
-      // Show save file dialog
-      final FileSaveLocation? saveLocation = await getSaveLocation(
-        suggestedName: filename
-      );
+      if (kIsWeb) {
+        // Web implementation: Download to Downloads folder
+        final jsonContent = json.encode(data);
 
-      if (saveLocation == null) {
-        print("Save cancelled by user.");
+        final bytes = utf8.encode(jsonContent);
+        final blob = html.Blob([bytes], 'application/json');
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        final anchor = html.AnchorElement(href: url)
+          ..setAttribute('download', filename)
+          ..click();
+        html.Url.revokeObjectUrl(url);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Save cancelled.')),
-        );
-        return;
-      }
-
-      final String? path = saveLocation?.path;
-
-      if (path != null) {
-        // Write the data to the file
-        final file = File(path);
-        await file.writeAsString(json.encode(data));
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Data saved as ${file.path}')),
+          SnackBar(content: Text('Data downloaded as $filename')),
         );
       } else {
-        // User canceled the save dialog
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Save cancelled.')),
-        );
+        // Non-web implementation
+        String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+        debugPrint('Selected directory: $selectedDirectory');
+
+        if (selectedDirectory != null) {
+          final filePath = '$selectedDirectory/$filename';
+          final file = File(filePath);
+
+          final jsonContent = json.encode(data);
+
+          try {
+            await file.writeAsString(jsonContent);
+            debugPrint('File saved at: $filePath');
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Data saved as $filePath')),
+            );
+          } catch (e) {
+            debugPrint('Error saving file: $e');
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error saving file: $e')),
+            );
+          }
+        } else {
+          debugPrint('No directory selected.');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Save cancelled.')),
+          );
+        }
       }
     } else if (actionType == 1) {
       // Submit data via POST to URL
@@ -185,6 +217,30 @@ class ButtonWidget extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Submission failed: $e')),
         );
+      }
+    } else if (actionType == 2) {
+      // Save data to POD
+      String filename = actionParameter;
+
+      try {
+        await writePod(
+          filename,
+          json.encode(data),
+          context,
+          widget,
+          encrypted: false,
+        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Successfully saved data to POD as $filename')),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to save data to POD: $e')),
+          );
+        }
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -229,13 +285,9 @@ class ButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _parseCommand();
-
     return Center(
       child: ElevatedButton(
-        onPressed: () {
-          _handleButtonPress(context);
-        },
+        onPressed: _handleButtonPress,
         child: Text(buttonText),
       ),
     );
