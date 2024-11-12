@@ -49,7 +49,8 @@ class _AudioWidgetState extends State<AudioWidget> {
   Duration _position = Duration.zero;
   PlayerState? _playerState;
 
-  // Declare the StreamSubscription variables
+  // Declare the StreamSubscription variables.
+
   late StreamSubscription<Duration> _durationSubscription;
   late StreamSubscription<Duration> _positionSubscription;
   late StreamSubscription<PlayerState> _playerStateSubscription;
@@ -69,7 +70,8 @@ class _AudioWidgetState extends State<AudioWidget> {
 
     await _player.setSource(AssetSource(audioAssetPath));
 
-    // Listen for audio duration
+    // Listen for audio duration.
+
     _durationSubscription = _player.onDurationChanged.listen((Duration d) {
       if (mounted) {
         setState(() {
@@ -78,7 +80,8 @@ class _AudioWidgetState extends State<AudioWidget> {
       }
     });
 
-    // Listen for audio position
+    // Listen for audio position.
+
     _positionSubscription = _player.onPositionChanged.listen((Duration p) {
       if (mounted) {
         setState(() {
@@ -87,7 +90,8 @@ class _AudioWidgetState extends State<AudioWidget> {
       }
     });
 
-    // Listen for player state changes
+    // Listen for player state changes.
+
     _playerStateSubscription =
         _player.onPlayerStateChanged.listen((PlayerState s) {
       if (mounted) {
@@ -100,12 +104,14 @@ class _AudioWidgetState extends State<AudioWidget> {
 
   @override
   void dispose() {
-    // Cancel the subscriptions
+    // Cancel the subscriptions.
+
     _durationSubscription.cancel();
     _positionSubscription.cancel();
     _playerStateSubscription.cancel();
 
-    // Dispose the audio player
+    // Dispose the audio player.
+
     _player.dispose();
 
     super.dispose();
@@ -120,7 +126,8 @@ class _AudioWidgetState extends State<AudioWidget> {
         widthFactor: contentWidthFactor,
         child: Column(
           children: [
-            // Progress bar
+            // Progress bar.
+
             Slider(
               value: _position.inMilliseconds.toDouble(),
               min: 0.0,
@@ -130,11 +137,14 @@ class _AudioWidgetState extends State<AudioWidget> {
                 _player.seek(newPosition);
               },
             ),
-            // Button row
+
+            // Button row.
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Play/pause button
+                // Play/pause button.
+
                 IconButton(
                   icon: Icon(
                     isPlaying ? Icons.pause : Icons.play_arrow,
@@ -147,7 +157,9 @@ class _AudioWidgetState extends State<AudioWidget> {
                     }
                   },
                 ),
-                // Stop button
+
+                // Stop button.
+
                 IconButton(
                   icon: const Icon(Icons.stop),
                   onPressed: () {
