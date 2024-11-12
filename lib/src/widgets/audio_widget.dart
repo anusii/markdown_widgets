@@ -28,9 +28,9 @@
 ///
 /// Authors: Tony Chen
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-
 import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
@@ -49,6 +49,11 @@ class _AudioWidgetState extends State<AudioWidget> {
   Duration _position = Duration.zero;
   PlayerState? _playerState;
 
+  // Declare the StreamSubscription variables
+  late StreamSubscription<Duration> _durationSubscription;
+  late StreamSubscription<Duration> _positionSubscription;
+  late StreamSubscription<PlayerState> _playerStateSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -64,30 +69,44 @@ class _AudioWidgetState extends State<AudioWidget> {
     await _player.setSource(AssetSource(audioAssetPath));
 
     // Listen for audio duration
-    _player.onDurationChanged.listen((Duration d) {
-      setState(() {
-        _duration = d;
-      });
+    _durationSubscription = _player.onDurationChanged.listen((Duration d) {
+      if (mounted) {
+        setState(() {
+          _duration = d;
+        });
+      }
     });
 
     // Listen for audio position
-    _player.onPositionChanged.listen((Duration p) {
-      setState(() {
-        _position = p;
-      });
+    _positionSubscription = _player.onPositionChanged.listen((Duration p) {
+      if (mounted) {
+        setState(() {
+          _position = p;
+        });
+      }
     });
 
     // Listen for player state changes
-    _player.onPlayerStateChanged.listen((PlayerState s) {
-      setState(() {
-        _playerState = s;
-      });
+    _playerStateSubscription =
+        _player.onPlayerStateChanged.listen((PlayerState s) {
+      if (mounted) {
+        setState(() {
+          _playerState = s;
+        });
+      }
     });
   }
 
   @override
   void dispose() {
+    // Cancel the subscriptions
+    _durationSubscription.cancel();
+    _positionSubscription.cancel();
+    _playerStateSubscription.cancel();
+
+    // Dispose the audio player
     _player.dispose();
+
     super.dispose();
   }
 
