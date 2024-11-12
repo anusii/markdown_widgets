@@ -85,14 +85,15 @@ class CommandParser {
     List<Widget> widgets = [];
 
     // Regular expression to match description blocks
-    final RegExp descriptionBlockExp =
-    RegExp(r'%% Description-Begin([\s\S]*?)%% Description-End',
+    final RegExp descriptionBlockExp = RegExp(
+        r'%% Description-Begin([\s\S]*?)%% Description-End',
         caseSensitive: false);
 
     // Regular expression to match heading blocks with alignment
-    final RegExp headingAlignBlockExp =
-    RegExp(r'%% H([1-6])(Left|Right|Center|Justify)?'
-    r'-Begin([\s\S]*?)%% H\1(?:\2)?-End', caseSensitive: false);
+    final RegExp headingAlignBlockExp = RegExp(
+        r'%% H([1-6])(Left|Right|Center|Justify)?'
+        r'-Begin([\s\S]*?)%% H\1(?:\2)?-End',
+        caseSensitive: false);
 
     // Regular expression to match alignment blocks
     final RegExp alignBlockExp = RegExp(
@@ -101,19 +102,19 @@ class CommandParser {
 
     // Regular expression to match image commands
     final RegExp imageExp =
-    RegExp(r'%% Image\(([^)]+)\)', caseSensitive: false);
+        RegExp(r'%% Image\(([^)]+)\)', caseSensitive: false);
 
     // Regular expression to match video commands
     final RegExp videoExp =
-    RegExp(r'%% Video\(([^)]+)\)', caseSensitive: false);
+        RegExp(r'%% Video\(([^)]+)\)', caseSensitive: false);
 
     // Regular expression to match audio commands
     final RegExp audioExp =
-    RegExp(r'%% Audio\(([^)]+)\)', caseSensitive: false);
+        RegExp(r'%% Audio\(([^)]+)\)', caseSensitive: false);
 
     // Regular expression to match %% Menu blocks
     final RegExp menuBlockExp =
-    RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End', caseSensitive: false);
+        RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End', caseSensitive: false);
 
     String modifiedContent = content;
 
@@ -149,26 +150,26 @@ class CommandParser {
     final Map<String, String> descriptionPlaceholders = {};
     modifiedContent =
         modifiedContent.replaceAllMapped(descriptionBlockExp, (match) {
-          String placeholder = '%%DescriptionPlaceholder$descriptionIndex%%';
-          descriptionPlaceholders[placeholder] = match.group(1)!;
-          descriptionIndex++;
-          return placeholder;
-        });
+      String placeholder = '%%DescriptionPlaceholder$descriptionIndex%%';
+      descriptionPlaceholders[placeholder] = match.group(1)!;
+      descriptionIndex++;
+      return placeholder;
+    });
 
     // Parse heading blocks with alignment and replace with placeholders
     int headingIndex = 0;
     final Map<String, Map<String, String>> headingPlaceholders = {};
     modifiedContent =
         modifiedContent.replaceAllMapped(headingAlignBlockExp, (match) {
-          String placeholder = '%%HeadingPlaceholder$headingIndex%%';
-          headingPlaceholders[placeholder] = {
-            'level': match.group(1)!,
-            'align': match.group(2) ?? 'Left',
-            'content': match.group(3)!,
-          };
-          headingIndex++;
-          return placeholder;
-        });
+      String placeholder = '%%HeadingPlaceholder$headingIndex%%';
+      headingPlaceholders[placeholder] = {
+        'level': match.group(1)!,
+        'align': match.group(2) ?? 'Left',
+        'content': match.group(3)!,
+      };
+      headingIndex++;
+      return placeholder;
+    });
 
     // Parse alignment blocks and replace with placeholders
     int alignIndex = 0;
@@ -214,7 +215,7 @@ class CommandParser {
       if (match.start > lastIndex) {
         // Extract the markdown content between custom commands
         String markdownContent =
-        modifiedContent.substring(lastIndex, match.start);
+            modifiedContent.substring(lastIndex, match.start);
         if (markdownContent.trim().isNotEmpty) {
           // Build any unfinished radio or checkbox groups
           if (currentRadioGroupName != null) {
@@ -237,7 +238,8 @@ class CommandParser {
       // Parse the command
       String command = match.group(0)!;
 
-      if (command.startsWith(RegExp(r'%%MenuPlaceholder', caseSensitive: false))) {
+      if (command
+          .startsWith(RegExp(r'%%MenuPlaceholder', caseSensitive: false))) {
         // Get the actual menu content
         String menuContent = menuPlaceholders[command]!;
 
@@ -260,8 +262,8 @@ class CommandParser {
 
         // Add the description box directly to the widgets list
         widgets.add(helpers.buildDescriptionBox(descriptionContent));
-      } else if (command.startsWith(
-          RegExp(r'%%HeadingPlaceholder', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%%HeadingPlaceholder', caseSensitive: false))) {
         // Heading block placeholder with alignment
         final headingInfo = headingPlaceholders[command]!;
         final level = int.parse(headingInfo['level']!);
@@ -270,8 +272,8 @@ class CommandParser {
 
         // Build the heading widget
         widgets.add(helpers.buildHeading(level, headingContent, align));
-      } else if (command.startsWith(
-          RegExp(r'%%AlignPlaceholder', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%%AlignPlaceholder', caseSensitive: false))) {
         // Alignment block placeholder
         final alignInfo = alignPlaceholders[command]!;
         final align = alignInfo['align']!;
@@ -279,25 +281,29 @@ class CommandParser {
 
         // Build the aligned text widget
         widgets.add(helpers.buildAlignedText(align, alignContent));
-      } else if (command.startsWith(RegExp(r'%% Image', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Image', caseSensitive: false))) {
         final imageMatch = imageExp.firstMatch(command);
         if (imageMatch != null) {
           final filename = imageMatch.group(1)!.trim();
           widgets.add(helpers.buildImageWidget(filename));
         }
-      } else if (command.startsWith(RegExp(r'%% Video', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Video', caseSensitive: false))) {
         final videoMatch = videoExp.firstMatch(command);
         if (videoMatch != null) {
           final filename = videoMatch.group(1)!.trim();
           widgets.add(helpers.buildVideoWidget(filename));
         }
-      } else if (command.startsWith(RegExp(r'%% Audio', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Audio', caseSensitive: false))) {
         final audioMatch = audioExp.firstMatch(command);
         if (audioMatch != null) {
           final filename = audioMatch.group(1)!.trim();
           widgets.add(helpers.buildAudioWidget(filename));
         }
-      } else if (command.startsWith(RegExp(r'%% Timer', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Timer', caseSensitive: false))) {
         // Build any unfinished radio or checkbox groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -320,7 +326,8 @@ class CommandParser {
           // Build the timer widget
           widgets.add(helpers.buildTimerWidget(timeString));
         }
-      } else if (command.startsWith(RegExp(r'%% EmptyLine', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% EmptyLine', caseSensitive: false))) {
         // Build any unfinished radio or checkbox groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -338,7 +345,8 @@ class CommandParser {
         // Add an empty line
         final lineHeight = DefaultTextStyle.of(context).style.fontSize ?? 16.0;
         widgets.add(SizedBox(height: lineHeight));
-      } else if (command.startsWith(RegExp(r'%% Slider', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Slider', caseSensitive: false))) {
         // Parse the slider parameters
         final sliderExp = RegExp(
             r'%% Slider\(([^,]+),\s*([\d\.]+),'
@@ -369,7 +377,8 @@ class CommandParser {
           // Build the slider widget
           widgets.add(helpers.buildSlider(name));
         }
-      } else if (command.startsWith(RegExp(r'%% Submit', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Submit', caseSensitive: false))) {
         // Build any unfinished radio or checkbox groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -396,7 +405,8 @@ class CommandParser {
             ),
           ),
         );
-      } else if (command.startsWith(RegExp(r'%% Radio', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Radio', caseSensitive: false))) {
         // Build any unfinished checkbox groups
         if (currentCheckboxGroupName != null) {
           widgets.add(helpers.buildCheckboxGroup(
@@ -405,8 +415,7 @@ class CommandParser {
           currentCheckboxOptions = [];
         }
 
-        final radioExp = RegExp(
-            r'%% Radio\(([^,]+),\s*([^,]+),\s*([^\)]+)\)',
+        final radioExp = RegExp(r'%% Radio\(([^,]+),\s*([^,]+),\s*([^\)]+)\)',
             caseSensitive: false);
         final radioMatch = radioExp.firstMatch(command);
 
@@ -442,7 +451,8 @@ class CommandParser {
             final nextRadioMatch = radioExp.firstMatch(nextCommand);
             if (nextRadioMatch != null) {
               final nextName = nextRadioMatch.group(1)!.trim();
-              if (nextName.toLowerCase() == currentRadioGroupName.toLowerCase()) {
+              if (nextName.toLowerCase() ==
+                  currentRadioGroupName.toLowerCase()) {
                 isLastOption = false;
               }
             }
@@ -456,7 +466,8 @@ class CommandParser {
             currentRadioOptions = [];
           }
         }
-      } else if (command.startsWith(RegExp(r'%% Checkbox', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Checkbox', caseSensitive: false))) {
         // Build any unfinished radio groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -518,7 +529,8 @@ class CommandParser {
             currentCheckboxOptions = [];
           }
         }
-      } else if (command.startsWith(RegExp(r'%% Calendar', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Calendar', caseSensitive: false))) {
         // Build any unfinished radio or checkbox groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -534,7 +546,7 @@ class CommandParser {
         }
 
         final calendarExp =
-        RegExp(r'%% Calendar\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% Calendar\(([^\)]+)\)', caseSensitive: false);
         final calendarMatch = calendarExp.firstMatch(command);
         if (calendarMatch != null) {
           final name = calendarMatch.group(1)!.trim();
@@ -547,7 +559,8 @@ class CommandParser {
           // Build the calendar field
           widgets.add(helpers.buildCalendarField(name));
         }
-      } else if (command.startsWith(RegExp(r'%% Dropdown', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% Dropdown', caseSensitive: false))) {
         // Build any unfinished radio or checkbox groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -563,7 +576,7 @@ class CommandParser {
         }
 
         final dropdownExp =
-        RegExp(r'%% Dropdown\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% Dropdown\(([^\)]+)\)', caseSensitive: false);
         final dropdownMatch = dropdownExp.firstMatch(command);
         if (dropdownMatch != null) {
           final name = dropdownMatch.group(1)!.trim();
@@ -584,7 +597,7 @@ class CommandParser {
           // It ends when a line does not start with '-' or the next command
           // starts
           final lines =
-          modifiedContent.substring(optionsStartIndex).split('\n');
+              modifiedContent.substring(optionsStartIndex).split('\n');
           final List<String> options = [];
           int lineOffset = 0;
           for (var line in lines) {
@@ -613,7 +626,8 @@ class CommandParser {
         }
       }
       // Parse the input field command for single-line and multi-line input
-      else if (command.startsWith(RegExp(r'%% InputSL', caseSensitive: false))) {
+      else if (command
+          .startsWith(RegExp(r'%% InputSL', caseSensitive: false))) {
         // Build any unfinished radio or checkbox groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -629,7 +643,7 @@ class CommandParser {
         }
 
         final inputSLExp =
-        RegExp(r'%% InputSL\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% InputSL\(([^\)]+)\)', caseSensitive: false);
         final inputSLMatch = inputSLExp.firstMatch(command);
         if (inputSLMatch != null) {
           final name = inputSLMatch.group(1)!.trim();
@@ -641,7 +655,8 @@ class CommandParser {
 
           widgets.add(helpers.buildInputField(name, isMultiLine: false));
         }
-      } else if (command.startsWith(RegExp(r'%% InputML', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%% InputML', caseSensitive: false))) {
         // Build any unfinished radio or checkbox groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -657,7 +672,7 @@ class CommandParser {
         }
 
         final inputMLExp =
-        RegExp(r'%% InputML\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% InputML\(([^\)]+)\)', caseSensitive: false);
         final inputMLMatch = inputMLExp.firstMatch(command);
         if (inputMLMatch != null) {
           final name = inputMLMatch.group(1)!.trim();
