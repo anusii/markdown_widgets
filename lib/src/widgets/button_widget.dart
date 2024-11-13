@@ -70,7 +70,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       final args = _parseArguments(argsString);
 
       if (args.isNotEmpty) {
-        buttonText = args.length > 0 ? args[0] : 'Save';
+        buttonText = args.isNotEmpty ? args[0] : 'Save';
         actionType = args.length > 1 ? int.tryParse(args[1]) ?? 0 : 0;
         actionParameter = args.length > 2 ? args[2] : 'result.json';
       } else {
@@ -94,10 +94,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final _sliderValues = widget.state['_sliderValues'] as Map<String, double>;
     final _radioValues = widget.state['_radioValues'] as Map<String, String?>;
     final _checkboxValues =
-        widget.state['_checkboxValues'] as Map<String, Set<String>>;
+    widget.state['_checkboxValues'] as Map<String, Set<String>>;
     final _dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
     final _dropdownValues =
-        widget.state['_dropdownValues'] as Map<String, String?>;
+    widget.state['_dropdownValues'] as Map<String, String?>;
 
     // Add slider values
     _sliderValues.forEach((key, value) {
@@ -119,7 +119,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
-            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
+        '${value.year}-${value.month.toString().padLeft(2, '0')}-'
             '${value.day.toString().padLeft(2, '0')}';
       } else {
         responses[key] = null;
@@ -153,7 +153,14 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         final bytes = utf8.encode(jsonContent);
         final blob = html.Blob([bytes], 'application/json');
         final url = html.Url.createObjectUrlFromBlob(blob);
+
+        // Create an anchor element, set its href and download attributes, and click it
+        final anchor = html.AnchorElement(href: url)
+          ..setAttribute('download', filename)
+          ..click();
+
         html.Url.revokeObjectUrl(url);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Data downloaded as $filename')),
         );
@@ -164,7 +171,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         String fileName = filename; // default filename from actionParameter
 
         TextEditingController _fileNameController =
-            TextEditingController(text: fileName);
+        TextEditingController(text: fileName);
 
         bool? fileNameConfirmed = await showDialog<bool>(
           context: context,
@@ -213,7 +220,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
         // Now, let the user select a directory to save the file
         String? selectedDirectory =
-            await FilePicker.platform.getDirectoryPath();
+        await FilePicker.platform.getDirectoryPath();
 
         debugPrint('Selected directory: $selectedDirectory');
 
