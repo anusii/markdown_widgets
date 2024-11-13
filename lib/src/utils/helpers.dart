@@ -29,6 +29,7 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
+
 import 'package:markdown_widgets/src/widgets/description_box.dart';
 import 'package:markdown_widgets/src/widgets/text_heading_widget.dart';
 import 'package:markdown_widgets/src/widgets/text_alignment_widget.dart';
