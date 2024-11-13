@@ -93,9 +93,11 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final _inputValues = widget.state['_inputValues'] as Map<String, String>;
     final _sliderValues = widget.state['_sliderValues'] as Map<String, double>;
     final _radioValues = widget.state['_radioValues'] as Map<String, String?>;
-    final _checkboxValues = widget.state['_checkboxValues'] as Map<String, Set<String>>;
+    final _checkboxValues =
+    widget.state['_checkboxValues'] as Map<String, Set<String>>;
     final _dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
-    final _dropdownValues = widget.state['_dropdownValues'] as Map<String, String?>;
+    final _dropdownValues =
+    widget.state['_dropdownValues'] as Map<String, String?>;
 
     // Add slider values
     _sliderValues.forEach((key, value) {
@@ -160,12 +162,66 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         );
       } else {
         // Non-web implementation
-        String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+        // Prompt the user for a file name
+        String fileName = filename; // default filename from actionParameter
+
+        TextEditingController _fileNameController =
+        TextEditingController(text: fileName);
+
+        bool? fileNameConfirmed = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Enter File Name'),
+              content: TextField(
+                controller: _fileNameController,
+                decoration: InputDecoration(hintText: 'File Name'),
+              ),
+              actions: [
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
+        if (fileNameConfirmed != true) {
+          // User cancelled the dialog
+          debugPrint('File name input cancelled.');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Save cancelled.')),
+          );
+          return;
+        }
+
+        fileName = _fileNameController.text.trim();
+        if (fileName.isEmpty) {
+          // If the user did not enter a file name, show an error and return
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('File name cannot be empty.')),
+          );
+          return;
+        }
+
+        // Now, let the user select a directory to save the file
+        String? selectedDirectory =
+        await FilePicker.platform.getDirectoryPath();
 
         debugPrint('Selected directory: $selectedDirectory');
 
         if (selectedDirectory != null) {
-          final filePath = '$selectedDirectory/$filename';
+          final filePath = '$selectedDirectory/$fileName';
           final file = File(filePath);
 
           final jsonContent = json.encode(data);
@@ -210,7 +266,9 @@ class _ButtonWidgetState extends State<ButtonWidget> {
           print('Response body: ${response.body}');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Submission failed: ${response.statusCode} ${response.reasonPhrase}'),
+              content: Text(
+                  'Submission failed: ${response.statusCode} '
+                      '${response.reasonPhrase}'),
             ),
           );
         }
