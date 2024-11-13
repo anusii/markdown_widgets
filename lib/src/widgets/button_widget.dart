@@ -28,13 +28,17 @@
 ///
 /// Authors: Tony Chen
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show File;
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:markdown_widgets/src/constants/pkg.dart'
+    show defaultFileName, defaultButtonText;
 
 class ButtonWidget extends StatefulWidget {
   final String command;
@@ -70,18 +74,18 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       final args = _parseArguments(argsString);
 
       if (args.isNotEmpty) {
-        buttonText = args.isNotEmpty ? args[0] : 'Save';
+        buttonText = args.isNotEmpty ? args[0] : defaultButtonText;
         actionType = args.length > 1 ? int.tryParse(args[1]) ?? 0 : 0;
-        actionParameter = args.length > 2 ? args[2] : 'result.json';
+        actionParameter = args.length > 2 ? args[2] : defaultFileName;
       } else {
-        buttonText = 'Save';
+        buttonText = defaultButtonText;
         actionType = 0;
-        actionParameter = 'result.json';
+        actionParameter = defaultFileName;
       }
     } else {
-      buttonText = 'Save';
+      buttonText = defaultButtonText;
       actionType = 0;
-      actionParameter = 'result.json';
+      actionParameter = defaultFileName;
     }
   }
 

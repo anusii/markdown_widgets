@@ -34,8 +34,6 @@ import 'package:media_kit/media_kit.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:markdown_widgets/src/utils/command_parser.dart';
-import 'package:markdown_widgets/src/constants/pkg.dart'
-    show defaultSubmissionUrl;
 import 'package:markdown_widgets/src/widgets/input_field.dart';
 
 /// A widget that builds markdown content with interactive elements.
@@ -63,8 +61,6 @@ class MarkdownWidgetBuilder extends StatefulWidget {
   final String title;
 
   /// The URL to which the user responses are submitted.
-  ///
-  /// If not provided, defaults to [defaultSubmissionUrl].
   final String? submitUrl;
 
   /// Callback when a menu item is selected.
