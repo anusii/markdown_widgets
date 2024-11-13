@@ -29,8 +29,10 @@
 ### Authors: Tony Chen
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/receive-json', methods=['POST'])
 def receive_json():
