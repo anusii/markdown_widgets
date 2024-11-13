@@ -31,6 +31,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor, screenWidth;
 
