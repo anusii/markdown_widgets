@@ -157,9 +157,15 @@ and the default value is 5.
 
 %% EmptyLine
 
-%% AlignCenter-Begin The following is a sample image. %% AlignCenter-End
+The following is a sample image.
+
+%% AlignCenter-Begin Original %% AlignCenter-End
 
 %% Image(sample_image.jpg)
+
+%% AlignCenter-Begin Resized %% AlignCenter-End
+
+%% Image(sample_image.jpg,400,300)
 
 %% H6Right-Begin 📍Hancock Library, ANU. Photo by @tonypioneer. %% H6Right-End
 
