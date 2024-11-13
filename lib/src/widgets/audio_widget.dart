@@ -29,8 +29,11 @@
 /// Authors: Tony Chen
 
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import 'package:audioplayers/audioplayers.dart';
+
 import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor;
 
