@@ -40,10 +40,14 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Build files
-ios/
-android/
-macos/
-linux/
-windows/
-web/
+# Android Studio will place build artifacts here
+android/app/debug
+android/app/profile
+android/app/release
+
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Pods/Manifest.lock
