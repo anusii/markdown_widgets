@@ -154,8 +154,9 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         final blob = html.Blob([bytes], 'application/json');
         final url = html.Url.createObjectUrlFromBlob(blob);
 
-        // Create an anchor element, set its href and download attributes, and click it
-        final anchor = html.AnchorElement(href: url)
+        // Create an anchor element, set its href and download attributes,
+        // and click it
+        html.AnchorElement(href: url)
           ..setAttribute('download', filename)
           ..click();
 
