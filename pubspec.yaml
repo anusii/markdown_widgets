@@ -19,14 +19,15 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   flutter_markdown: ^0.7.4
   flutter_riverpod: ^2.5.3
-  http: any
+  http: ^1.2.2
   intl: ^0.19.0
   markdown: ^7.2.2
   media_kit: ^1.1.11
   media_kit_libs_video: ^1.0.5
   media_kit_video: ^1.2.5
   number_paginator: ^0.4.1
-  rdflib: any
+  path_provider: ^2.1.5
+  rdflib: ^0.2.11
   rename_app: ^1.6.1
   sensors_plus: ^6.0.1
   solidpod: ^0.6.1
@@ -34,9 +35,7 @@ dependencies:
   url_launcher: ^6.3.0
   window_manager: ^0.3.9
 
-  path_provider: any
 dev_dependencies:
-
   flutter_lints: ^3.0.0
 
   dart_code_metrics:
