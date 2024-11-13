@@ -35,7 +35,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:solidpod/solidpod.dart' show writePod;
 
 class ButtonWidget extends StatefulWidget {
   final String command;
@@ -203,44 +202,24 @@ class _ButtonWidgetState extends State<ButtonWidget> {
           body: json.encode(data),
         );
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 200 || response.statusCode == 201) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Submission successful')),
           );
         } else {
+          print('Response body: ${response.body}');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('Submission failed: ${response.reasonPhrase}')),
+              content: Text('Submission failed: ${response.statusCode} ${response.reasonPhrase}'),
+            ),
           );
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
+        print('Submission failed: $e');
+        print('Stack trace: $stackTrace');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Submission failed: $e')),
         );
-      }
-    } else if (actionType == 2) {
-      // Save data to POD
-      String filename = actionParameter;
-
-      try {
-        await writePod(
-          filename,
-          json.encode(data),
-          context,
-          widget,
-          encrypted: false,
-        );
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Successfully saved data to POD as $filename')),
-          );
-        }
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to save data to POD: $e')),
-          );
-        }
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -38,7 +38,7 @@ const String assetsPath = 'assets';
 const String mediaPath = 'assets/media';
 const String surveyAsset = 'assets/surveys.md';
 
-const String defaultSubmissionUrl = 'http://127.0.0.1:8081';
+const String defaultSubmissionUrl = 'http://127.0.0.1:8081/receive-json';
 
 double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
 double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;

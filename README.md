@@ -56,7 +56,7 @@ For example, the following snippet from `assets/surveys.md`:
 
 `%% Button(label,type,path)` will be recognised as a button. The parameter
 `label` is the text displayed on the button, `type` is the type of the 
-button, such as 0 - `Save` (default), 1 - `Submit`, etc., and `path` is the 
+button (0 - Save to JSON file (default), 1 - Submit to URL), and `path` is the 
 path to redirect to or save to when the button is clicked. The button will be 
 displayed on the `Survey Details` page.
 
