@@ -28,14 +28,9 @@
 ///
 /// Authors: Tony Chen
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
-
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor, mediaPath;
@@ -69,30 +64,14 @@ class _VideoWidgetState extends State<VideoWidget> {
   Future<void> _initializeVideo() async {
     final String videoAssetPath = '$mediaPath/${widget.filename}';
 
-    // Load asset data.
-
-    ByteData bytes = await rootBundle.load(videoAssetPath);
-
-    // Get temporary directory.
-
-    String dir = (await getTemporaryDirectory()).path;
-
-    // Create a file in the temporary directory.
-
-    File tempVideo = File('$dir/${widget.filename}');
-
-    // Write bytes to file.
-
-    await tempVideo.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
-
     // Initialise the player.
 
     _player = Player();
     _controller = VideoController(_player);
 
-    // Open the video file but do not autoplay.
+    // Open the asset video directly.
 
-    await _player.open(Media(tempVideo.path), play: false);
+    await _player.open(Media('asset://$videoAssetPath'), play: false);
 
     // Set video initialised.
 
