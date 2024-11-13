@@ -4,13 +4,9 @@ This package is designed to define human-computer interaction widgets within
 Flutter markdown pages using a markdown-like syntax, making it suitable for use
 in survey questionnaires and similar scenarios.
 
-## Syntax of the Survey Markdown File
+The following are the syntax to generate interactive surveys in markdown pages.
 
-The `Surveys` page and `Survey Details` page, in addition to supporting the
-general Markdown formatting syntax, also support the following special syntax to
-generate interactive surveys.
-
-### Survey Menu
+## Survey Menu
 
 `%% Menu-Begin` and `%% Menu-End` will be recognised as the beginning and
 end of the menu. The content between this group of tags must be a list, and
@@ -188,7 +184,7 @@ Text aligned to the right
 
 ## Adjust Font Size and Text Alignment at the Same Time
 
-`% H1Right-Begin` and `%% H1Right-End` will be recognised as the beginning and
+`%% H1Right-Begin` and `%% H1Right-End` will be recognised as the beginning and
 end of the H1 font size and right-aligned text. The content between these tags
 will be displayed in H1 font size and right-aligned on the `Survey Details`
 page. Similarly, H2 to H6 font sizes and left/right/center/justify-aligned text

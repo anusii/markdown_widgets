@@ -29,20 +29,21 @@
 /// Authors: Tony Chen
 
 import 'package:flutter/material.dart';
+
 import 'package:markdown_widgets/src/widgets/description_box.dart';
-import 'package:markdown_widgets/src/widgets/text_heading.dart';
-import 'package:markdown_widgets/src/widgets/text_alignment.dart';
+import 'package:markdown_widgets/src/widgets/text_heading_widget.dart';
+import 'package:markdown_widgets/src/widgets/text_alignment_widget.dart';
 import 'package:markdown_widgets/src/widgets/image_widget.dart';
 import 'package:markdown_widgets/src/widgets/video_widget.dart';
 import 'package:markdown_widgets/src/widgets/audio_widget.dart';
-import 'package:markdown_widgets/src/widgets/countdown_timer.dart';
-import 'package:markdown_widgets/src/widgets/slider.dart';
+import 'package:markdown_widgets/src/widgets/timer_widget.dart';
+import 'package:markdown_widgets/src/widgets/slider_widget.dart';
 import 'package:markdown_widgets/src/widgets/input_field.dart';
 import 'package:markdown_widgets/src/widgets/calendar_field.dart';
-import 'package:markdown_widgets/src/widgets/dropdown.dart';
+import 'package:markdown_widgets/src/widgets/dropdown_widget.dart';
 import 'package:markdown_widgets/src/widgets/radio_group.dart';
 import 'package:markdown_widgets/src/widgets/checkbox_group.dart';
-import 'package:markdown_widgets/src/utils/time_parser.dart';
+import 'package:markdown_widgets/src/utils/parse_time_string.dart';
 
 class Helpers {
   final BuildContext context;
