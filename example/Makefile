@@ -71,3 +71,11 @@ help::
 
 locals:
 	@echo "This might be the instructions to install $(APP)"
+
+########################################################################
+# DATA RECEIVER
+
+.PHONY: server
+
+server:
+	python server/server.py

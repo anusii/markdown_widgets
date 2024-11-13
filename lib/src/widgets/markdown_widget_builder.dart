@@ -38,6 +38,8 @@ import 'package:media_kit/media_kit.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:markdown_widgets/src/utils/command_parser.dart';
+import 'package:markdown_widgets/src/constants/pkg.dart'
+    show defaultSubmissionUrl;
 import 'package:markdown_widgets/src/widgets/input_field.dart';
 
 /// A widget that builds markdown content with interactive elements.
@@ -66,8 +68,8 @@ class MarkdownWidgetBuilder extends StatefulWidget {
 
   /// The URL to which the user responses are submitted.
   ///
-  /// If not provided, defaults to `'http://127.0.0.1/feedback'`.
-  final String? submitUrl; // TODO: Change to POD
+  /// If not provided, defaults to [defaultSubmissionUrl].
+  final String? submitUrl;
 
   /// Callback when a menu item is selected.
   ///
@@ -113,7 +115,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     super.initState();
     // Ensure media_kit is initialised before use
     MediaKit.ensureInitialized();
-    _submitUrl = widget.submitUrl ?? 'http://127.0.0.1/feedback';
+    _submitUrl = widget.submitUrl ?? defaultSubmissionUrl;
   }
 
   @override

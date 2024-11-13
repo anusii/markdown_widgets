@@ -9,3 +9,6 @@ cd example
 flutter create .
 flutter run
 ```
+
+If you want to test submitting the form results to the server via POST, please
+run `make server` first.
