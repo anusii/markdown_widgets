@@ -1,6 +1,7 @@
 name: markdown_widgets
 description: "Widgets for survey questionnaires defined using markdown-like syntax."
-version: 0.1.1
+version: 0.0.1
+homepage: https://github.com/anusii/markdown_widgets
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -13,37 +14,28 @@ dependencies:
   file_selector: ^1.0.3
   file_picker: ^8.1.1
   flutter_markdown: ^0.7.4
-  http: any
+  http: ^1.2.2
   media_kit: ^1.1.11
   media_kit_libs_video: ^1.0.5
   media_kit_video: ^1.2.5
-  solidpod: ^0.6.2
+  solidpod: ^0.6.1
   universal_html: ^2.2.4
   url_launcher: ^6.3.0
   window_manager: ^0.3.9
   path_provider: ^2.1.5
 
 dev_dependencies:
-#  flutter_test:
-#    sdk: flutter
-
   flutter_lints: ^3.0.0
 
-  dart_code_metrics:
-    git:
-      url: https://github.com/anusii/dart-code-metrics.git
-      ref: dev
+#   dart_code_metrics:
+#     git:
+#       url: https://github.com/anusii/dart-code-metrics.git
+#       ref: dev
 
-dependency_overrides:
-  # To have dart-code-metrics working
-  collection: ^1.19.0
-
-# The following section is specific to Flutter packages.
+# dependency_overrides:
+#   # To have dart-code-metrics working
+#   collection: ^1.19.0
 
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 

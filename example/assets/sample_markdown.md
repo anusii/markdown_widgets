@@ -101,13 +101,16 @@ Thank you.
 - Option 3
 - Option 4
 
-1. The following is a sample audio.
+1. The following is a sample audio. It could be instructions for
+   filling in the survey or an explanation of the meaning of a
+   question.
 
 %% Audio(sample_audio.mp3)
 
 %% EmptyLine
 
-2. The following is a single-line input field.
+2. The following is a single-line input field. The respondent can type
+   or paste but it will all be a single line string.
 
 %% InputSL(Question 1)
 
