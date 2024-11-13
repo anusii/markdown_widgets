@@ -69,8 +69,7 @@ class _VideoWidgetState extends State<VideoWidget> {
     _player = Player();
     _controller = VideoController(_player);
 
-    // Open the asset video directly.
-
+    // Open the video.
     await _player.open(Media('asset://$videoAssetPath'), play: false);
 
     // Set video initialised.
