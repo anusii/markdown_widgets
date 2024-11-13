@@ -28,11 +28,7 @@
 ///
 /// Authors: Tony Chen
 
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:media_kit/media_kit.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -95,9 +91,6 @@ class MarkdownWidgetBuilder extends StatefulWidget {
 }
 
 class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
-  /// The URL to which the user inputs are submitted.
-  String? _submitUrl;
-
   final Map<String, String> _inputValues = {};
   final Map<String, double> _sliderValues = {};
   final Map<String, Map<String, dynamic>> _sliders = {};
@@ -115,7 +108,6 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
     super.initState();
     // Ensure media_kit is initialised before use
     MediaKit.ensureInitialized();
-    _submitUrl = widget.submitUrl ?? defaultSubmissionUrl;
   }
 
   @override
