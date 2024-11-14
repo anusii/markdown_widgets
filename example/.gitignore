@@ -48,7 +48,6 @@ android/app/release
 # Build files
 ios/
 android/
-macos/
 linux/
 windows/
 web/
