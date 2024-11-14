@@ -157,17 +157,26 @@ and the default value is 5.
 
 %% EmptyLine
 
-The following is a sample image.
+%% Description-Begin
+
+The following is a sample image. We can use images to enhance the user
+experience, or to add context for questions in a survey. The
+*Original* image here is rendered to the size from the image file
+itself. The *Resized* image below is resized to a specific size, being
+400x300 in this case. Note that in resizing the image the aspect ratio
+is maintained.
+
+%% Description-End
 
 %% AlignCenter-Begin Original %% AlignCenter-End
 
 %% Image(sample_image.jpg)
 
+%% H6Right-Begin 📍Hancock Library, ANU. Photo by @tonypioneer. %% H6Right-End
+
 %% AlignCenter-Begin Resized %% AlignCenter-End
 
 %% Image(sample_image.jpg,400,300)
-
-%% H6Center-Begin 📍Hancock Library, ANU. Photo by @tonypioneer. %% H6Center-End
 
 %% EmptyLine
 
