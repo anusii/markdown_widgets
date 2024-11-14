@@ -47,7 +47,8 @@ class MenuWidget extends StatelessWidget {
     required this.onMenuItemSelected,
   }) : super(key: key);
 
-  // Parse menu items
+  /// Parse menu items.
+
   List<String> _parseMenuItems(String menuContent) {
     final lines = LineSplitter.split(menuContent).toList();
     final menuItems = <String>[];
@@ -63,7 +64,8 @@ class MenuWidget extends StatelessWidget {
     return menuItems;
   }
 
-  // Extract the content corresponding to the selected menu item
+  /// Extract the content corresponding to the selected menu item.
+
   String _extractSurveyContent(String markdownStr, String title) {
     final pattern = RegExp(
       r'^##\s+' + RegExp.escape(title) + r'\s*$',
@@ -75,10 +77,12 @@ class MenuWidget extends StatelessWidget {
       return '';
     }
 
-    // Get the position of the title
+    // Get the position of the title.
+
     final startIndex = matches.first.end;
 
-    // Find the next heading or the end of the document
+    // Find the next heading or the end of the document.
+
     final restOfDocument = markdownStr.substring(startIndex);
     final nextHeadingPattern = RegExp(r'^##\s+', multiLine: true);
     final nextMatch = nextHeadingPattern.firstMatch(restOfDocument);
@@ -107,20 +111,22 @@ class MenuWidget extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: menuItems.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, // Buttons per row
+            crossAxisCount: 3, // Buttons per row.
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
-            childAspectRatio: 4, // Ratio of button (width / height)
+            childAspectRatio: 4, // Ratio of button (width / height).
           ),
           itemBuilder: (context, index) {
             final title = menuItems[index];
             return InkWell(
               onTap: () {
-                // Extract the selected survey content
+                // Extract the selected survey content.
+
                 final surveyContent = _extractSurveyContent(fullContent, title);
 
                 // Call the callback function to pass the selected menu item to
-                // the parent widget
+                // the parent widget.
+
                 onMenuItemSelected(title, surveyContent);
               },
               child: Card(

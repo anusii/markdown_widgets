@@ -158,7 +158,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final data = _collectData();
 
     if (actionType == 0) {
-      // Save data locally as JSON
+      // Save data locally as JSON.
 
       // Print out the JSON content.
 
@@ -170,7 +170,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       String filename = _generateFilename(widget.surveyTitle);
 
       if (kIsWeb) {
-        // Web implementation: Download to Downloads folder
+        // Web implementation: Download to Downloads folder.
 
         final jsonContent = json.encode(data);
 
@@ -179,7 +179,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         final url = html.Url.createObjectUrlFromBlob(blob);
 
         // Create an anchor element, set its href and download attributes,
-        // and click it
+        // and click it.
         html.AnchorElement(href: url)
           ..setAttribute('download', filename)
           ..click();
@@ -190,10 +190,11 @@ class _ButtonWidgetState extends State<ButtonWidget> {
           SnackBar(content: Text('Data downloaded as $filename')),
         );
       } else {
-        // Non-web implementation
+        // Non-web implementation.
 
-        // Prompt the user for a file name
-        String fileName = filename; // default filename from actionParameter
+        // Prompt the user for a file name.
+
+        String fileName = filename; // default filename from actionParameter.
 
         TextEditingController _fileNameController =
             TextEditingController(text: fileName);
@@ -226,7 +227,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         );
 
         if (fileNameConfirmed != true) {
-          // User cancelled the dialog
+          // User cancelled the dialog.
+
           debugPrint('File name input cancelled.');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Save cancelled.')),
@@ -236,7 +238,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
         fileName = _fileNameController.text.trim();
         if (fileName.isEmpty) {
-          // If the user did not enter a file name, show an error and return
+          // If the user did not enter a file name, show an error and return.
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('File name cannot be empty.')),
           );
@@ -290,7 +293,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         }
       }
     } else if (actionType == 1) {
-      // Submit data via POST to URL
+      // Submit data via POST to URL.
+
       String url = actionParameter;
 
       try {
@@ -328,18 +332,23 @@ class _ButtonWidgetState extends State<ButtonWidget> {
   }
 
   /// Generates a filename based on the survey title.
+
   String _generateFilename(String title) {
     // Convert to lowercase, replace special characters with underscores.
+
     String filename = title.toLowerCase();
     filename = filename.replaceAll(RegExp(r'[^a-z0-9]+'), '_');
+
     // Remove leading/trailing underscores.
+
     filename = filename.replaceAll(RegExp(r'^_+|_+$'), '');
     filename = '$filename.json';
     return filename;
   }
 
   List<String> _parseArguments(String argsString) {
-    // Split by comma, handle quotes
+    // Split by comma, handle quotes.
+
     final args = <String>[];
     final buffer = StringBuffer();
     bool inQuotes = false;

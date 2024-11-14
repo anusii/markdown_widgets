@@ -158,7 +158,7 @@ class CommandParser {
 
       if (menuMatch != null) {
         // Keep only the content before the menu placeholder (including the menu
-        // itself)
+        // itself).
 
         final menuEndIndex = menuMatch.end;
         modifiedContent = modifiedContent.substring(0, menuEndIndex);

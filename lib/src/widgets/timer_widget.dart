@@ -66,12 +66,14 @@ class _TimerWidgetState extends State<TimerWidget> {
     if (_isRunning && !_isPaused) return;
 
     if (_isPaused) {
-      // Resume the timer
+      // Resume the timer.
+
       setState(() {
         _isPaused = false;
       });
     } else {
-      // Start a new timer
+      // Start a new timer.
+
       _isRunning = true;
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         setState(() {

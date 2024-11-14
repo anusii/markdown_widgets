@@ -30,5 +30,6 @@
 
 library markdown_widgets;
 
-// Markdown widget builder
+// Markdown widget builder.
+
 export 'src/widgets/markdown_widget_builder.dart' show MarkdownWidgetBuilder;

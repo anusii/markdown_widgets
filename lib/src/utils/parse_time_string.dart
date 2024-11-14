@@ -28,14 +28,15 @@
 ///
 /// Authors: Tony Chen
 
-// Parse the time string and return the total number of seconds.
-// Supported formats include:
-// - "1h30m45s"
-// - "0h45m20s"
-// - "45m20s"
-// - "30s"
-// - "1h 30m 45s"
-// - "45m 20s"
+/// Parse the time string and return the total number of seconds.
+/// Supported formats include:
+/// - "1h30m45s"
+/// - "0h45m20s"
+/// - "45m20s"
+/// - "30s"
+/// - "1h 30m 45s"
+/// - "45m 20s"
+
 int parseTimeString(String timeString) {
   final timeRegExp =
       RegExp(r'(?:(\d+)h)?\s*(?:(\d+)m)?\s*(?:(\d+)s)?', caseSensitive: false);
@@ -48,7 +49,9 @@ int parseTimeString(String timeString) {
     final totalSeconds = hours * 3600 + minutes * 60 + seconds;
     return totalSeconds;
   } else {
-    // If parsing fails, return 0
+
+    // If parsing fails, return 0.
+
     return 0;
   }
 }

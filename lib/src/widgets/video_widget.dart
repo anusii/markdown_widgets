@@ -71,6 +71,7 @@ class _VideoWidgetState extends State<VideoWidget> {
     _controller = VideoController(_player);
 
     // Open the video.
+
     await _player.open(Media('asset://$videoAssetPath'), play: false);
 
     // Set video initialised.
@@ -94,7 +95,9 @@ class _VideoWidgetState extends State<VideoWidget> {
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
         child: AspectRatio(
-          // Default aspect ratio
+
+          // Default aspect ratio.
+
           aspectRatio: 16 / 9,
           child: Focus(
             canRequestFocus: false,

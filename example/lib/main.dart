@@ -41,6 +41,7 @@ void main() {
 
 /// A simple Flutter application demonstrating how to use the
 /// MarkdownWidgetBuilder from the markdown_widgets package.
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
 
 /// A StatefulWidget that loads markdown content from an asset
 /// and displays it using the MarkdownWidgetBuilder.
+
 class MarkdownExamplePage extends StatefulWidget {
   const MarkdownExamplePage({super.key});
 
@@ -75,6 +77,7 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
   }
 
   /// Loads the markdown content from the assets/sample_markdown.md file.
+
   Future<String> _loadMarkdownContent() async {
     return await rootBundle.loadString('assets/sample_markdown.md');
   }
@@ -95,7 +98,9 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
                 content: markdownContent,
                 title: 'Sample Markdown',
                 onMenuItemSelected: (selectedTitle, selectedContent) {
+
                   // Navigate to a detailed page when a menu item is selected.
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -137,6 +142,7 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
 ///
 /// This page is navigated to when a menu item is selected in the
 /// MarkdownWidgetBuilder.
+
 class MarkdownDetailPage extends StatelessWidget {
   final String title;
   final String content;
@@ -158,7 +164,9 @@ class MarkdownDetailPage extends StatelessWidget {
           content: content,
           title: title,
           onMenuItemSelected: (selectedTitle, selectedContent) {
+
             // Navigate to another detail page if a menu item is selected.
+
             Navigator.push(
               context,
               MaterialPageRoute(

@@ -53,19 +53,24 @@ import 'package:markdown_widgets/src/widgets/input_field.dart';
 ///   },
 /// );
 /// ```
+
 class MarkdownWidgetBuilder extends StatefulWidget {
   /// The markdown content to be displayed.
+
   final String content;
 
   /// The title of the form page.
+
   final String title;
 
   /// The URL to which the user responses are submitted.
+
   final String? submitUrl;
 
   /// Callback when a menu item is selected.
   ///
   /// Provides the selected item's [title] and [content].
+
   final void Function(String title, String content)? onMenuItemSelected;
 
   /// Creates a [MarkdownWidgetBuilder] widget.
@@ -74,6 +79,7 @@ class MarkdownWidgetBuilder extends StatefulWidget {
   /// [title] is required and represents the title of the form page.
   /// [submitUrl] is optional and specifies the URL for form submission.
   /// [onMenuItemSelected] is an optional callback for menu item selection.
+
   const MarkdownWidgetBuilder({
     Key? key,
     required this.content,
@@ -102,17 +108,22 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   @override
   void initState() {
     super.initState();
-    // Ensure media_kit is initialised before use
+
+    // Ensure media_kit is initialised before use.
+
     MediaKit.ensureInitialized();
   }
 
   @override
   void dispose() {
-    // Dispose of video players
+    // Dispose of video players.
+
     _videoPlayers.forEach((key, player) {
       player.dispose();
     });
-    // Release audio players
+
+    // Release audio players.
+
     _audioPlayers.forEach((key, player) {
       player.dispose();
     });
@@ -121,7 +132,8 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    // Build content widgets every time to ensure UI updates
+    // Build content widgets every time to ensure UI updates.
+
     final contentWidgets = _buildContentWidgets(widget.content);
 
     return Center(
@@ -137,6 +149,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   /// [content] is the markdown content to parse.
   ///
   /// Returns a list of widgets representing the parsed content.
+
   List<Widget> _buildContentWidgets(String content) {
     final parser = CommandParser(
       context: context,
