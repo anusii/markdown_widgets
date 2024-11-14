@@ -1,3 +1,8 @@
+[![Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue.svg)](https://flutter.dev/)
+[![Pub Package](https://img.shields.io/pub/v/markdown_widgets)](https://pub.dev/packages/markdown_widgets)
+[![GitHub Issues](https://img.shields.io/github/issues/gjwgit/markdown_widgets)](https://github.com/gjwgit/markdown_widgets/issues)
+[![GitHub License](https://img.shields.io/github/license/gjwgit/markdown_widgets)](https://raw.githubusercontent.com/gjwgit/markdown_widgets/main/LICENSE)
+
 # Markdown Widgets
 
 This package is designed to define human-computer interaction widgets within 
