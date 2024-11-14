@@ -167,7 +167,7 @@ The following is a sample image.
 
 %% Image(sample_image.jpg,400,300)
 
-%% H6Right-Begin 📍Hancock Library, ANU. Photo by @tonypioneer. %% H6Right-End
+%% H6Center-Begin 📍Hancock Library, ANU. Photo by @tonypioneer. %% H6Center-End
 
 %% EmptyLine
 
