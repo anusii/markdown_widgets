@@ -167,10 +167,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
       // Generate the default filename based on the survey title.
 
-      String filename = _generateFilename(widget.surveyTitle);
+      String defaultFileName = _generateFilename(widget.surveyTitle);
 
       if (kIsWeb) {
-        // Web implementation: Download to Downloads folder.
+        // Web version: Download to the Downloads folder.
 
         final jsonContent = json.encode(data);
 
@@ -180,103 +180,39 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
         // Create an anchor element, set its href and download attributes,
         // and click it.
+
         html.AnchorElement(href: url)
-          ..setAttribute('download', filename)
+          ..setAttribute('download', defaultFileName)
           ..click();
 
         html.Url.revokeObjectUrl(url);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Data downloaded as $filename')),
+          SnackBar(content: Text('Data downloaded as $defaultFileName')),
         );
       } else {
-        // Non-web implementation.
+        // Non-web version: Let the user select a save path and file name.
 
-        // Prompt the user for a file name.
+        // Use the file picker to let the user select a save path and file name.
 
-        String fileName = filename; // default filename from actionParameter.
-
-        TextEditingController _fileNameController =
-            TextEditingController(text: fileName);
-
-        bool? fileNameConfirmed = await showDialog<bool>(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Enter File Name'),
-              content: TextField(
-                controller: _fileNameController,
-                decoration: InputDecoration(hintText: 'File Name'),
-              ),
-              actions: [
-                TextButton(
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                ),
-              ],
-            );
-          },
+        String? selectedFile = await FilePicker.platform.saveFile(
+          dialogTitle: 'Please choose a filename and path to save the result',
+          fileName: defaultFileName,
+          type: FileType.custom,
+          allowedExtensions: ['json'],
         );
 
-        if (fileNameConfirmed != true) {
-          // User cancelled the dialog.
-
-          debugPrint('File name input cancelled.');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Save cancelled.')),
-          );
-          return;
-        }
-
-        fileName = _fileNameController.text.trim();
-        if (fileName.isEmpty) {
-          // If the user did not enter a file name, show an error and return.
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('File name cannot be empty.')),
-          );
-          return;
-        }
-
-        // Let the user select a directory to save the file.
-
-        // 20241114 TODO gjw USE FilePicker.platform.saveFile()
-        //
-        // Something like the following to replace the filename prompt and the
-        // directory chooser. Instead do it in one popup.
-        //
-        // String? result = await FilePicker.platform.saveFile(
-        //   dialogTitle: 'Provide a filename to save the survey to',
-        //   fileName: defaultFileName,
-        //   type: FileType.custom,
-        //   allowedExtensions: ['json'],
-        // );
-
-        String? selectedDirectory =
-            await FilePicker.platform.getDirectoryPath();
-
-        debugPrint('Selected directory: $selectedDirectory');
-
-        if (selectedDirectory != null) {
-          final filePath = '$selectedDirectory/$fileName';
-          final file = File(filePath);
+        if (selectedFile != null) {
+          final file = File(selectedFile);
 
           final jsonContent = json.encode(data);
 
           try {
             await file.writeAsString(jsonContent);
-            debugPrint('File saved at: $filePath');
+            debugPrint('File saved at $selectedFile');
 
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Data saved as $filePath')),
+              SnackBar(content: Text('Data saved as $selectedFile')),
             );
           } catch (e) {
             debugPrint('Error saving file: $e');
@@ -286,7 +222,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
             );
           }
         } else {
-          debugPrint('No directory selected.');
+          debugPrint('Save file dialog was cancelled.');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Save cancelled.')),
           );
