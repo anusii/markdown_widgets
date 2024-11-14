@@ -9,6 +9,7 @@
 **/Runner.xcworkspace/
 **/RunnerTests/
 **/Podfile
+**/Podfile.lock
 **/Runner/Assets.xcassets/
 **/Runner/Base.lproj/
 **/Runner/Configs/
