@@ -45,9 +45,27 @@ android/app/debug
 android/app/profile
 android/app/release
 
-# Build files
+# Xcode-related
+**/dgph
+**/xcuserdata/
+
+# Generated files
 ios/
 android/
 linux/
 windows/
 web/
+
+**/macos/Flutter/
+**/macos/Pods/
+**/macos/Runner.xcodeproj/
+**/macos/Runner.xcworkspace/
+**/macos/RunnerTests/
+**/macos/Podfile
+**/macos/Podfile.lock
+**/macos/Runner/Assets.xcassets/
+**/macos/Runner/Base.lproj/
+**/macos/Runner/Configs/
+**/macos/Runner/AppDelegate.swift
+**/macos/Runner/Info.plist
+**/macos/Runner/MainFlutterWindow.swift
