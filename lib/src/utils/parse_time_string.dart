@@ -49,7 +49,6 @@ int parseTimeString(String timeString) {
     final totalSeconds = hours * 3600 + minutes * 60 + seconds;
     return totalSeconds;
   } else {
-
     // If parsing fails, return 0.
 
     return 0;

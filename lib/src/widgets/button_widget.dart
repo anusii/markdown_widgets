@@ -267,9 +267,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         debugPrint('Response body: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Submission failed: ${response.statusCode} '
-                    '${response.reasonPhrase}'),
+            content: Text('Submission failed: ${response.statusCode} '
+                '${response.reasonPhrase}'),
           ),
         );
       }

@@ -95,7 +95,6 @@ class _VideoWidgetState extends State<VideoWidget> {
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
         child: AspectRatio(
-
           // Default aspect ratio.
 
           aspectRatio: 16 / 9,
