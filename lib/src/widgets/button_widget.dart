@@ -1,6 +1,6 @@
 /// Button widget.
 ///
-// Time-stamp: <Thursday 2024-11-14 21:40:08 +1100 Graham Williams>
+// Time-stamp: <Friday 2024-11-15 08:45:50 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -173,9 +173,11 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     }
   }
 
+  JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+
   Future<void> _saveDataLocally(Map<String, dynamic> data) async {
     debugPrint('Collected Data:');
-    debugPrint(json.encode(data));
+    debugPrint(encoder.convert(data));
 
     // Generate the default filename based on the survey title.
 
@@ -194,7 +196,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
   Future<void> _downloadDataForWeb(
       Map<String, dynamic> data, String defaultFileName) async {
-    final jsonContent = json.encode(data);
+    final jsonContent = encoder.convert(data);
 
     final bytes = utf8.encode(jsonContent);
     final blob = html.Blob([bytes], 'application/json');
@@ -225,7 +227,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
     if (selectedFile != null) {
       final file = File(selectedFile);
-      final jsonContent = json.encode(data);
+      final jsonContent = encoder.convert(data);
 
       try {
         await file.writeAsString(jsonContent);
