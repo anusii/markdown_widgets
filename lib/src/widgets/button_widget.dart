@@ -1,6 +1,6 @@
 /// Button widget.
 ///
-// Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
+// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -32,13 +32,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show File;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:markdown_widgets/src/constants/pkg.dart'
-    show defaultFileName, defaultButtonText;
+
+import 'package:markdown_widgets/src/constants/pkg.dart';
 
 class ButtonWidget extends StatefulWidget {
   final String command;
@@ -92,8 +93,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
   }
 
   /// Collects the user responses from the state map.
+
   Map<String, dynamic> _collectData() {
-    // Access the state variables and collect data
+    // Access the state variables and collect data.
+
     final Map<String, dynamic> responses = {};
 
     final _inputValues = widget.state['_inputValues'] as Map<String, String>;
@@ -105,23 +108,27 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final _dropdownValues =
         widget.state['_dropdownValues'] as Map<String, String?>;
 
-    // Add slider values
+    // Add slider values.
+
     _sliderValues.forEach((key, value) {
       responses[key] = value;
     });
 
-    // Add radio values
+    // Add radio values.
+
     _radioValues.forEach((key, value) {
       responses[key] = value;
     });
 
-    // Add checkbox values
+    // Add checkbox values.
+
     _checkboxValues.forEach((key, value) {
-      // Convert Set to List
+      // Convert Set to List.
       responses[key] = value.toList();
     });
 
-    // Add date values
+    // Add date values.
+
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
@@ -132,12 +139,14 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       }
     });
 
-    // Add dropdown values
+    // Add dropdown values.
+
     _dropdownValues.forEach((key, value) {
       responses[key] = value;
     });
 
-    // Add text input values
+    // Add text input values.
+
     _inputValues.forEach((key, value) {
       responses[key] = value;
     });
@@ -150,16 +159,19 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
     if (actionType == 0) {
       // Save data locally as JSON
-      
-      // Print out the JSON content
+
+      // Print out the JSON content.
+
       debugPrint('Collected Data:');
       debugPrint(json.encode(data));
 
-      // Generate the default filename based on the survey title
+      // Generate the default filename based on the survey title.
+
       String filename = _generateFilename(widget.surveyTitle);
 
       if (kIsWeb) {
         // Web implementation: Download to Downloads folder
+
         final jsonContent = json.encode(data);
 
         final bytes = utf8.encode(jsonContent);
