@@ -68,8 +68,12 @@ class Helpers {
     return TextAlignmentWidget(align: align, content: content);
   }
 
-  Widget buildImageWidget(String filename) {
-    return ImageWidget(filename: filename);
+  Widget buildImageWidget(String filename, {double? width, double? height}) {
+    return ImageWidget(
+      filename: filename,
+      width: width,
+      height: height,
+    );
   }
 
   Widget buildVideoWidget(String filename) {

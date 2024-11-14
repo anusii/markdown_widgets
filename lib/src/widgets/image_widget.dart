@@ -35,8 +35,15 @@ import 'package:markdown_widgets/src/constants/pkg.dart'
 
 class ImageWidget extends StatelessWidget {
   final String filename;
+  final double? width;
+  final double? height;
 
-  const ImageWidget({Key? key, required this.filename}) : super(key: key);
+  const ImageWidget({
+    Key? key,
+    required this.filename,
+    this.width,
+    this.height,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +54,8 @@ class ImageWidget extends StatelessWidget {
         widthFactor: contentWidthFactor,
         child: Image.asset(
           imgPath,
+          width: width,
+          height: height,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
             return const Text('Image not found');
