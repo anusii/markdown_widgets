@@ -109,8 +109,10 @@ class CommandParser {
 
     // Regular expression to match image commands.
 
-    final RegExp imageExp =
-        RegExp(r'%% Image\(([^)]+)\)', caseSensitive: false);
+    final RegExp imageExp = RegExp(
+        r'%% Image'
+        r'\(\s*([^,\)]+)\s*(?:,\s*([\d\.]+)\s*)?(?:,\s*([\d\.]+)\s*)?\)',
+        caseSensitive: false);
 
     // Regular expression to match video commands.
 
@@ -320,7 +322,18 @@ class CommandParser {
         final imageMatch = imageExp.firstMatch(command);
         if (imageMatch != null) {
           final filename = imageMatch.group(1)!.trim();
-          widgets.add(helpers.buildImageWidget(filename));
+          double? width;
+          double? height;
+
+          if (imageMatch.group(2) != null) {
+            width = double.tryParse(imageMatch.group(2)!.trim());
+          }
+          if (imageMatch.group(3) != null) {
+            height = double.tryParse(imageMatch.group(3)!.trim());
+          }
+
+          widgets.add(
+              helpers.buildImageWidget(filename, width: width, height: height));
         }
       } else if (command
           .startsWith(RegExp(r'%% Video', caseSensitive: false))) {
