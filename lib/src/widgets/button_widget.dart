@@ -32,11 +32,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show File;
 
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
 import 'package:universal_html/html.dart' as html;
 
 import 'package:markdown_widgets/src/constants/pkg.dart';

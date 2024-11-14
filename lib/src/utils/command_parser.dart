@@ -32,9 +32,9 @@ import 'package:flutter/material.dart';
 
 import 'package:markdown_widgets/src/constants/pkg.dart' show endingLines;
 import 'package:markdown_widgets/src/utils/helpers.dart';
+import 'package:markdown_widgets/src/widgets/button_widget.dart';
 import 'package:markdown_widgets/src/widgets/markdown_text.dart';
 import 'package:markdown_widgets/src/widgets/menu_widget.dart';
-import 'package:markdown_widgets/src/widgets/button_widget.dart';
 
 class CommandParser {
   final BuildContext context;

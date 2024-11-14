@@ -30,8 +30,8 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:media_kit/media_kit.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:media_kit/media_kit.dart';
 
 import 'package:markdown_widgets/src/utils/command_parser.dart';
 import 'package:markdown_widgets/src/widgets/input_field.dart';

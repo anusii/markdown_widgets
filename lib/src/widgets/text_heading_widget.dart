@@ -30,9 +30,9 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_widgets/src/utils/justify_text.dart';
 import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor, screenWidth;
+import 'package:markdown_widgets/src/utils/justify_text.dart';
 
 class TextHeadingWidget extends StatelessWidget {
   final int level;
