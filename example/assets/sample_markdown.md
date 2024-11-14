@@ -24,9 +24,10 @@ Thank you.
 
 %% Description-Begin
 
-This is a description box. It supports **Markdown formatted** text. Click 
-[here](https://www.markdownguide.org/basic-syntax/) to learn more about
-Markdown.
+This is a description box. It supports **Markdown formatted** text
+including URL links. Click
+[here](https://www.markdownguide.org/basic-syntax/) to learn more
+about Markdown.
 
 %% Description-End
 
