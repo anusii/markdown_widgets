@@ -38,7 +38,7 @@ const String assetsPath = 'assets';
 const String mediaPath = 'assets/media';
 const String surveyAsset = 'assets/surveys.md';
 
-const String defaultFileName = 'result.json';
+const String defaultFileName = 'survey.json';
 const String defaultButtonText = 'Save';
 
 double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;

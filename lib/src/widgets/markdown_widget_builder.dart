@@ -155,6 +155,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         '_inputFieldKeys': _inputFieldKeys,
       },
       setStateCallback: () => setState(() {}),
+      surveyTitle: widget.title,
     );
 
     return parser.parse();

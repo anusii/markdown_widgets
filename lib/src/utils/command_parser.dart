@@ -43,6 +43,7 @@ class CommandParser {
   final void Function(String title, String content)? onMenuItemSelected;
   final Map<String, dynamic> state;
   final VoidCallback setStateCallback;
+  final String surveyTitle;
 
   late final Helpers helpers;
 
@@ -64,6 +65,7 @@ class CommandParser {
     this.onMenuItemSelected,
     required this.state,
     required this.setStateCallback,
+    required this.surveyTitle,
   }) {
     // Initialise Helpers.
 
@@ -458,6 +460,7 @@ class CommandParser {
           ButtonWidget(
             command: command,
             state: state,
+            surveyTitle: surveyTitle,
           ),
         );
       } else if (command

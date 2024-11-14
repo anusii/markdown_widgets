@@ -43,11 +43,13 @@ import 'package:markdown_widgets/src/constants/pkg.dart'
 class ButtonWidget extends StatefulWidget {
   final String command;
   final Map<String, dynamic> state;
+  final String surveyTitle;
 
   ButtonWidget({
     Key? key,
     required this.command,
     required this.state,
+    required this.surveyTitle,
   }) : super(key: key);
 
   @override
@@ -148,7 +150,13 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
     if (actionType == 0) {
       // Save data locally as JSON
-      String filename = actionParameter;
+      
+      // Print out the JSON content
+      debugPrint('Collected Data:');
+      debugPrint(json.encode(data));
+
+      // Generate the default filename based on the survey title
+      String filename = _generateFilename(widget.surveyTitle);
 
       if (kIsWeb) {
         // Web implementation: Download to Downloads folder
@@ -223,7 +231,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
           return;
         }
 
-        // Now, let the user select a directory to save the file
+        // Let the user select a directory to save the file
         String? selectedDirectory =
             await FilePicker.platform.getDirectoryPath();
 
@@ -272,7 +280,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
             const SnackBar(content: Text('Submission successful')),
           );
         } else {
-          print('Response body: ${response.body}');
+          debugPrint('Response body: ${response.body}');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Submission failed: ${response.statusCode} '
@@ -281,8 +289,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
           );
         }
       } catch (e, stackTrace) {
-        print('Submission failed: $e');
-        print('Stack trace: $stackTrace');
+        debugPrint('Submission failed: $e');
+        debugPrint('Stack trace: $stackTrace');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Submission failed: $e')),
         );
@@ -292,6 +300,17 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         const SnackBar(content: Text('Invalid action type')),
       );
     }
+  }
+
+  /// Generates a filename based on the survey title.
+  String _generateFilename(String title) {
+    // Convert to lowercase, replace special characters with underscores.
+    String filename = title.toLowerCase();
+    filename = filename.replaceAll(RegExp(r'[^a-z0-9]+'), '_');
+    // Remove leading/trailing underscores.
+    filename = filename.replaceAll(RegExp(r'^_+|_+$'), '');
+    filename = '$filename.json';
+    return filename;
   }
 
   List<String> _parseArguments(String argsString) {
