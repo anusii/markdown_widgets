@@ -1,6 +1,6 @@
 /// Button widget.
 ///
-// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
+// Time-stamp: <Thursday 2024-11-14 21:40:08 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -243,7 +243,20 @@ class _ButtonWidgetState extends State<ButtonWidget> {
           return;
         }
 
-        // Let the user select a directory to save the file
+        // Let the user select a directory to save the file.
+
+        // 20241114 TODO gjw USE FilePicker.platform.saveFile()
+        //
+        // Something like the following to replace the filename prompt and the
+        // directory chooser. Instead do it in one popup.
+        //
+        // String? result = await FilePicker.platform.saveFile(
+        //   dialogTitle: 'Provide a filename to save the survey to',
+        //   fileName: defaultFileName,
+        //   type: FileType.custom,
+        //   allowedExtensions: ['json'],
+        // );
+
         String? selectedDirectory =
             await FilePicker.platform.getDirectoryPath();
 
