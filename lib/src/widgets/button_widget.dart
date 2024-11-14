@@ -124,6 +124,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
     _checkboxValues.forEach((key, value) {
       // Convert Set to List.
+
       responses[key] = value.toList();
     });
 
@@ -158,113 +159,133 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final data = _collectData();
 
     if (actionType == 0) {
-      // Save data locally as JSON.
+      // Save the data locally as a JSON file.
 
-      // Print out the JSON content.
-
-      debugPrint('Collected Data:');
-      debugPrint(json.encode(data));
-
-      // Generate the default filename based on the survey title.
-
-      String defaultFileName = _generateFilename(widget.surveyTitle);
-
-      if (kIsWeb) {
-        // Web version: Download to the Downloads folder.
-
-        final jsonContent = json.encode(data);
-
-        final bytes = utf8.encode(jsonContent);
-        final blob = html.Blob([bytes], 'application/json');
-        final url = html.Url.createObjectUrlFromBlob(blob);
-
-        // Create an anchor element, set its href and download attributes,
-        // and click it.
-
-        html.AnchorElement(href: url)
-          ..setAttribute('download', defaultFileName)
-          ..click();
-
-        html.Url.revokeObjectUrl(url);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Data downloaded as $defaultFileName')),
-        );
-      } else {
-        // Non-web version: Let the user select a save path and file name.
-
-        // Use the file picker to let the user select a save path and file name.
-
-        String? selectedFile = await FilePicker.platform.saveFile(
-          dialogTitle: 'Please choose a filename and path to save the result',
-          fileName: defaultFileName,
-          type: FileType.custom,
-          allowedExtensions: ['json'],
-        );
-
-        if (selectedFile != null) {
-          final file = File(selectedFile);
-
-          final jsonContent = json.encode(data);
-
-          try {
-            await file.writeAsString(jsonContent);
-            debugPrint('File saved at $selectedFile');
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Data saved as $selectedFile')),
-            );
-          } catch (e) {
-            debugPrint('Error saving file: $e');
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error saving file: $e')),
-            );
-          }
-        } else {
-          debugPrint('Save file dialog was cancelled.');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Save cancelled.')),
-          );
-        }
-      }
+      await _saveDataLocally(data);
     } else if (actionType == 1) {
-      // Submit data via POST to URL.
+      // Submit the data to a URL.
 
-      String url = actionParameter;
+      await _submitDataToUrl(data);
+    } else {
+      // Invalid action type.
+
+      _showInvalidActionTypeMessage();
+    }
+  }
+
+  Future<void> _saveDataLocally(Map<String, dynamic> data) async {
+    debugPrint('Collected Data:');
+    debugPrint(json.encode(data));
+
+    // Generate the default filename based on the survey title.
+
+    String defaultFileName = _generateFilename(widget.surveyTitle);
+
+    if (kIsWeb) {
+      // For web platforms.
+
+      await _downloadDataForWeb(data, defaultFileName);
+    } else {
+      // For non-web platforms.
+
+      await _saveDataForNonWeb(data, defaultFileName);
+    }
+  }
+
+  Future<void> _downloadDataForWeb(
+      Map<String, dynamic> data, String defaultFileName) async {
+    final jsonContent = json.encode(data);
+
+    final bytes = utf8.encode(jsonContent);
+    final blob = html.Blob([bytes], 'application/json');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+
+    // Create an anchor element, set its href and download attributes,
+    // and click it.
+
+    html.AnchorElement(href: url)
+      ..setAttribute('download', defaultFileName)
+      ..click();
+
+    html.Url.revokeObjectUrl(url);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Data downloaded as $defaultFileName')),
+    );
+  }
+
+  Future<void> _saveDataForNonWeb(
+      Map<String, dynamic> data, String defaultFileName) async {
+    String? selectedFile = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please choose a filename and path to save the result',
+      fileName: defaultFileName,
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
+
+    if (selectedFile != null) {
+      final file = File(selectedFile);
+      final jsonContent = json.encode(data);
 
       try {
-        final response = await http.post(
-          Uri.parse(url),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode(data),
-        );
+        await file.writeAsString(jsonContent);
+        debugPrint('File saved at $selectedFile');
 
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Submission successful')),
-          );
-        } else {
-          debugPrint('Response body: ${response.body}');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Submission failed: ${response.statusCode} '
-                  '${response.reasonPhrase}'),
-            ),
-          );
-        }
-      } catch (e, stackTrace) {
-        debugPrint('Submission failed: $e');
-        debugPrint('Stack trace: $stackTrace');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Submission failed: $e')),
+          SnackBar(content: Text('Data saved as $selectedFile')),
+        );
+      } catch (e) {
+        debugPrint('Error saving file: $e');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving file: $e')),
         );
       }
     } else {
+      debugPrint('Save file dialog was cancelled.');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid action type')),
+        const SnackBar(content: Text('Save cancelled.')),
       );
     }
+  }
+
+  Future<void> _submitDataToUrl(Map<String, dynamic> data) async {
+    String url = actionParameter;
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Submission successful')),
+        );
+      } else {
+        debugPrint('Response body: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Submission failed: ${response.statusCode} '
+                    '${response.reasonPhrase}'),
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      debugPrint('Submission failed: $e');
+      debugPrint('Stack trace: $stackTrace');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Submission failed: $e')),
+      );
+    }
+  }
+
+  void _showInvalidActionTypeMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Invalid action type')),
+    );
   }
 
   /// Generates a filename based on the survey title.
