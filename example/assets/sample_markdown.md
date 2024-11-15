@@ -251,6 +251,8 @@ questions, or provide instructions for filling in the survey.
 1. The following is a sample video. It could be an instructional video or a
    video related to the survey content.
 
+%% EmptyLine
+
 %% Video(sample_video.mp4)
 
 %% H6Right-Begin 📍The Birch Building, ANU. Filmed by @tonypioneer.
@@ -266,15 +268,16 @@ questions, or provide instructions for filling in the survey.
 %% EmptyLine
 
 3. The following is a sample image. We can use images to enhance the user
-experience, or to add context for questions in a survey. The
-*Original* image here is rendered to the size from the image file
-itself. The *Resized* image below is resized to a specific size, being
-400 x 300 in this case. Note that in resizing the image the aspect ratio
-is maintained.
+experience, or to add context for questions in a survey. The *Original* image 
+here means the image is rendered to the width that spans the entire width of
+the survey form, maintaining its aspect ratio. The *Resized* image below is
+resized to a specific size, being 400 x 300 and 133 x 100 in this case. Note 
+that in resizing the image, the aspect ratio is maintained, scaling the width
+according to the image height.
 
 %% EmptyLine
 
-%% AlignCenter-Begin Original (640 x 480) %% AlignCenter-End
+%% AlignCenter-Begin Original %% AlignCenter-End
 
 %% Image(sample_image.jpg)
 
@@ -283,6 +286,14 @@ is maintained.
 %% AlignCenter-Begin Resized (400 x 300) %% AlignCenter-End
 
 %% Image(sample_image.jpg,400,300)
+
+%% EmptyLine
+
+%% AlignCenter-Begin Resized (133 x 100) %% AlignCenter-End
+
+%% Image(sample_image.jpg,133,100)
+
+%% EmptyLine
 
 %% EmptyLine
 
