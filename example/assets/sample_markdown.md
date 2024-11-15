@@ -6,13 +6,16 @@
 
 ## Survey 1
 
-**Please complete the survey below.**
+This survey is an example survey about **selection widgets**, including a date
+pickers, a dropdown menu, some radio buttons and checkboxes.
 
-Thank you.
+%% EmptyLine
 
-**Date:**
+**Please select a date from the date picker.**
 
 %% Calendar(Date)
+
+%% EmptyLine
 
 **Please select an option from the dropdown menu.**
 
@@ -21,6 +24,69 @@ Thank you.
 - Option 2
 - Option 3
 - Option 4
+
+%% EmptyLine
+
+1. This is Question 1. The following four options belong to the same group.
+   Only one option can be selected.
+
+%% Radio(Question 1,1,Option 1)
+%% Radio(Question 1,2,Option 2)
+%% Radio(Question 1,3,Option 3)
+%% Radio(Question 1,4,Option 4)
+
+%% EmptyLine
+
+2. This is Question 2. Only one option can be selected. The following four 
+   options belong to a different group from Question 1, and the user's 
+   selections for these two groups are independent and will not affect each 
+   other. 
+
+%% Radio(Question 2,1,Option 1)
+%% Radio(Question 2,2,Option 2)
+%% Radio(Question 2,3,Option 3)
+%% Radio(Question 2,4,Option 4)
+
+%% EmptyLine
+
+3. The following are two groups of checkboxes. This is Question 3. Multiple 
+   options can be selected.
+
+%% Checkbox(Question 3,1,Option 1)
+%% Checkbox(Question 3,2,Option 2)
+%% Checkbox(Question 3,3,Option 3)
+%% Checkbox(Question 3,4,Option 4)
+%% Checkbox(Question 3,5,Option 5)
+%% Checkbox(Question 3,6,Option 6)
+
+%% EmptyLine
+
+4. This is Question 4. Multiple options can be selected as well.
+
+%% Checkbox(Question 4,1,Option 1)
+%% Checkbox(Question 4,2,Option 2)
+%% Checkbox(Question 4,3,Option 3)
+%% Checkbox(Question 4,4,Option 4)
+%% Checkbox(Question 4,5,Option 5)
+%% Checkbox(Question 4,6,Option 6)
+
+%% EmptyLine
+
+%% EmptyLine
+
+%% Button(Save,0)
+
+%% EmptyLine
+
+%% Button(Submit to URI,1,http://127.0.0.1:8081/receive-json)
+
+
+
+
+
+
+
+
 
 %% Description-Begin
 
@@ -38,49 +104,7 @@ about Markdown.
 %% H6Right-Begin 📍The Birch Building, ANU. Filmed by @tonypioneer.
 %% H6Right-End
 
-%% EmptyLine
 
-1. This is Question 1. Only one option can be selected.
-
-%% Radio(Question 1,1,Option 1)
-%% Radio(Question 1,2,Option 2)
-%% Radio(Question 1,3,Option 3)
-%% Radio(Question 1,4,Option 4)
-
-%% EmptyLine
-
-2. This is Question 2. Only one option can be selected.
-
-%% Radio(Question 2,1,Option 1)
-%% Radio(Question 2,2,Option 2)
-%% Radio(Question 2,3,Option 3)
-%% Radio(Question 2,4,Option 4)
-
-%% EmptyLine
-
-3. This is Question 3. Multiple options can be selected.
-
-%% Checkbox(Question 3,1,Option 1)
-%% Checkbox(Question 3,2,Option 2)
-%% Checkbox(Question 3,3,Option 3)
-%% Checkbox(Question 3,4,Option 4)
-%% Checkbox(Question 3,5,Option 5)
-%% Checkbox(Question 3,6,Option 6)
-
-%% EmptyLine
-
-4. This is Question 4. Multiple options can be selected.
-
-%% Checkbox(Question 4,1,Option 1)
-%% Checkbox(Question 4,2,Option 2)
-%% Checkbox(Question 4,3,Option 3)
-%% Checkbox(Question 4,4,Option 4)
-%% Checkbox(Question 4,5,Option 5)
-%% Checkbox(Question 4,6,Option 6)
-
-%% EmptyLine
-
-%% EmptyLine
 
 %% Button(Save,0)
 
