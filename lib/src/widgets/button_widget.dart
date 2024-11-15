@@ -103,10 +103,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final _sliderValues = widget.state['_sliderValues'] as Map<String, double>;
     final _radioValues = widget.state['_radioValues'] as Map<String, String?>;
     final _checkboxValues =
-    widget.state['_checkboxValues'] as Map<String, Set<String>>;
+        widget.state['_checkboxValues'] as Map<String, Set<String>>;
     final _dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
     final _dropdownValues =
-    widget.state['_dropdownValues'] as Map<String, String?>;
+        widget.state['_dropdownValues'] as Map<String, String?>;
 
     // Add slider values.
 
@@ -133,7 +133,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
-        '${value.year}-${value.month.toString().padLeft(2, '0')}-'
+            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
             '${value.day.toString().padLeft(2, '0')}';
       } else {
         responses[key] = null;
