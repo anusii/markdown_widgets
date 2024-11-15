@@ -1,6 +1,6 @@
 /// Time parser for countdown timer widgets.
 ///
-// Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
+// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -28,14 +28,15 @@
 ///
 /// Authors: Tony Chen
 
-// Parse the time string and return the total number of seconds.
-// Supported formats include:
-// - "1h30m45s"
-// - "0h45m20s"
-// - "45m20s"
-// - "30s"
-// - "1h 30m 45s"
-// - "45m 20s"
+/// Parse the time string and return the total number of seconds.
+/// Supported formats include:
+/// - "1h30m45s"
+/// - "0h45m20s"
+/// - "45m20s"
+/// - "30s"
+/// - "1h 30m 45s"
+/// - "45m 20s"
+
 int parseTimeString(String timeString) {
   final timeRegExp =
       RegExp(r'(?:(\d+)h)?\s*(?:(\d+)m)?\s*(?:(\d+)s)?', caseSensitive: false);
@@ -48,7 +49,8 @@ int parseTimeString(String timeString) {
     final totalSeconds = hours * 3600 + minutes * 60 + seconds;
     return totalSeconds;
   } else {
-    // If parsing fails, return 0
+    // If parsing fails, return 0.
+
     return 0;
   }
 }

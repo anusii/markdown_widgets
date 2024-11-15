@@ -57,15 +57,18 @@ For example, the following snippet from `assets/surveys.md`:
 %% Slider(Question 1,1,4,1,1)
 ```
 
-## Submit Button
+## Button
 
-`%% Submit` will be recognised as a submit button. The submit button will be
+`%% Button(label,type,path)` will be recognised as a button. The parameter
+`label` is the text displayed on the button, `type` is the type of the 
+button (0 - Save to JSON file (default), 1 - Submit to URL), and `path` is the 
+path to redirect to or save to when the button is clicked. The button will be 
 displayed on the `Survey Details` page.
 
 For example, the following snippet from `assets/surveys.md`:
 
 ```markdown
-%% Submit
+%% Button(Save,0,result.json)
 ```
 
 ## Radio Button

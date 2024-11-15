@@ -40,10 +40,32 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Build files
+# Android Studio will place build artifacts here
+android/app/debug
+android/app/profile
+android/app/release
+
+# Xcode-related
+**/dgph
+**/xcuserdata/
+
+# Generated files
 ios/
 android/
-macos/
 linux/
 windows/
 web/
+
+macos/Flutter/
+macos/Pods/
+macos/Runner.xcodeproj/
+macos/Runner.xcworkspace/
+macos/RunnerTests/
+macos/Podfile
+macos/Podfile.lock
+macos/Runner/Assets.xcassets/
+macos/Runner/Base.lproj/
+macos/Runner/Configs/
+macos/Runner/AppDelegate.swift
+macos/Runner/Info.plist
+macos/Runner/MainFlutterWindow.swift

@@ -32,6 +32,7 @@ import 'package:flutter/material.dart';
 
 import 'package:markdown_widgets/src/constants/pkg.dart' show endingLines;
 import 'package:markdown_widgets/src/utils/helpers.dart';
+import 'package:markdown_widgets/src/widgets/button_widget.dart';
 import 'package:markdown_widgets/src/widgets/markdown_text.dart';
 import 'package:markdown_widgets/src/widgets/menu_widget.dart';
 
@@ -42,6 +43,7 @@ class CommandParser {
   final void Function(String title, String content)? onMenuItemSelected;
   final Map<String, dynamic> state;
   final VoidCallback setStateCallback;
+  final String surveyTitle;
 
   late final Helpers helpers;
 
@@ -63,6 +65,7 @@ class CommandParser {
     this.onMenuItemSelected,
     required this.state,
     required this.setStateCallback,
+    required this.surveyTitle,
   }) {
     // Initialise Helpers.
 
@@ -155,7 +158,7 @@ class CommandParser {
 
       if (menuMatch != null) {
         // Keep only the content before the menu placeholder (including the menu
-        // itself)
+        // itself).
 
         final menuEndIndex = menuMatch.end;
         modifiedContent = modifiedContent.substring(0, menuEndIndex);
@@ -212,7 +215,7 @@ class CommandParser {
         r'%% InputSL\([^\)]+\)|%% InputML\([^\)]+\)|'
         r'%% Calendar\([^\)]+\)|%% Dropdown\([^\)]+\)|'
         r'%% Image\([^\)]+\)|%% Video\([^\)]+\)|%% Audio\([^\)]+\)|'
-        r'%% Timer\([^\)]+\)|%% EmptyLine|'
+        r'%% Timer\([^\)]+\)|%% Button\([^\)]+\)|%% EmptyLine|'
         r'%%DescriptionPlaceholder\d+%%|'
         r'%%HeadingPlaceholder\d+%%|'
         r'%%AlignPlaceholder\d+%%|'
@@ -434,8 +437,7 @@ class CommandParser {
 
           widgets.add(helpers.buildSlider(name));
         }
-      } else if (command
-          .startsWith(RegExp(r'%% Submit', caseSensitive: false))) {
+      } else if (command.startsWith('%% Button')) {
         // Build any unfinished radio or checkbox groups.
 
         if (currentRadioGroupName != null) {
@@ -452,17 +454,13 @@ class CommandParser {
           currentCheckboxOptions = [];
         }
 
-        // Build the submit button.
+        // Create the ButtonWidget, passing the command and state variables.
 
         widgets.add(
-          Center(
-            child: SizedBox(
-              width: 100.0,
-              child: ElevatedButton(
-                onPressed: state['_sendData'] as VoidCallback,
-                child: const Text('Submit'),
-              ),
-            ),
+          ButtonWidget(
+            command: command,
+            state: state,
+            surveyTitle: surveyTitle,
           ),
         );
       } else if (command

@@ -1,6 +1,6 @@
 /// Text formatting utility.
 ///
-// Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
+// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -30,26 +30,31 @@
 
 import 'package:flutter/material.dart';
 
-// Function to manually justify text.
+/// Function to manually justify text.
+
 List<TextSpan> justifyText(String text, TextStyle style, double maxWidth) {
   List<String> lines = text.split('\n');
   List<TextSpan> justifiedSpans = [];
 
-  // Update the style with black color
+  // Update the style with black color.
+
   TextStyle blackTextStyle = style.copyWith(color: Colors.black);
 
   for (String line in lines) {
-    // Trim the line and check if it contains any whitespace
+    // Trim the line and check if it contains any whitespace.
+
     String trimmedLine = line.trim();
     bool hasWhitespace = trimmedLine.contains(RegExp(r'\s'));
 
     List<String> units;
 
     if (hasWhitespace) {
-      // If the line contains spaces, split into words
+      // If the line contains spaces, split into words.
+
       units = trimmedLine.split(RegExp(r'\s+'));
     } else {
-      // If no spaces, split into individual characters (grapheme clusters)
+      // If no spaces, split into individual characters (grapheme clusters).
+
       units = trimmedLine.characters.toList();
     }
 
@@ -58,30 +63,36 @@ List<TextSpan> justifyText(String text, TextStyle style, double maxWidth) {
       continue;
     }
 
-    // Create a TextPainter to measure the text width
+    // Create a TextPainter to measure the text width.
+
     TextPainter textPainter = TextPainter(
       textDirection: TextDirection.ltr,
       text: TextSpan(text: trimmedLine, style: blackTextStyle),
     );
 
-    // Set the maximum width
+    // Set the maximum width.
+
     textPainter.layout(minWidth: 0, maxWidth: maxWidth);
     double textWidth = textPainter.width;
 
-    // Calculate the extra space needed
+    // Calculate the extra space needed.
+
     double extraSpace = maxWidth - textWidth;
 
     if (extraSpace <= 0) {
-      // If there's no extra space, no need to adjust
+      // If there's no extra space, no need to adjust.
+
       justifiedSpans.add(TextSpan(text: '$trimmedLine', style: blackTextStyle));
       continue;
     }
 
-    // Calculate the additional space to add between units
+    // Calculate the additional space to add between units.
+
     int gapCount = units.length - 1;
     double additionalSpacePerGap = extraSpace / gapCount;
 
-    // Build the adjusted line using InlineSpans
+    // Build the adjusted line using InlineSpans.
+
     List<InlineSpan> spanChildren = [];
     for (int i = 0; i < units.length; i++) {
       spanChildren.add(TextSpan(text: units[i], style: blackTextStyle));

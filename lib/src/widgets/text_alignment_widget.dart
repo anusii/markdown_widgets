@@ -1,6 +1,6 @@
 /// Text alignment processing.
 ///
-// Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
+// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -30,9 +30,9 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_widgets/src/utils/justify_text.dart';
 import 'package:markdown_widgets/src/constants/pkg.dart'
     show contentWidthFactor, screenWidth;
+import 'package:markdown_widgets/src/utils/justify_text.dart';
 
 class TextAlignmentWidget extends StatelessWidget {
   final String align;

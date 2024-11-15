@@ -82,7 +82,7 @@ about Markdown.
 
 %% EmptyLine
 
-%% Submit
+%% Button(Save,0,result.json)
 
 ## Survey 2
 
@@ -125,7 +125,7 @@ Thank you.
 
 %% EmptyLine
 
-%% Submit
+%% Button(Save,0,result.json)
 
 ## Survey 3
 
@@ -183,4 +183,4 @@ is maintained.
 
 %% EmptyLine
 
-%% Submit
+%% Button(Submit,1,http://127.0.0.1:8081/receive-json)

@@ -1,6 +1,6 @@
 /// Helper methods for markdown widgets.
 ///
-// Time-stamp: <Sunday 2023-12-31 18:58:28 +1100 Graham Williams>
+// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -30,20 +30,20 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_widgets/src/widgets/description_box.dart';
-import 'package:markdown_widgets/src/widgets/text_heading_widget.dart';
-import 'package:markdown_widgets/src/widgets/text_alignment_widget.dart';
-import 'package:markdown_widgets/src/widgets/image_widget.dart';
-import 'package:markdown_widgets/src/widgets/video_widget.dart';
-import 'package:markdown_widgets/src/widgets/audio_widget.dart';
-import 'package:markdown_widgets/src/widgets/timer_widget.dart';
-import 'package:markdown_widgets/src/widgets/slider_widget.dart';
-import 'package:markdown_widgets/src/widgets/input_field.dart';
-import 'package:markdown_widgets/src/widgets/calendar_field.dart';
-import 'package:markdown_widgets/src/widgets/dropdown_widget.dart';
-import 'package:markdown_widgets/src/widgets/radio_group.dart';
-import 'package:markdown_widgets/src/widgets/checkbox_group.dart';
 import 'package:markdown_widgets/src/utils/parse_time_string.dart';
+import 'package:markdown_widgets/src/widgets/audio_widget.dart';
+import 'package:markdown_widgets/src/widgets/calendar_field.dart';
+import 'package:markdown_widgets/src/widgets/checkbox_group.dart';
+import 'package:markdown_widgets/src/widgets/description_box.dart';
+import 'package:markdown_widgets/src/widgets/dropdown_widget.dart';
+import 'package:markdown_widgets/src/widgets/image_widget.dart';
+import 'package:markdown_widgets/src/widgets/input_field.dart';
+import 'package:markdown_widgets/src/widgets/radio_group.dart';
+import 'package:markdown_widgets/src/widgets/slider_widget.dart';
+import 'package:markdown_widgets/src/widgets/text_alignment_widget.dart';
+import 'package:markdown_widgets/src/widgets/text_heading_widget.dart';
+import 'package:markdown_widgets/src/widgets/timer_widget.dart';
+import 'package:markdown_widgets/src/widgets/video_widget.dart';
 
 class Helpers {
   final BuildContext context;
