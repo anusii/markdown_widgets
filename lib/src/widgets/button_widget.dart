@@ -61,15 +61,11 @@ class _ButtonWidgetState extends State<ButtonWidget> {
   late final String buttonText;
   late final int actionType;
   late final String actionParameter;
-  late TextEditingController _filenameController;
 
   @override
   void initState() {
     super.initState();
     _parseCommand();
-    _filenameController = TextEditingController(
-      text: _generateFilename(widget.surveyTitle),
-    );
   }
 
   void _parseCommand() {
@@ -107,10 +103,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final _sliderValues = widget.state['_sliderValues'] as Map<String, double>;
     final _radioValues = widget.state['_radioValues'] as Map<String, String?>;
     final _checkboxValues =
-        widget.state['_checkboxValues'] as Map<String, Set<String>>;
+    widget.state['_checkboxValues'] as Map<String, Set<String>>;
     final _dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
     final _dropdownValues =
-        widget.state['_dropdownValues'] as Map<String, String?>;
+    widget.state['_dropdownValues'] as Map<String, String?>;
 
     // Add slider values.
 
@@ -137,7 +133,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
-            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
+        '${value.year}-${value.month.toString().padLeft(2, '0')}-'
             '${value.day.toString().padLeft(2, '0')}';
       } else {
         responses[key] = null;
@@ -202,62 +198,22 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       Map<String, dynamic> data, String defaultFileName) async {
     final jsonContent = encoder.convert(data);
 
-    // Show a dialog to input the filename.
+    final bytes = utf8.encode(jsonContent);
+    final blob = html.Blob([bytes], 'application/json');
+    final url = html.Url.createObjectUrlFromBlob(blob);
 
-    String? filename = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Save As'),
-          content: TextField(
-            controller: _filenameController,
-            decoration: InputDecoration(
-              hintText: 'Enter filename',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(null);
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(_filenameController.text);
-              },
-              child: Text('Save'),
-            ),
-          ],
-        );
-      },
+    // Create an anchor element, set its href and download attributes,
+    // and click it.
+
+    html.AnchorElement(href: url)
+      ..setAttribute('download', defaultFileName)
+      ..click();
+
+    html.Url.revokeObjectUrl(url);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Data downloaded as $defaultFileName')),
     );
-
-    if (filename != null && filename.isNotEmpty) {
-      if (!filename.endsWith('.json')) {
-        filename = '$filename.json';
-      }
-      final bytes = utf8.encode(jsonContent);
-      final blob = html.Blob([bytes], 'application/json');
-      final url = html.Url.createObjectUrlFromBlob(blob);
-
-      // Create an anchor element, set its href and download attributes,
-      // and click it.
-
-      html.AnchorElement(href: url)
-        ..setAttribute('download', filename)
-        ..click();
-
-      html.Url.revokeObjectUrl(url);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Data downloaded as $filename')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Save cancelled.')),
-      );
-    }
   }
 
   Future<void> _saveDataForNonWeb(
