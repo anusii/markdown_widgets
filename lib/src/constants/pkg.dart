@@ -1,6 +1,6 @@
 /// Package-wide constants.
 ///
-// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
+// Time-stamp: <Saturday 2024-11-16 16:41:22 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -32,7 +32,8 @@ import 'package:flutter/material.dart';
 
 const String applicationName = 'MarkDown Widgets';
 const String applicationVersion = '0.1.0';
-const String applicationRepo = 'https://github.com/anusii/markdown_widgets';
+const String applicationRepo =
+    'https://github.com/anusii/markdown_widget_builder';
 const String siiUrl = 'https://sii.anu.edu.au';
 const String assetsPath = 'assets';
 const String mediaPath = 'assets/media';

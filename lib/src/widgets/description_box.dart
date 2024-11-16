@@ -33,7 +33,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:markdown_widgets/src/constants/pkg.dart'
+import 'package:markdown_widget_builder/src/constants/pkg.dart'
     show contentWidthFactor, screenWidth;
 
 class DescriptionBox extends StatelessWidget {

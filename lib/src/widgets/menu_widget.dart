@@ -32,7 +32,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_widgets/src/constants/pkg.dart'
+import 'package:markdown_widget_builder/src/constants/pkg.dart'
     show contentWidthFactor, screenWidth;
 
 class MenuWidget extends StatelessWidget {

@@ -1,6 +1,6 @@
 /// Widgets for survey questionnaires defined using markdown-like syntax.
 ///
-// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
+// Time-stamp: <Saturday 2024-11-16 16:41:53 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -28,7 +28,7 @@
 ///
 /// Authors: Tony Chen
 
-library markdown_widgets;
+library markdown_widget_builder;
 
 // Markdown widget builder.
 

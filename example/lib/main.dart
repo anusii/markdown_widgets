@@ -1,6 +1,6 @@
 /// Example app.
 ///
-// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
+// Time-stamp: <Saturday 2024-11-16 16:58:04 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -33,14 +33,14 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-import 'package:markdown_widgets/markdown_widgets.dart';
+import 'package:markdown_widget_builder/markdown_widget_builder.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 /// A simple Flutter application demonstrating how to use the
-/// MarkdownWidgetBuilder from the markdown_widgets package.
+/// MarkdownWidgetBuilder from the markdown_widget_builder package.
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -98,7 +98,6 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
                 content: markdownContent,
                 title: 'Sample Markdown',
                 onMenuItemSelected: (selectedTitle, selectedContent) {
-
                   // Navigate to a detailed page when a menu item is selected.
 
                   Navigator.push(
@@ -164,7 +163,6 @@ class MarkdownDetailPage extends StatelessWidget {
           content: content,
           title: title,
           onMenuItemSelected: (selectedTitle, selectedContent) {
-
             // Navigate to another detail page if a menu item is selected.
 
             Navigator.push(

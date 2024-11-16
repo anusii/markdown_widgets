@@ -1,8 +1,8 @@
 ########################################################################
 #
-# Makefile for markdown_widgets package.
+# Makefile for markdown_widget_builder package.
 #
-# Time-stamp: <Sunday 2024-05-12 11:16:36 +1000 Graham Williams>
+# Time-stamp: <Saturday 2024-11-16 16:55:47 +1100 Graham Williams>
 #
 # Copyright (c) Graham.Williams@togaware.com
 #

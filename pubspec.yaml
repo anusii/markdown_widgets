@@ -1,7 +1,7 @@
-name: markdown_widgets
-description: "Widgets for survey questionnaires defined using markdown-like syntax."
+name: markdown_widget_builder
+description: "Widget builder for surveys defined using markdown-like syntax."
 version: 0.0.1
-homepage: https://github.com/anusii/markdown_widgets
+homepage: https://github.com/anusii/markdown_widget_builder
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
