@@ -10,8 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  markdown_widget_builder:
-    path: ../
+  markdown_widget_builder: ^0.0.2
+    # path: ../
 
 dev_dependencies:
   flutter_test:
