@@ -1,6 +1,6 @@
-/// Example app.
+/// An example of loading a markdown with 4 surveys and rendering them.
 ///
-// Time-stamp: <Saturday 2024-11-16 16:58:04 +1100 Graham Williams>
+// Time-stamp: <Sunday 2024-11-17 10:10:59 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -27,8 +27,6 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
-
-library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
