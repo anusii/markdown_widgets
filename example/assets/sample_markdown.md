@@ -2,19 +2,25 @@
 - Survey 1
 - Survey 2
 - Survey 3
+- Survey 4
 %% Menu-End
 
 ## Survey 1
 
-**Please complete the survey below.**
+%% Description-Begin
+This survey is an example survey about **selection widgets**, including a date
+pickers, a dropdown menu, some radio buttons and checkboxes.
+%% Description-End
 
-Thank you.
+%% EmptyLine
 
-**Date:**
+Please select a date from the date picker.
 
 %% Calendar(Date)
 
-**Please select an option from the dropdown menu.**
+%% EmptyLine
+
+Please select an option from the dropdown menu.
 
 %% Dropdown(Dropdown Menu)
 - Option 1
@@ -22,25 +28,10 @@ Thank you.
 - Option 3
 - Option 4
 
-%% Description-Begin
-
-This is a description box. It supports **Markdown formatted** text
-including URL links. Click
-[here](https://www.markdownguide.org/basic-syntax/) to learn more
-about Markdown.
-
-%% Description-End
-
 %% EmptyLine
 
-%% Video(sample_video.mp4)
-
-%% H6Right-Begin 📍The Birch Building, ANU. Filmed by @tonypioneer.
-%% H6Right-End
-
-%% EmptyLine
-
-1. This is Question 1. Only one option can be selected.
+1. This is Question 1. The following four options belong to the same group.
+   Only one option can be selected.
 
 %% Radio(Question 1,1,Option 1)
 %% Radio(Question 1,2,Option 2)
@@ -49,7 +40,10 @@ about Markdown.
 
 %% EmptyLine
 
-2. This is Question 2. Only one option can be selected.
+2. This is Question 2. Only one option can be selected. The following four 
+   options belong to a different group from Question 1, and the user's 
+   selections for these two groups are independent and will not affect each 
+   other. 
 
 %% Radio(Question 2,1,Option 1)
 %% Radio(Question 2,2,Option 2)
@@ -58,7 +52,8 @@ about Markdown.
 
 %% EmptyLine
 
-3. This is Question 3. Multiple options can be selected.
+3. The following are two groups of checkboxes. This is Question 3. Multiple 
+   options can be selected.
 
 %% Checkbox(Question 3,1,Option 1)
 %% Checkbox(Question 3,2,Option 2)
@@ -69,7 +64,7 @@ about Markdown.
 
 %% EmptyLine
 
-4. This is Question 4. Multiple options can be selected.
+4. This is Question 4. Multiple options can be selected as well.
 
 %% Checkbox(Question 4,1,Option 1)
 %% Checkbox(Question 4,2,Option 2)
@@ -82,60 +77,46 @@ about Markdown.
 
 %% EmptyLine
 
+%% Description-Begin
+The following is a group of buttons, including a **Save** button and a
+**Submit** button.
+
+The **Save** button is used to collect all the data filled in by the user in the
+survey form and save it to a local JSON file, with the default file name
+being the survey's title.
+
+The **Submit** button is used to send the user-filled data to a specified URL
+via a POST request. Before submitting, please make sure the data receiving
+server is running.
+%% Description-End
+
+%% EmptyLine
+
 %% Button(Save,0)
+
+%% EmptyLine
+
+%% Button(Submit,1,http://127.0.0.1:8081/receive-json)
+
+%% EmptyLine
 
 ## Survey 2
 
-**Please complete the survey below.**
+%% Description-Begin
+The following is a group of **selection sliders**.
 
-Thank you.
-
-**Date:**
-
-%% Calendar(Date)
-
-**Please select an option from the dropdown menu.**
-
-%% Dropdown(Dropdown Menu)
-- Option 1
-- Option 2
-- Option 3
-- Option 4
-
-1. The following is a sample audio. It could be instructions for
-   filling in the survey or an explanation of the meaning of a
-   question.
-
-%% Audio(sample_audio.mp3)
-
-%% EmptyLine
-
-2. The following is a single-line input field. The respondent can type
-   or paste but it will all be a single line string.
-
-%% InputSL(Question 1)
-
-%% EmptyLine
-
-3. The following is a multiple-line input field.
-
-%% InputML(Question 2)
-
-%% EmptyLine
-
-%% EmptyLine
-
-%% Button(Save,0)
-
-## Survey 3
-
-%% H3Center-Begin Welcome to the survey! %% H3Center-End
-
-%% H4Center-Begin Please complete the survey below. %% H4Center-End
+In this group of sliders, the survey form designer can customise the maximum 
+value, minimum value, default value, and step length of the sliders. They can
+also use text formatting commands to add labels to the sliders.
+%% Description-End
 
 %% EmptyLine
 
 1. How would you describe your current mood?
+
+   This example includes a group 
+   of emojis that are evenly distributed at both ends, as well as a slider with 
+   a range from 0 to 100.
 
 %% H1Justify-Begin😭☹️🙂️😄%% H1Justify-End
 
@@ -143,14 +124,19 @@ Thank you.
 
 %% EmptyLine
 
-2. How would you rate your satisfaction with us? Minimum is 0, maximum is 10, 
-and the default value is 5.
+2. How would you rate your satisfaction with us?
 
-%% Slider(Question 2,0,10,5,1)
+   In this example, the minimum value that the user can select is 1, the 
+   maximum value is 5, and the default value is 3.
+
+%% AlignJustify-Begin  12345  %% AlignJustify-End
+
+%% Slider(Question 2,1,5,3,1)
 
 %% EmptyLine
 
-3. This is a slider with a step of 5.
+3. This example allows the user to select values in increments of 5. The
+   minimum value is 0, the maximum value is 50, and the default value is 0.
 
 %% Slider(Question 3,0,50,0,5)
 
@@ -158,16 +144,138 @@ and the default value is 5.
 
 %% EmptyLine
 
+%% EmptyLine
+
+%% Button(Save,0)
+
+%% EmptyLine
+
+%% Button(Submit,1,http://127.0.0.1:8081/receive-json)
+
+%% EmptyLine
+
+## Survey 3
+
 %% Description-Begin
-
-The following is a sample image. We can use images to enhance the user
-experience, or to add context for questions in a survey. The
-*Original* image here is rendered to the size from the image file
-itself. The *Resized* image below is resized to a specific size, being
-400x300 in this case. Note that in resizing the image the aspect ratio
-is maintained.
-
+The following is an example of a group of **text tools**, including formatted
+text marked with Markdown syntax, single-line and multi-line text input boxes,
+hyperlinks, text alignment tools, and heading text of different font sizes with
+alignment options.
 %% Description-End
+
+%% EmptyLine
+
+This paragraph is marked with **Markdown** syntax. You can click
+[here](https://www.markdownguide.org/basic-syntax/) to learn more about _Markdown_.
+
+%% EmptyLine
+
+%% Description-Begin
+This is a description box. It also supports **Markdown formatted** text
+including [hyperlinks](https://www.markdownguide.org/basic-syntax/).
+%% Description-End
+
+%% EmptyLine
+
+Next is a set of text examples with different font sizes and alignment options.
+
+%% H1Left-Begin Heading 1 %% H1Left-End
+
+%% H2Left-Begin Heading 2 %% H2Left-End
+
+%% H3Left-Begin Heading 3 %% H3Left-End
+
+%% H4Left-Begin Heading 4 %% H4Left-End
+
+%% H5Left-Begin Heading 5 %% H5Left-End
+
+%% H6Left-Begin Heading 6 %% H6Left-End
+
+%% AlignLeft-Begin Left-aligned text %% AlignLeft-End
+
+%% AlignCenter-Begin Center-aligned text %% AlignCenter-End
+
+%% AlignRight-Begin Right-aligned text %% AlignRight-End
+
+%% AlignJustify-Begin Text justified with words evenly distributed at both ends.
+%% AlignJustify-End
+
+%% EmptyLine
+
+%% Description-Begin
+The following is a single-line input field and a multiple-line input field.
+%% Description-End
+
+%% EmptyLine
+
+1. What is your name?
+
+   This is an example of a single-line input box. Users can type or paste,
+   but they can only enter a single line of text.
+
+%% InputSL(Question 1)
+
+%% EmptyLine
+
+2. Do you have any feedback or suggestions?
+
+   This is an example of a multiple-line input box. Users can enter multiple
+   lines of text.
+
+%% InputML(Question 2)
+
+%% EmptyLine
+
+%% EmptyLine
+
+%% EmptyLine
+
+%% Button(Save,0)
+
+%% EmptyLine
+
+%% Button(Submit,1,http://127.0.0.1:8081/receive-json)
+
+%% EmptyLine
+
+## Survey 4
+
+%% Description-Begin
+The following is a group of **multimedia tools**, including audio, video, and
+images. These tools can be used to enhance the user experience, add context to
+questions, or provide instructions for filling in the survey.
+%% Description-End
+
+%% EmptyLine
+
+1. The following is a sample video. It could be an instructional video or a
+   video related to the survey content.
+
+%% EmptyLine
+
+%% Video(sample_video.mp4)
+
+%% H6Right-Begin 📍The Birch Building, ANU. Filmed by @tonypioneer.
+%% H6Right-End
+
+%% EmptyLine
+
+2. The following is a sample audio. It could be a voice message, background
+   music, or an audio clip related to the survey content.
+
+%% Audio(sample_audio.mp3)
+
+%% EmptyLine
+
+3. The following is a sample image. We can use images to enhance the user
+experience, or to add context for questions in a survey. The *Original* image 
+here means the image is rendered to the width that spans the entire width of
+the survey form, maintaining its aspect ratio. The *Resized* image below is
+resized to a specific size, being 400 x 300 and 133 x 100 in this case. Note 
+that in resizing the image, the aspect ratio is maintained, scaling the width
+according to the image height.
+
+%% EmptyLine
 
 %% AlignCenter-Begin Original %% AlignCenter-End
 
@@ -175,12 +283,26 @@ is maintained.
 
 %% H6Right-Begin 📍Hancock Library, ANU. Photo by @tonypioneer. %% H6Right-End
 
-%% AlignCenter-Begin Resized %% AlignCenter-End
+%% AlignCenter-Begin Resized (400 x 300) %% AlignCenter-End
 
 %% Image(sample_image.jpg,400,300)
+
+%% EmptyLine
+
+%% AlignCenter-Begin Resized (133 x 100) %% AlignCenter-End
+
+%% Image(sample_image.jpg,133,100)
+
+%% EmptyLine
 
 %% EmptyLine
 
 %% EmptyLine
 
 %% Button(Save,0)
+
+%% EmptyLine
+
+%% Button(Submit,1,http://127.0.0.1:8081/receive-json)
+
+%% EmptyLine

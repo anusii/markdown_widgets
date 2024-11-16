@@ -30,6 +30,7 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -41,7 +42,10 @@ def receive_json():
         if data is None:
             return jsonify({"error": "Invalid JSON data"}), 400
 
-        print("Received JSON data:", data)
+        # Format the JSON data and print it.
+
+        formatted_data = json.dumps(data, indent=4)
+        print(f"Received JSON data:\n{formatted_data}")
 
         return jsonify({"message": "JSON data received successfully!"}), 200
     except Exception as e:
