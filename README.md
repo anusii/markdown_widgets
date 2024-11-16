@@ -1,15 +1,16 @@
 [![Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue.svg)](https://flutter.dev/)
-[![Pub Package](https://img.shields.io/pub/v/markdown_widgets)](https://pub.dev/packages/markdown_widgets)
-[![GitHub Issues](https://img.shields.io/github/issues/anusii/markdown_widgets)](https://github.com/anusii/markdown_widgets/issues)
-[![GitHub License](https://img.shields.io/github/license/anusii/markdown_widgets)](https://raw.githubusercontent.com/anusii/markdown_widgets/main/LICENSE)
+[![Pub Package](https://img.shields.io/pub/v/markdown_widget_builder)](https://pub.dev/packages/markdown_widget_builder)
+[![GitHub Issues](https://img.shields.io/github/issues/anusii/markdown_widget_builder)](https://github.com/anusii/markdown_widget_builder/issues)
+[![GitHub License](https://img.shields.io/github/license/anusii/markdown_widget_builder)](https://raw.githubusercontent.com/anusii/markdown_widget_builder/main/LICENSE)
 
-# Markdown Widgets
+# Markdown Widget Builder
 
-This package is designed to define human-computer interaction widgets within 
-Flutter markdown pages using a markdown-like syntax, making it suitable for use
-in survey questionnaires and similar scenarios.
+This package is designed to define human-computer interaction widgets
+to build a Flutter widget as a markdown page using a markdown-like
+syntax, making it suitable for use in surveys and similar scenarios.
 
-The following are the syntax to generate interactive surveys in markdown pages.
+The following is the syntax to generate interactive surveys in
+markdown pages.
 
 ## Survey Menu
 

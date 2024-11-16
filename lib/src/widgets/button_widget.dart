@@ -39,7 +39,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:universal_html/html.dart' as html;
 
-import 'package:markdown_widgets/src/constants/pkg.dart';
+import 'package:markdown_widget_builder/src/constants/pkg.dart';
 
 class ButtonWidget extends StatefulWidget {
   final String command;

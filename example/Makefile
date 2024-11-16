@@ -1,8 +1,8 @@
 ########################################################################
 #
-# Makefile for markdown_widgets example app.
+# Makefile for markdown_widget_builder example app.
 #
-# Time-stamp: <Wednesday 2024-11-13 15:09:19 +1100 Graham Williams>
+# Time-stamp: <Saturday 2024-11-16 16:58:35 +1100 Graham Williams>
 #
 # Copyright (c) Graham.Williams@togaware.com
 #

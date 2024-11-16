@@ -30,20 +30,20 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_widgets/src/utils/parse_time_string.dart';
-import 'package:markdown_widgets/src/widgets/audio_widget.dart';
-import 'package:markdown_widgets/src/widgets/calendar_field.dart';
-import 'package:markdown_widgets/src/widgets/checkbox_group.dart';
-import 'package:markdown_widgets/src/widgets/description_box.dart';
-import 'package:markdown_widgets/src/widgets/dropdown_widget.dart';
-import 'package:markdown_widgets/src/widgets/image_widget.dart';
-import 'package:markdown_widgets/src/widgets/input_field.dart';
-import 'package:markdown_widgets/src/widgets/radio_group.dart';
-import 'package:markdown_widgets/src/widgets/slider_widget.dart';
-import 'package:markdown_widgets/src/widgets/text_alignment_widget.dart';
-import 'package:markdown_widgets/src/widgets/text_heading_widget.dart';
-import 'package:markdown_widgets/src/widgets/timer_widget.dart';
-import 'package:markdown_widgets/src/widgets/video_widget.dart';
+import 'package:markdown_widget_builder/src/utils/parse_time_string.dart';
+import 'package:markdown_widget_builder/src/widgets/audio_widget.dart';
+import 'package:markdown_widget_builder/src/widgets/calendar_field.dart';
+import 'package:markdown_widget_builder/src/widgets/checkbox_group.dart';
+import 'package:markdown_widget_builder/src/widgets/description_box.dart';
+import 'package:markdown_widget_builder/src/widgets/dropdown_widget.dart';
+import 'package:markdown_widget_builder/src/widgets/image_widget.dart';
+import 'package:markdown_widget_builder/src/widgets/input_field.dart';
+import 'package:markdown_widget_builder/src/widgets/radio_group.dart';
+import 'package:markdown_widget_builder/src/widgets/slider_widget.dart';
+import 'package:markdown_widget_builder/src/widgets/text_alignment_widget.dart';
+import 'package:markdown_widget_builder/src/widgets/text_heading_widget.dart';
+import 'package:markdown_widget_builder/src/widgets/timer_widget.dart';
+import 'package:markdown_widget_builder/src/widgets/video_widget.dart';
 
 class Helpers {
   final BuildContext context;

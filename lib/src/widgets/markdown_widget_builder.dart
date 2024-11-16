@@ -33,8 +33,8 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:media_kit/media_kit.dart';
 
-import 'package:markdown_widgets/src/utils/command_parser.dart';
-import 'package:markdown_widgets/src/widgets/input_field.dart';
+import 'package:markdown_widget_builder/src/utils/command_parser.dart';
+import 'package:markdown_widget_builder/src/widgets/input_field.dart';
 
 /// A widget that builds markdown content with interactive elements.
 ///
