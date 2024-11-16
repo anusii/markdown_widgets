@@ -1,6 +1,6 @@
 /// Command parser for markdown widgets.
 ///
-// Time-stamp: <Tuesday 2024-11-12 20:31:44 +1100 Graham Williams>
+// Time-stamp: <Sunday 2024-11-17 09:56:04 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -30,8 +30,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show endingLines;
+import 'package:markdown_widget_builder/src/constants/pkg.dart';
 import 'package:markdown_widget_builder/src/utils/helpers.dart';
 import 'package:markdown_widget_builder/src/widgets/button_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/markdown_text.dart';
