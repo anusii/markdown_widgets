@@ -1,6 +1,6 @@
 /// Package-wide constants.
 ///
-// Time-stamp: <Saturday 2024-11-16 16:41:22 +1100 Graham Williams>
+// Time-stamp: <Sunday 2024-11-17 21:00:31 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -27,6 +27,8 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+library;
 
 import 'package:flutter/material.dart';
 

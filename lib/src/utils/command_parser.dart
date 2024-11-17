@@ -1,6 +1,6 @@
 /// Command parser for markdown widgets.
 ///
-// Time-stamp: <Sunday 2024-11-17 09:56:04 +1100 Graham Williams>
+// Time-stamp: <Sunday 2024-11-17 21:00:21 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -27,6 +27,8 @@
 // SOFTWARE.
 ///
 /// Authors: Tony Chen
+
+library;
 
 import 'package:flutter/material.dart';
 
