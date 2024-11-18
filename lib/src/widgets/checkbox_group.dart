@@ -90,20 +90,25 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: widget.options.map((option) {
             bool isChecked = _selectedValues.contains(option['value']!);
-            return Row(
-              children: [
-                Checkbox(
-                  value: isChecked,
-                  onChanged: (bool? newValue) {
-                    _onChanged(option['value']!, newValue);
-                  },
-                ),
-                Expanded(
-                  child: Text(
-                    option['label']!,
+            return GestureDetector(
+              onTap: () {
+                _onChanged(option['value']!, !isChecked);
+              },
+              child: Row(
+                children: [
+                  Checkbox(
+                    value: isChecked,
+                    onChanged: (bool? newValue) {
+                      _onChanged(option['value']!, newValue);
+                    },
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Text(
+                      option['label']!,
+                    ),
+                  ),
+                ],
+              ),
             );
           }).toList(),
         ),
