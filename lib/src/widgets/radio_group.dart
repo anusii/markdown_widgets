@@ -55,19 +55,24 @@ class RadioGroup extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: options.map((option) {
-            return Row(
-              children: [
-                Radio<String>(
-                  value: option['value']!,
-                  groupValue: selectedValue,
-                  onChanged: onChanged,
-                ),
-                Expanded(
-                  child: Text(
-                    option['label']!,
+            return InkWell(
+              onTap: () {
+                onChanged(option['value']);
+              },
+              child: Row(
+                children: [
+                  Radio<String>(
+                    value: option['value']!,
+                    groupValue: selectedValue,
+                    onChanged: onChanged,
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Text(
+                      option['label']!,
+                    ),
+                  ),
+                ],
+              ),
             );
           }).toList(),
         ),
