@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor;
+    show contentWidthFactor, screenWidth;
 
 class RadioGroup extends StatelessWidget {
   final String name;
@@ -50,8 +50,9 @@ class RadioGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
+      child: ConstrainedBox(
+        constraints:
+            BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: options.map((option) {

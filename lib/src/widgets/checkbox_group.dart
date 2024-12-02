@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor;
+    show contentWidthFactor, screenWidth;
 
 class CheckboxGroup extends StatefulWidget {
   final String name;
@@ -84,8 +84,9 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
+      child: ConstrainedBox(
+        constraints:
+            BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: widget.options.map((option) {
