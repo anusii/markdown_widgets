@@ -332,7 +332,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       Map<String, dynamic> data, String defaultFileName) async {
     final jsonContent = encoder.convert(data);
 
-    // Show a dialog to input the filename.
+    // Show a dialogue to input the filename.
 
     String? filename = await showDialog<String>(
       context: context,
