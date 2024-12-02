@@ -139,6 +139,9 @@ class Helpers {
   }
 
   Widget buildInputField(String name, {bool isMultiLine = false}) {
+    if (!state.containsKey('_inputFieldKeys')) {
+      state['_inputFieldKeys'] = {};
+    }
     if (!state['_inputFieldKeys'].containsKey(name)) {
       state['_inputFieldKeys'][name] = GlobalKey<InputFieldState>();
     }

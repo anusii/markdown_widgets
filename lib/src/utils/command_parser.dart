@@ -121,17 +121,22 @@ class CommandParser {
     // Regular expression to match video commands.
 
     final RegExp videoExp =
-        RegExp(r'%% Video\(([^)]+)\)', caseSensitive: false);
+    RegExp(r'%% Video\(([^)]+)\)', caseSensitive: false);
 
     // Regular expression to match audio commands.
 
     final RegExp audioExp =
-        RegExp(r'%% Audio\(([^)]+)\)', caseSensitive: false);
+    RegExp(r'%% Audio\(([^)]+)\)', caseSensitive: false);
 
     // Regular expression to match %% Menu blocks.
 
     final RegExp menuBlockExp =
-        RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End', caseSensitive: false);
+    RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End', caseSensitive: false);
+
+    // Regular expression to match %% Button-Begin blocks.
+    final RegExp buttonBlockExp = RegExp(
+        r'%% Button-Begin\((.*?)\)([\s\S]*?)%% Button-End',
+        caseSensitive: false);
 
     String modifiedContent = content;
 
@@ -143,6 +148,20 @@ class CommandParser {
       String placeholder = '%%MenuPlaceholder$menuIndex%%';
       menuPlaceholders[placeholder] = match.group(1)!;
       menuIndex++;
+      return placeholder;
+    });
+
+    // Parse the button blocks and replace with placeholders.
+
+    int buttonIndex = 0;
+    final Map<String, Map<String, String>> buttonPlaceholders = {};
+    modifiedContent = modifiedContent.replaceAllMapped(buttonBlockExp, (match) {
+      String placeholder = '%%ButtonPlaceholder$buttonIndex%%';
+      buttonPlaceholders[placeholder] = {
+        'command': match.group(1)!,
+        'requiredWidgets': match.group(2)!,
+      };
+      buttonIndex++;
       return placeholder;
     });
 
@@ -173,11 +192,11 @@ class CommandParser {
     final Map<String, String> descriptionPlaceholders = {};
     modifiedContent =
         modifiedContent.replaceAllMapped(descriptionBlockExp, (match) {
-      String placeholder = '%%DescriptionPlaceholder$descriptionIndex%%';
-      descriptionPlaceholders[placeholder] = match.group(1)!;
-      descriptionIndex++;
-      return placeholder;
-    });
+          String placeholder = '%%DescriptionPlaceholder$descriptionIndex%%';
+          descriptionPlaceholders[placeholder] = match.group(1)!;
+          descriptionIndex++;
+          return placeholder;
+        });
 
     // Parse heading blocks with alignment and replace with placeholders.
 
@@ -185,15 +204,15 @@ class CommandParser {
     final Map<String, Map<String, String>> headingPlaceholders = {};
     modifiedContent =
         modifiedContent.replaceAllMapped(headingAlignBlockExp, (match) {
-      String placeholder = '%%HeadingPlaceholder$headingIndex%%';
-      headingPlaceholders[placeholder] = {
-        'level': match.group(1)!,
-        'align': match.group(2) ?? 'Left',
-        'content': match.group(3)!,
-      };
-      headingIndex++;
-      return placeholder;
-    });
+          String placeholder = '%%HeadingPlaceholder$headingIndex%%';
+          headingPlaceholders[placeholder] = {
+            'level': match.group(1)!,
+            'align': match.group(2) ?? 'Left',
+            'content': match.group(3)!,
+          };
+          headingIndex++;
+          return placeholder;
+        });
 
     // Parse alignment blocks and replace with placeholders.
 
@@ -221,7 +240,8 @@ class CommandParser {
         r'%%DescriptionPlaceholder\d+%%|'
         r'%%HeadingPlaceholder\d+%%|'
         r'%%AlignPlaceholder\d+%%|'
-        r'%%MenuPlaceholder\d+%%)',
+        r'%%MenuPlaceholder\d+%%|'
+        r'%%ButtonPlaceholder\d+%%)',
         caseSensitive: false);
 
     final matches = customCommandExp.allMatches(modifiedContent).toList();
@@ -244,7 +264,7 @@ class CommandParser {
         // Extract the markdown content between custom commands.
 
         String markdownContent =
-            modifiedContent.substring(lastIndex, match.start);
+        modifiedContent.substring(lastIndex, match.start);
         if (markdownContent.trim().isNotEmpty) {
           // Build any unfinished radio or checkbox groups.
 
@@ -461,6 +481,37 @@ class CommandParser {
         widgets.add(
           ButtonWidget(
             command: command,
+            requiredWidgets: [],
+            state: state,
+            surveyTitle: surveyTitle,
+          ),
+        );
+      } else if (command.startsWith(
+          RegExp(r'%%ButtonPlaceholder', caseSensitive: false))) {
+        // Build any unfinished groups
+        if (currentRadioGroupName != null) {
+          widgets.add(helpers.buildRadioGroup(
+              currentRadioGroupName, currentRadioOptions));
+          currentRadioGroupName = null;
+          currentRadioOptions = [];
+        }
+        if (currentCheckboxGroupName != null) {
+          widgets.add(helpers.buildCheckboxGroup(
+              currentCheckboxGroupName, currentCheckboxOptions));
+          currentCheckboxGroupName = null;
+          currentCheckboxOptions = [];
+        }
+        // Get the actual button command and required widgets.
+        final buttonInfo = buttonPlaceholders[command]!;
+        final commandStr = buttonInfo['command']!;
+        final requiredWidgetsStr = buttonInfo['requiredWidgets']!;
+        // Parse the required widgets list.
+        List<String> requiredWidgets = _parseRequiredWidgets(requiredWidgetsStr);
+        // Create the ButtonWidget.
+        widgets.add(
+          ButtonWidget(
+            command: '%% Button($commandStr)',
+            requiredWidgets: requiredWidgets,
             state: state,
             surveyTitle: surveyTitle,
           ),
@@ -487,7 +538,8 @@ class CommandParser {
 
           // If starting a new radio group or the group name has changed.
 
-          if (currentRadioGroupName == null || currentRadioGroupName != name) {
+          if (currentRadioGroupName == null ||
+              currentRadioGroupName != name) {
             // If there is a previous radio group, build it first.
 
             if (currentRadioGroupName != null) {
@@ -625,7 +677,7 @@ class CommandParser {
         }
 
         final calendarExp =
-            RegExp(r'%% Calendar\(([^\)]+)\)', caseSensitive: false);
+        RegExp(r'%% Calendar\(([^\)]+)\)', caseSensitive: false);
         final calendarMatch = calendarExp.firstMatch(command);
 
         if (calendarMatch != null) {
@@ -660,7 +712,7 @@ class CommandParser {
         }
 
         final dropdownExp =
-            RegExp(r'%% Dropdown\(([^\)]+)\)', caseSensitive: false);
+        RegExp(r'%% Dropdown\(([^\)]+)\)', caseSensitive: false);
         final dropdownMatch = dropdownExp.firstMatch(command);
 
         if (dropdownMatch != null) {
@@ -685,7 +737,7 @@ class CommandParser {
           // does not start with '-' or the next command starts.
 
           final lines =
-              modifiedContent.substring(optionsStartIndex).split('\n');
+          modifiedContent.substring(optionsStartIndex).split('\n');
           final List<String> options = [];
           int lineOffset = 0;
 
@@ -741,7 +793,7 @@ class CommandParser {
         }
 
         final inputSLExp =
-            RegExp(r'%% InputSL\(([^\)]+)\)', caseSensitive: false);
+        RegExp(r'%% InputSL\(([^\)]+)\)', caseSensitive: false);
         final inputSLMatch = inputSLExp.firstMatch(command);
 
         if (inputSLMatch != null) {
@@ -774,7 +826,7 @@ class CommandParser {
         }
 
         final inputMLExp =
-            RegExp(r'%% InputML\(([^\)]+)\)', caseSensitive: false);
+        RegExp(r'%% InputML\(([^\)]+)\)', caseSensitive: false);
         final inputMLMatch = inputMLExp.firstMatch(command);
 
         if (inputMLMatch != null) {
@@ -842,5 +894,19 @@ class CommandParser {
     widgets.add(SizedBox(height: lineHeight * endingLines));
 
     return widgets;
+  }
+
+  List<String> _parseRequiredWidgets(String content) {
+    final lines = content.split('\n');
+    final widgetNames = <String>[];
+    for (var line in lines) {
+      final trimmedLine = line.trim();
+      if (trimmedLine.startsWith('- ')) {
+        widgetNames.add(trimmedLine.substring(2).trim());
+      } else if (trimmedLine.isNotEmpty) {
+        widgetNames.add(trimmedLine);
+      }
+    }
+    return widgetNames;
   }
 }

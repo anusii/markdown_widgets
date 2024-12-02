@@ -43,12 +43,14 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart';
 
 class ButtonWidget extends StatefulWidget {
   final String command;
+  final List<String> requiredWidgets;
   final Map<String, dynamic> state;
   final String surveyTitle;
 
   ButtonWidget({
     Key? key,
     required this.command,
+    required this.requiredWidgets,
     required this.state,
     required this.surveyTitle,
   }) : super(key: key);
@@ -73,7 +75,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
   }
 
   void _parseCommand() {
-    final buttonExp = RegExp(r'%% Button\((.+)\)');
+    final buttonExp = RegExp(r'%% Button\((.+)\)', caseSensitive: false);
     final buttonMatch = buttonExp.firstMatch(widget.command);
 
     if (buttonMatch != null) {
@@ -107,10 +109,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final _sliderValues = widget.state['_sliderValues'] as Map<String, double>;
     final _radioValues = widget.state['_radioValues'] as Map<String, String?>;
     final _checkboxValues =
-        widget.state['_checkboxValues'] as Map<String, Set<String>>;
+    widget.state['_checkboxValues'] as Map<String, Set<String>>;
     final _dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
     final _dropdownValues =
-        widget.state['_dropdownValues'] as Map<String, String?>;
+    widget.state['_dropdownValues'] as Map<String, String?>;
 
     // Add slider values.
 
@@ -137,7 +139,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
-            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
+        '${value.year}-${value.month.toString().padLeft(2, '0')}-'
             '${value.day.toString().padLeft(2, '0')}';
       } else {
         responses[key] = null;
@@ -159,7 +161,130 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     return responses;
   }
 
+  bool _validateRequiredWidgets() {
+    bool isValid = true;
+    List<String> invalidWidgets = [];
+
+    for (String widgetName in widget.requiredWidgets) {
+      bool widgetHasValue = false;
+      // Check in _inputValues
+      if (widget.state['_inputValues'][widgetName]?.trim().isNotEmpty ?? false) {
+        widgetHasValue = true;
+      }
+      // Check in _sliderValues
+      else if (widget.state['_sliderValues'][widgetName] != null) {
+        widgetHasValue = true;
+      }
+      // Check in _radioValues
+      else if (widget.state['_radioValues'][widgetName]?.trim().isNotEmpty ?? false) {
+        widgetHasValue = true;
+      }
+      // Check in _checkboxValues
+      else if (widget.state['_checkboxValues'][widgetName]?.isNotEmpty ?? false) {
+        widgetHasValue = true;
+      }
+      // Check in _dateValues
+      else if (widget.state['_dateValues'][widgetName] != null) {
+        widgetHasValue = true;
+      }
+      // Check in _dropdownValues
+      else if (widget.state['_dropdownValues'][widgetName]?.trim().isNotEmpty ?? false) {
+        widgetHasValue = true;
+      }
+
+      if (!widgetHasValue) {
+        isValid = false;
+        invalidWidgets.add(widgetName);
+        // Highlight the widget
+        // InputField
+        if (widget.state['_inputFieldKeys'] != null &&
+            widget.state['_inputFieldKeys'][widgetName] != null) {
+          final key = widget.state['_inputFieldKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // Similar for other widgets...
+        // RadioGroup
+        if (widget.state['_radioGroupKeys'] != null &&
+            widget.state['_radioGroupKeys'][widgetName] != null) {
+          final key = widget.state['_radioGroupKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // CheckboxGroup
+        if (widget.state['_checkboxGroupKeys'] != null &&
+            widget.state['_checkboxGroupKeys'][widgetName] != null) {
+          final key = widget.state['_checkboxGroupKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // CalendarField
+        if (widget.state['_calendarFieldKeys'] != null &&
+            widget.state['_calendarFieldKeys'][widgetName] != null) {
+          final key = widget.state['_calendarFieldKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // DropdownWidget
+        if (widget.state['_dropdownKeys'] != null &&
+            widget.state['_dropdownKeys'][widgetName] != null) {
+          final key = widget.state['_dropdownKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // SliderWidget
+        if (widget.state['_sliderKeys'] != null &&
+            widget.state['_sliderKeys'][widgetName] != null) {
+          final key = widget.state['_sliderKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+      } else {
+        // Clear validation error if any
+        if (widget.state['_inputFieldKeys'] != null &&
+            widget.state['_inputFieldKeys'][widgetName] != null) {
+          final key = widget.state['_inputFieldKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        // Similar for other widgets...
+        if (widget.state['_radioGroupKeys'] != null &&
+            widget.state['_radioGroupKeys'][widgetName] != null) {
+          final key = widget.state['_radioGroupKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        if (widget.state['_checkboxGroupKeys'] != null &&
+            widget.state['_checkboxGroupKeys'][widgetName] != null) {
+          final key = widget.state['_checkboxGroupKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        if (widget.state['_calendarFieldKeys'] != null &&
+            widget.state['_calendarFieldKeys'][widgetName] != null) {
+          final key = widget.state['_calendarFieldKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        if (widget.state['_dropdownKeys'] != null &&
+            widget.state['_dropdownKeys'][widgetName] != null) {
+          final key = widget.state['_dropdownKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        if (widget.state['_sliderKeys'] != null &&
+            widget.state['_sliderKeys'][widgetName] != null) {
+          final key = widget.state['_sliderKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+      }
+    }
+
+    if (!isValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill in all required fields: ${invalidWidgets.join(', ')}'),
+        ),
+      );
+    }
+
+    return isValid;
+  }
+
   Future<void> _handleButtonPress() async {
+    if (!_validateRequiredWidgets()) {
+      return;
+    }
+
     final data = _collectData();
 
     if (actionType == 0) {
