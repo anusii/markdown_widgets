@@ -121,17 +121,17 @@ class CommandParser {
     // Regular expression to match video commands.
 
     final RegExp videoExp =
-    RegExp(r'%% Video\(([^)]+)\)', caseSensitive: false);
+        RegExp(r'%% Video\(([^)]+)\)', caseSensitive: false);
 
     // Regular expression to match audio commands.
 
     final RegExp audioExp =
-    RegExp(r'%% Audio\(([^)]+)\)', caseSensitive: false);
+        RegExp(r'%% Audio\(([^)]+)\)', caseSensitive: false);
 
     // Regular expression to match %% Menu blocks.
 
     final RegExp menuBlockExp =
-    RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End', caseSensitive: false);
+        RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End', caseSensitive: false);
 
     // Regular expression to match %% Button-Begin blocks.
     final RegExp buttonBlockExp = RegExp(
@@ -192,11 +192,11 @@ class CommandParser {
     final Map<String, String> descriptionPlaceholders = {};
     modifiedContent =
         modifiedContent.replaceAllMapped(descriptionBlockExp, (match) {
-          String placeholder = '%%DescriptionPlaceholder$descriptionIndex%%';
-          descriptionPlaceholders[placeholder] = match.group(1)!;
-          descriptionIndex++;
-          return placeholder;
-        });
+      String placeholder = '%%DescriptionPlaceholder$descriptionIndex%%';
+      descriptionPlaceholders[placeholder] = match.group(1)!;
+      descriptionIndex++;
+      return placeholder;
+    });
 
     // Parse heading blocks with alignment and replace with placeholders.
 
@@ -204,15 +204,15 @@ class CommandParser {
     final Map<String, Map<String, String>> headingPlaceholders = {};
     modifiedContent =
         modifiedContent.replaceAllMapped(headingAlignBlockExp, (match) {
-          String placeholder = '%%HeadingPlaceholder$headingIndex%%';
-          headingPlaceholders[placeholder] = {
-            'level': match.group(1)!,
-            'align': match.group(2) ?? 'Left',
-            'content': match.group(3)!,
-          };
-          headingIndex++;
-          return placeholder;
-        });
+      String placeholder = '%%HeadingPlaceholder$headingIndex%%';
+      headingPlaceholders[placeholder] = {
+        'level': match.group(1)!,
+        'align': match.group(2) ?? 'Left',
+        'content': match.group(3)!,
+      };
+      headingIndex++;
+      return placeholder;
+    });
 
     // Parse alignment blocks and replace with placeholders.
 
@@ -264,7 +264,7 @@ class CommandParser {
         // Extract the markdown content between custom commands.
 
         String markdownContent =
-        modifiedContent.substring(lastIndex, match.start);
+            modifiedContent.substring(lastIndex, match.start);
         if (markdownContent.trim().isNotEmpty) {
           // Build any unfinished radio or checkbox groups.
 
@@ -486,8 +486,8 @@ class CommandParser {
             surveyTitle: surveyTitle,
           ),
         );
-      } else if (command.startsWith(
-          RegExp(r'%%ButtonPlaceholder', caseSensitive: false))) {
+      } else if (command
+          .startsWith(RegExp(r'%%ButtonPlaceholder', caseSensitive: false))) {
         // Build any unfinished groups
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -506,7 +506,8 @@ class CommandParser {
         final commandStr = buttonInfo['command']!;
         final requiredWidgetsStr = buttonInfo['requiredWidgets']!;
         // Parse the required widgets list.
-        List<String> requiredWidgets = _parseRequiredWidgets(requiredWidgetsStr);
+        List<String> requiredWidgets =
+            _parseRequiredWidgets(requiredWidgetsStr);
         // Create the ButtonWidget.
         widgets.add(
           ButtonWidget(
@@ -538,8 +539,7 @@ class CommandParser {
 
           // If starting a new radio group or the group name has changed.
 
-          if (currentRadioGroupName == null ||
-              currentRadioGroupName != name) {
+          if (currentRadioGroupName == null || currentRadioGroupName != name) {
             // If there is a previous radio group, build it first.
 
             if (currentRadioGroupName != null) {
@@ -677,7 +677,7 @@ class CommandParser {
         }
 
         final calendarExp =
-        RegExp(r'%% Calendar\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% Calendar\(([^\)]+)\)', caseSensitive: false);
         final calendarMatch = calendarExp.firstMatch(command);
 
         if (calendarMatch != null) {
@@ -712,7 +712,7 @@ class CommandParser {
         }
 
         final dropdownExp =
-        RegExp(r'%% Dropdown\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% Dropdown\(([^\)]+)\)', caseSensitive: false);
         final dropdownMatch = dropdownExp.firstMatch(command);
 
         if (dropdownMatch != null) {
@@ -737,7 +737,7 @@ class CommandParser {
           // does not start with '-' or the next command starts.
 
           final lines =
-          modifiedContent.substring(optionsStartIndex).split('\n');
+              modifiedContent.substring(optionsStartIndex).split('\n');
           final List<String> options = [];
           int lineOffset = 0;
 
@@ -793,7 +793,7 @@ class CommandParser {
         }
 
         final inputSLExp =
-        RegExp(r'%% InputSL\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% InputSL\(([^\)]+)\)', caseSensitive: false);
         final inputSLMatch = inputSLExp.firstMatch(command);
 
         if (inputSLMatch != null) {
@@ -826,7 +826,7 @@ class CommandParser {
         }
 
         final inputMLExp =
-        RegExp(r'%% InputML\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% InputML\(([^\)]+)\)', caseSensitive: false);
         final inputMLMatch = inputMLExp.firstMatch(command);
 
         if (inputMLMatch != null) {

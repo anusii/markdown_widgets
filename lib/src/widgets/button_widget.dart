@@ -109,10 +109,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     final _sliderValues = widget.state['_sliderValues'] as Map<String, double>;
     final _radioValues = widget.state['_radioValues'] as Map<String, String?>;
     final _checkboxValues =
-    widget.state['_checkboxValues'] as Map<String, Set<String>>;
+        widget.state['_checkboxValues'] as Map<String, Set<String>>;
     final _dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
     final _dropdownValues =
-    widget.state['_dropdownValues'] as Map<String, String?>;
+        widget.state['_dropdownValues'] as Map<String, String?>;
 
     // Add slider values.
 
@@ -139,7 +139,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     _dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
-        '${value.year}-${value.month.toString().padLeft(2, '0')}-'
+            '${value.year}-${value.month.toString().padLeft(2, '0')}-'
             '${value.day.toString().padLeft(2, '0')}';
       } else {
         responses[key] = null;
@@ -168,7 +168,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     for (String widgetName in widget.requiredWidgets) {
       bool widgetHasValue = false;
       // Check in _inputValues
-      if (widget.state['_inputValues'][widgetName]?.trim().isNotEmpty ?? false) {
+      if (widget.state['_inputValues'][widgetName]?.trim().isNotEmpty ??
+          false) {
         widgetHasValue = true;
       }
       // Check in _sliderValues
@@ -176,11 +177,13 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         widgetHasValue = true;
       }
       // Check in _radioValues
-      else if (widget.state['_radioValues'][widgetName]?.trim().isNotEmpty ?? false) {
+      else if (widget.state['_radioValues'][widgetName]?.trim().isNotEmpty ??
+          false) {
         widgetHasValue = true;
       }
       // Check in _checkboxValues
-      else if (widget.state['_checkboxValues'][widgetName]?.isNotEmpty ?? false) {
+      else if (widget.state['_checkboxValues'][widgetName]?.isNotEmpty ??
+          false) {
         widgetHasValue = true;
       }
       // Check in _dateValues
@@ -188,7 +191,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         widgetHasValue = true;
       }
       // Check in _dropdownValues
-      else if (widget.state['_dropdownValues'][widgetName]?.trim().isNotEmpty ?? false) {
+      else if (widget.state['_dropdownValues'][widgetName]?.trim().isNotEmpty ??
+          false) {
         widgetHasValue = true;
       }
 
@@ -272,7 +276,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     if (!isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please fill in all required fields: ${invalidWidgets.join(', ')}'),
+          content: Text(
+              'Please fill in all required fields: ${invalidWidgets.join(', ')}'),
         ),
       );
     }
