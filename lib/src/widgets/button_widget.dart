@@ -1,6 +1,6 @@
 /// Button widget.
 ///
-// Time-stamp: <Friday 2024-11-15 08:45:50 +1100 Graham Williams>
+// Time-stamp: <Tuesday 2024-12-03 07:28:21 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -452,7 +452,9 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       debugPrint('Submission failed: $e');
       debugPrint('Stack trace: $stackTrace');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Submission failed: $e')),
+        SnackBar(
+            content: Text('Submission failed: $e. '
+                'Did you set up the online submission correctly?')),
       );
     }
   }
