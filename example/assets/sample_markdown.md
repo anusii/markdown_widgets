@@ -33,7 +33,7 @@ Please select an option from the dropdown menu.
 1. This is Question 1. The following four options belong to the same group.
    Only one option can be selected.
 
-%% Radio(Question 1,1,Option 1 This is a long option that may wrap to the next line if it needs to. When wrapping it does so indented to align the paragraph.
+%% Radio(Question 1,1,Option 1 This is a long option that may wrap to the next line if it needs to. When wrapping it does so indented to align the paragraph.)
 %% Radio(Question 1,2,Option 2)
 %% Radio(Question 1,3,Option 3)
 %% Radio(Question 1,4,Option 4)
@@ -55,7 +55,7 @@ Please select an option from the dropdown menu.
 3. The following are two groups of checkboxes. This is Question 3. Multiple 
    options can be selected.
 
-%% Checkbox(Question 3,1,Option 1 This is a long option that may wrap to the next line. Option 1 This is a long option that may wrap to the next line.)
+%% Checkbox(Question 3,1,Option 1 This is a long option that may wrap to the next line if it needs to. When wrapping it does so indented to align the paragraph.)
 %% Checkbox(Question 3,2,Option 2)
 %% Checkbox(Question 3,3,Option 3)
 %% Checkbox(Question 3,4,Option 4)

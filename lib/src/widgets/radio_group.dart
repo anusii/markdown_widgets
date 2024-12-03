@@ -49,33 +49,58 @@ class RadioGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the font size of the text, default value is 14.0.
+
+    double fontSize = Theme.of(context).textTheme.bodyLarge?.fontSize ?? 14.0;
+
+    // Assume the line height is 1.2 times the font size.
+
+    double lineHeight = fontSize * 1.2;
+
+    // Half line height.
+
+    double halfLineHeight = lineHeight / 2;
+
     return Center(
       child: ConstrainedBox(
         constraints:
-            BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
+        BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.map((option) {
-            return InkWell(
-              onTap: () {
-                onChanged(option['value']);
-              },
-              child: Row(
-                children: [
-                  Radio<String>(
-                    value: option['value']!,
-                    groupValue: selectedValue,
-                    onChanged: onChanged,
-                  ),
-                  Expanded(
-                    child: Text(
-                      option['label']!,
+          children: [
+            // Add a half-height blank line before the first option.
+
+            SizedBox(height: halfLineHeight),
+
+            // Use the spread operator to insert the options list into the list
+            // of child components.
+
+            ...options.map((option) {
+              return InkWell(
+                onTap: () {
+                  onChanged(option['value']);
+                },
+                child: Row(
+                  children: [
+                    Radio<String>(
+                      value: option['value']!,
+                      groupValue: selectedValue,
+                      onChanged: onChanged,
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                    Expanded(
+                      child: Text(
+                        option['label']!,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+
+            // Add a half-height blank line after the last option.
+
+            SizedBox(height: halfLineHeight),
+          ],
         ),
       ),
     );

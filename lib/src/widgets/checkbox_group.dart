@@ -83,35 +83,60 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the font size of the text, default value is 14.0.
+
+    double fontSize = Theme.of(context).textTheme.bodyLarge?.fontSize ?? 14.0;
+
+    // Assume the line height is 1.2 times the font size.
+
+    double lineHeight = fontSize * 1.2;
+
+    // Calculate half line height.
+
+    double halfLineHeight = lineHeight / 2;
+
     return Center(
       child: ConstrainedBox(
         constraints:
             BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: widget.options.map((option) {
-            bool isChecked = _selectedValues.contains(option['value']!);
-            return GestureDetector(
-              onTap: () {
-                _onChanged(option['value']!, !isChecked);
-              },
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: isChecked,
-                    onChanged: (bool? newValue) {
-                      _onChanged(option['value']!, newValue);
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      option['label']!,
+          children: [
+            // Add a half-height blank line before the first option.
+
+            SizedBox(height: halfLineHeight),
+
+            // Use the spread operator to insert the options list into the list
+            // of child components.
+
+            ...widget.options.map((option) {
+              bool isChecked = _selectedValues.contains(option['value']!);
+              return GestureDetector(
+                onTap: () {
+                  _onChanged(option['value']!, !isChecked);
+                },
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: isChecked,
+                      onChanged: (bool? newValue) {
+                        _onChanged(option['value']!, newValue);
+                      },
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                    Expanded(
+                      child: Text(
+                        option['label']!,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+
+            // Add a half-height blank line after the last option.
+
+            SizedBox(height: halfLineHeight),
+          ],
         ),
       ),
     );
