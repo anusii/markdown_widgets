@@ -43,12 +43,14 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart';
 
 class ButtonWidget extends StatefulWidget {
   final String command;
+  final List<String> requiredWidgets;
   final Map<String, dynamic> state;
   final String surveyTitle;
 
   ButtonWidget({
     Key? key,
     required this.command,
+    required this.requiredWidgets,
     required this.state,
     required this.surveyTitle,
   }) : super(key: key);
@@ -73,7 +75,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
   }
 
   void _parseCommand() {
-    final buttonExp = RegExp(r'%% Button\((.+)\)');
+    final buttonExp = RegExp(r'%% Button\((.+)\)', caseSensitive: false);
     final buttonMatch = buttonExp.firstMatch(widget.command);
 
     if (buttonMatch != null) {
@@ -159,7 +161,135 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     return responses;
   }
 
+  bool _validateRequiredWidgets() {
+    bool isValid = true;
+    List<String> invalidWidgets = [];
+
+    for (String widgetName in widget.requiredWidgets) {
+      bool widgetHasValue = false;
+      // Check in _inputValues
+      if (widget.state['_inputValues'][widgetName]?.trim().isNotEmpty ??
+          false) {
+        widgetHasValue = true;
+      }
+      // Check in _sliderValues
+      else if (widget.state['_sliderValues'][widgetName] != null) {
+        widgetHasValue = true;
+      }
+      // Check in _radioValues
+      else if (widget.state['_radioValues'][widgetName]?.trim().isNotEmpty ??
+          false) {
+        widgetHasValue = true;
+      }
+      // Check in _checkboxValues
+      else if (widget.state['_checkboxValues'][widgetName]?.isNotEmpty ??
+          false) {
+        widgetHasValue = true;
+      }
+      // Check in _dateValues
+      else if (widget.state['_dateValues'][widgetName] != null) {
+        widgetHasValue = true;
+      }
+      // Check in _dropdownValues
+      else if (widget.state['_dropdownValues'][widgetName]?.trim().isNotEmpty ??
+          false) {
+        widgetHasValue = true;
+      }
+
+      if (!widgetHasValue) {
+        isValid = false;
+        invalidWidgets.add(widgetName);
+        // Highlight the widget
+        // InputField
+        if (widget.state['_inputFieldKeys'] != null &&
+            widget.state['_inputFieldKeys'][widgetName] != null) {
+          final key = widget.state['_inputFieldKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // Similar for other widgets...
+        // RadioGroup
+        if (widget.state['_radioGroupKeys'] != null &&
+            widget.state['_radioGroupKeys'][widgetName] != null) {
+          final key = widget.state['_radioGroupKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // CheckboxGroup
+        if (widget.state['_checkboxGroupKeys'] != null &&
+            widget.state['_checkboxGroupKeys'][widgetName] != null) {
+          final key = widget.state['_checkboxGroupKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // CalendarField
+        if (widget.state['_calendarFieldKeys'] != null &&
+            widget.state['_calendarFieldKeys'][widgetName] != null) {
+          final key = widget.state['_calendarFieldKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // DropdownWidget
+        if (widget.state['_dropdownKeys'] != null &&
+            widget.state['_dropdownKeys'][widgetName] != null) {
+          final key = widget.state['_dropdownKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+        // SliderWidget
+        if (widget.state['_sliderKeys'] != null &&
+            widget.state['_sliderKeys'][widgetName] != null) {
+          final key = widget.state['_sliderKeys'][widgetName];
+          key.currentState?.setValidationError(true);
+        }
+      } else {
+        // Clear validation error if any
+        if (widget.state['_inputFieldKeys'] != null &&
+            widget.state['_inputFieldKeys'][widgetName] != null) {
+          final key = widget.state['_inputFieldKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        // Similar for other widgets...
+        if (widget.state['_radioGroupKeys'] != null &&
+            widget.state['_radioGroupKeys'][widgetName] != null) {
+          final key = widget.state['_radioGroupKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        if (widget.state['_checkboxGroupKeys'] != null &&
+            widget.state['_checkboxGroupKeys'][widgetName] != null) {
+          final key = widget.state['_checkboxGroupKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        if (widget.state['_calendarFieldKeys'] != null &&
+            widget.state['_calendarFieldKeys'][widgetName] != null) {
+          final key = widget.state['_calendarFieldKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        if (widget.state['_dropdownKeys'] != null &&
+            widget.state['_dropdownKeys'][widgetName] != null) {
+          final key = widget.state['_dropdownKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+        if (widget.state['_sliderKeys'] != null &&
+            widget.state['_sliderKeys'][widgetName] != null) {
+          final key = widget.state['_sliderKeys'][widgetName];
+          key.currentState?.setValidationError(false);
+        }
+      }
+    }
+
+    if (!isValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'Please fill in all required fields: ${invalidWidgets.join(', ')}'),
+        ),
+      );
+    }
+
+    return isValid;
+  }
+
   Future<void> _handleButtonPress() async {
+    if (!_validateRequiredWidgets()) {
+      return;
+    }
+
     final data = _collectData();
 
     if (actionType == 0) {
@@ -202,7 +332,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       Map<String, dynamic> data, String defaultFileName) async {
     final jsonContent = encoder.convert(data);
 
-    // Show a dialog to input the filename.
+    // Show a dialogue to input the filename.
 
     String? filename = await showDialog<String>(
       context: context,
