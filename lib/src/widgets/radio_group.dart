@@ -64,16 +64,16 @@ class RadioGroup extends StatelessWidget {
     return Center(
       child: ConstrainedBox(
         constraints:
-        BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
+            BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Add a half-height blank line before the first option.
+            // Add a half line height of blank line before the first option.
 
             SizedBox(height: halfLineHeight),
 
-            // Use the spread operator to insert the options list into the list
-            // of child components.
+            // Use the spread operator to insert the options list into the
+            // children list.
 
             ...options.map((option) {
               return InkWell(
@@ -81,6 +81,9 @@ class RadioGroup extends StatelessWidget {
                   onChanged(option['value']);
                 },
                 child: Row(
+                  // Align the radio button and text vertically at the top.
+
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Radio<String>(
                       value: option['value']!,
@@ -88,8 +91,13 @@ class RadioGroup extends StatelessWidget {
                       onChanged: onChanged,
                     ),
                     Expanded(
-                      child: Text(
-                        option['label']!,
+                      child: Padding(
+                        // Add a small padding above the text.
+
+                        padding: const EdgeInsets.only(top: 6.0),
+                        child: Text(
+                          option['label']!,
+                        ),
                       ),
                     ),
                   ],
@@ -97,7 +105,7 @@ class RadioGroup extends StatelessWidget {
               );
             }).toList(),
 
-            // Add a half-height blank line after the last option.
+            // Add a half line height of blank line after the last option.
 
             SizedBox(height: halfLineHeight),
           ],
