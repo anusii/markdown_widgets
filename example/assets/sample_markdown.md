@@ -33,10 +33,15 @@ Please select an option from the dropdown menu.
 1. This is Question 1. The following four options belong to the same group.
    Only one option can be selected.
 
-%% Radio(Question 1,1,Option 1 This is a long option that may wrap to the next line if it needs to. When wrapping it does so indented to align the paragraph.)
-%% Radio(Question 1,2,Option 2)
-%% Radio(Question 1,3,Option 3)
-%% Radio(Question 1,4,Option 4)
+%% Radio(Question 1,1,"Option 1 This is a long option that may wrap to the next
+line if it needs to. When wrapping it does so indented to align the paragraph.
+This example also demonstrates the use of escape characters, such as \".")
+
+%% Radio(Question 1,2,"Option 2")
+
+%% Radio(Question 1,3,"Option 3")
+
+%% Radio(Question 1,4,"Option 4")
 
 %% EmptyLine
 
@@ -45,33 +50,49 @@ Please select an option from the dropdown menu.
    selections for these two groups are independent and will not affect each 
    other. 
 
-%% Radio(Question 2,1,Option 1)
-%% Radio(Question 2,2,Option 2)
-%% Radio(Question 2,3,Option 3)
-%% Radio(Question 2,4,Option 4)
+%% Radio(Question 2,1,"Option 1")
+
+%% Radio(Question 2,2,"Option 2")
+
+%% Radio(Question 2,3,"Option 3")
+
+%% Radio(Question 2,4,"Option 4")
 
 %% EmptyLine
 
 3. The following are two groups of checkboxes. This is Question 3. Multiple 
    options can be selected.
 
-%% Checkbox(Question 3,1,Option 1 This is a long option that may wrap to the next line if it needs to. When wrapping it does so indented to align the paragraph.)
-%% Checkbox(Question 3,2,Option 2)
-%% Checkbox(Question 3,3,Option 3)
-%% Checkbox(Question 3,4,Option 4)
-%% Checkbox(Question 3,5,Option 5)
-%% Checkbox(Question 3,6,Option 6)
+%% Checkbox(Question 3,1,"Option 1 This is a long option that may wrap to the
+next line if it needs to. When wrapping it does so indented to align the
+paragraph. This example also demonstrates the use of escape characters, such
+as \".")
+
+%% Checkbox(Question 3,2,"Option 2")
+
+%% Checkbox(Question 3,3,"Option 3")
+
+%% Checkbox(Question 3,4,"Option 4")
+
+%% Checkbox(Question 3,5,"Option 5")
+
+%% Checkbox(Question 3,6,"Option 6")
 
 %% EmptyLine
 
 4. This is Question 4. Multiple options can be selected as well.
 
-%% Checkbox(Question 4,1,Option 1)
-%% Checkbox(Question 4,2,Option 2)
-%% Checkbox(Question 4,3,Option 3)
-%% Checkbox(Question 4,4,Option 4)
-%% Checkbox(Question 4,5,Option 5)
-%% Checkbox(Question 4,6,Option 6)
+%% Checkbox(Question 4,1,"Option 1")
+
+%% Checkbox(Question 4,2,"Option 2")
+
+%% Checkbox(Question 4,3,"Option 3")
+
+%% Checkbox(Question 4,4,"Option 4")
+
+%% Checkbox(Question 4,5,"Option 5")
+
+%% Checkbox(Question 4,6,"Option 6")
 
 %% EmptyLine
 

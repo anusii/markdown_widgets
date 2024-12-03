@@ -64,7 +64,7 @@ class RadioGroup extends StatelessWidget {
     return Center(
       child: ConstrainedBox(
         constraints:
-        BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
+            BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
