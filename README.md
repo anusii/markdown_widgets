@@ -12,6 +12,10 @@ syntax, making it suitable for use in surveys and similar scenarios.
 The following is the syntax to generate interactive surveys in
 markdown pages.
 
+In the example code of this package, the path of the sample markdown file is
+`example/assets/sample_markdown.md`. This path can be set in the code to load
+the markdown file at runtime.
+
 ## Survey Menu
 
 `%% Menu-Begin` and `%% Menu-End` will be recognised as the beginning and
@@ -20,7 +24,7 @@ each item in the list will be recognised as a separate survey. The content of
 each survey needs to be defined in the subsequent sections of the markdown
 file, with the same name used as the title.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Menu-Begin
@@ -52,7 +56,7 @@ redirected to the `Survey Details` page with the corresponding survey details.
 with the given `name`, `min`, `max`, `defaultValue`, and `step` values. The
 slider bar will be displayed on the `Survey Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Slider(Question 1,1,4,1,1)
@@ -74,7 +78,7 @@ in, the widget will save the data to the specified path or submit it to the
 specified URL. If any required fields are not filled in, the widget will display
 an error message and prevent the data from being saved or submitted.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Button-Begin(Save,0)
@@ -89,7 +93,7 @@ For example, the following snippet from `assets/surveys.md`:
 the given `name`, `value`, and `label`. The radio button will be displayed
 on the `Survey Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Radio(Radio1,1,Option 1)
@@ -102,7 +106,7 @@ For example, the following snippet from `assets/surveys.md`:
 the given `name`, `value`, and `label`. The checkbox will be displayed
 on the `Survey Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Checkbox(Checkbox1,A,Option 1)
@@ -117,7 +121,7 @@ given `name`, and `%% InputML(name)` will be recognised as a multi-line input
 box with the given `name`. The input box will be displayed on the `Survey 
 Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 Your name:
@@ -132,7 +136,7 @@ Your feedback:
 beginning and end of the description box. The content between these tags will
 be displayed on the `Survey Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Description-Begin
@@ -148,7 +152,7 @@ problems? Tap your answers.
 `%% Calendar(name)` will be recognised as a calendar with the name `name` and
 will be displayed on the `Survey Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Calendar(Date)
@@ -160,7 +164,7 @@ For example, the following snippet from `assets/surveys.md`:
 will be displayed on the `Survey Details` page. The content of the dropdown
 needs to be defined in the subsequent sections of the markdown file as a list.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 
@@ -177,7 +181,7 @@ the H1 font size. The content between these tags will be displayed in H1 font
 size on the `Survey Details` page. Similarly, H2 to H6 font sizes are also
 supported here.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% H1-Begin
@@ -194,7 +198,7 @@ left-aligned, center-aligned and justified text alignments are also supported
 here. The syntax for these are `%% AlignLeft-Begin`, `%% AlignCenter-Begin`, and
 `%% AlignJust-Begin` respectively.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% AlignRight-Begin
@@ -211,7 +215,7 @@ page. Similarly, H2 to H6 font sizes and left/right/center/justify-aligned text
 are also supported here. The syntax for these are `% H1Left-Begin`,
 `%% H1Center-Begin`, and `%% H1Just-Begin` respectively.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% H1Right-Begin
@@ -225,7 +229,7 @@ Text in H1 font size and right-aligned
 filename in `assets/media` folder. The image will be displayed on the `Survey
 Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Image(image.jpg)
@@ -237,7 +241,7 @@ For example, the following snippet from `assets/surveys.md`:
 filename in `assets/media` folder. The video will be displayed on the `Survey
 Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Video(video.mp4)
@@ -249,7 +253,7 @@ For example, the following snippet from `assets/surveys.md`:
 filename in `assets/media` folder. The audio file will be displayed on the
 `Survey Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Audio(audio.mp3)
@@ -261,7 +265,7 @@ For example, the following snippet from `assets/surveys.md`:
 `time` in the format of 1h0m0s. The countdown timer will be displayed on the
 `Survey Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% Timer(1h0m0s)
@@ -272,7 +276,7 @@ For example, the following snippet from `assets/surveys.md`:
 `%% EmptyLine` will be recognised as an empty line. An empty line will be
 displayed on the `Survey Details` page.
 
-For example, the following snippet from `assets/surveys.md`:
+For example, the following snippet from the markdown file:
 
 ```markdown
 %% EmptyLine
