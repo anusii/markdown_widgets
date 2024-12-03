@@ -102,12 +102,12 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Add a half-height blank line before the first option.
+            // Add a half line height of blank line before the first option.
 
             SizedBox(height: halfLineHeight),
 
-            // Use the spread operator to insert the options list into the list
-            // of child components.
+            // Insert the options list into the children list using spread
+            // operator.
 
             ...widget.options.map((option) {
               bool isChecked = _selectedValues.contains(option['value']!);
@@ -116,6 +116,9 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
                   _onChanged(option['value']!, !isChecked);
                 },
                 child: Row(
+                  // Align the checkbox and text vertically at the top.
+
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Checkbox(
                       value: isChecked,
@@ -124,8 +127,14 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
                       },
                     ),
                     Expanded(
-                      child: Text(
-                        option['label']!,
+                      child: Padding(
+                        // Add a small padding above the text to align with
+                        // checkbox.
+
+                        padding: const EdgeInsets.only(top: 6.0),
+                        child: Text(
+                          option['label']!,
+                        ),
                       ),
                     ),
                   ],
@@ -133,7 +142,7 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
               );
             }).toList(),
 
-            // Add a half-height blank line after the last option.
+            // Add a half line height of blank line after the last option.
 
             SizedBox(height: halfLineHeight),
           ],
