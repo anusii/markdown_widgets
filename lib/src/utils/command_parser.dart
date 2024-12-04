@@ -476,14 +476,22 @@ class CommandParser {
           currentCheckboxOptions = [];
         }
 
-        final radioExp = RegExp(r'%% Radio\(([^,]+),\s*([^,]+),\s*([^\)]+)\)',
-            caseSensitive: false);
+        final radioExp = RegExp(
+          r'%% Radio\(([^,]+),\s*([^,]+),\s*"((?:[^"\\]|\\.)*)"\)',
+          caseSensitive: false,
+        );
         final radioMatch = radioExp.firstMatch(command);
 
         if (radioMatch != null) {
           final name = radioMatch.group(1)!.trim();
           final value = radioMatch.group(2)!.trim();
-          final label = radioMatch.group(3)!.trim();
+
+          // Process the label parameter.
+
+          String label = radioMatch.group(3)!;
+          label = label.replaceAll(r'\"', '"');
+          label = label.replaceAll('\n', ' ');
+          label = label.trim();
 
           // If starting a new radio group or the group name has changed.
 
@@ -547,14 +555,21 @@ class CommandParser {
         }
 
         final checkboxExp = RegExp(
-            r'%% Checkbox\(([^,]+),\s*([^,]+),\s*([^\)]+)\)',
-            caseSensitive: false);
+          r'%% Checkbox\(([^,]+),\s*([^,]+),\s*"((?:[^"\\]|\\.)*)"\)',
+          caseSensitive: false,
+        );
         final checkboxMatch = checkboxExp.firstMatch(command);
 
         if (checkboxMatch != null) {
           final name = checkboxMatch.group(1)!.trim();
           final value = checkboxMatch.group(2)!.trim();
-          final label = checkboxMatch.group(3)!.trim();
+
+          // Process the label parameter.
+
+          String label = checkboxMatch.group(3)!;
+          label = label.replaceAll(r'\"', '"');
+          label = label.replaceAll('\n', ' ');
+          label = label.trim();
 
           // If starting a new checkbox group or the group name has changed.
 

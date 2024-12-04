@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor;
+    show contentWidthFactor, screenWidth;
 
 class CheckboxGroup extends StatefulWidget {
   final String name;
@@ -83,34 +83,69 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the font size of the text, default value is 14.0.
+
+    double fontSize = Theme.of(context).textTheme.bodyLarge?.fontSize ?? 14.0;
+
+    // Assume the line height is 1.2 times the font size.
+
+    double lineHeight = fontSize * 1.2;
+
+    // Calculate half line height.
+
+    double halfLineHeight = lineHeight / 2;
+
     return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
+      child: ConstrainedBox(
+        constraints:
+            BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: widget.options.map((option) {
-            bool isChecked = _selectedValues.contains(option['value']!);
-            return GestureDetector(
-              onTap: () {
-                _onChanged(option['value']!, !isChecked);
-              },
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: isChecked,
-                    onChanged: (bool? newValue) {
-                      _onChanged(option['value']!, newValue);
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      option['label']!,
+          children: [
+            // Add a half line height of blank line before the first option.
+
+            SizedBox(height: halfLineHeight),
+
+            // Insert the options list into the children list using spread
+            // operator.
+
+            ...widget.options.map((option) {
+              bool isChecked = _selectedValues.contains(option['value']!);
+              return GestureDetector(
+                onTap: () {
+                  _onChanged(option['value']!, !isChecked);
+                },
+                child: Row(
+                  // Align the checkbox and text vertically at the top.
+
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Checkbox(
+                      value: isChecked,
+                      onChanged: (bool? newValue) {
+                        _onChanged(option['value']!, newValue);
+                      },
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                    Expanded(
+                      child: Padding(
+                        // Add a small padding above the text to align with
+                        // checkbox.
+
+                        padding: const EdgeInsets.only(top: 6.0),
+                        child: Text(
+                          option['label']!,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+
+            // Add a half line height of blank line after the last option.
+
+            SizedBox(height: halfLineHeight),
+          ],
         ),
       ),
     );

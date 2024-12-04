@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor;
+    show contentWidthFactor, screenWidth;
 
 class RadioGroup extends StatelessWidget {
   final String name;
@@ -49,32 +49,66 @@ class RadioGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the font size of the text, default value is 14.0.
+
+    double fontSize = Theme.of(context).textTheme.bodyLarge?.fontSize ?? 14.0;
+
+    // Assume the line height is 1.2 times the font size.
+
+    double lineHeight = fontSize * 1.2;
+
+    // Half line height.
+
+    double halfLineHeight = lineHeight / 2;
+
     return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
+      child: ConstrainedBox(
+        constraints:
+            BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: options.map((option) {
-            return InkWell(
-              onTap: () {
-                onChanged(option['value']);
-              },
-              child: Row(
-                children: [
-                  Radio<String>(
-                    value: option['value']!,
-                    groupValue: selectedValue,
-                    onChanged: onChanged,
-                  ),
-                  Expanded(
-                    child: Text(
-                      option['label']!,
+          children: [
+            // Add a half line height of blank line before the first option.
+
+            SizedBox(height: halfLineHeight),
+
+            // Use the spread operator to insert the options list into the
+            // children list.
+
+            ...options.map((option) {
+              return InkWell(
+                onTap: () {
+                  onChanged(option['value']);
+                },
+                child: Row(
+                  // Align the radio button and text vertically at the top.
+
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Radio<String>(
+                      value: option['value']!,
+                      groupValue: selectedValue,
+                      onChanged: onChanged,
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                    Expanded(
+                      child: Padding(
+                        // Add a small padding above the text.
+
+                        padding: const EdgeInsets.only(top: 6.0),
+                        child: Text(
+                          option['label']!,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+
+            // Add a half line height of blank line after the last option.
+
+            SizedBox(height: halfLineHeight),
+          ],
         ),
       ),
     );
