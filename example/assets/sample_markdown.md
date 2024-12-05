@@ -80,7 +80,8 @@ next line if it needs to. When wrapping it does so indented to align the
 paragraph. This example also demonstrates the use of escape characters, such
 as \".")
 
-%% Checkbox(Question 3,2,"Option 2")
+%% Checkbox(Question 3,2,"Option 2. If you choose this option, you will need to
+answer another follow-up question.",Hidden 3)
 
 %% Checkbox(Question 3,3,"Option 3")
 
@@ -89,6 +90,11 @@ as \".")
 %% Checkbox(Question 3,5,"Option 5")
 
 %% Checkbox(Question 3,6,"Option 6")
+
+%% Hidden-Begin(Hidden 3)
+This is a follow-up question for Option 2.
+%% InputML(Question 3.2)
+%% Hidden-End
 
 %% EmptyLine
 
