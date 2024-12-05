@@ -133,6 +133,11 @@ class CommandParser {
     final RegExp menuBlockExp =
         RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End', caseSensitive: false);
 
+    // Regular expression to match %% Button-Begin blocks.
+    final RegExp buttonBlockExp = RegExp(
+        r'%% Button-Begin\((.*?)\)([\s\S]*?)%% Button-End',
+        caseSensitive: false);
+
     String modifiedContent = content;
 
     // Parse the menu blocks and replace with placeholders.
@@ -143,6 +148,20 @@ class CommandParser {
       String placeholder = '%%MenuPlaceholder$menuIndex%%';
       menuPlaceholders[placeholder] = match.group(1)!;
       menuIndex++;
+      return placeholder;
+    });
+
+    // Parse the button blocks and replace with placeholders.
+
+    int buttonIndex = 0;
+    final Map<String, Map<String, String>> buttonPlaceholders = {};
+    modifiedContent = modifiedContent.replaceAllMapped(buttonBlockExp, (match) {
+      String placeholder = '%%ButtonPlaceholder$buttonIndex%%';
+      buttonPlaceholders[placeholder] = {
+        'command': match.group(1)!,
+        'requiredWidgets': match.group(2)!,
+      };
+      buttonIndex++;
       return placeholder;
     });
 
@@ -221,7 +240,8 @@ class CommandParser {
         r'%%DescriptionPlaceholder\d+%%|'
         r'%%HeadingPlaceholder\d+%%|'
         r'%%AlignPlaceholder\d+%%|'
-        r'%%MenuPlaceholder\d+%%)',
+        r'%%MenuPlaceholder\d+%%|'
+        r'%%ButtonPlaceholder\d+%%)',
         caseSensitive: false);
 
     final matches = customCommandExp.allMatches(modifiedContent).toList();
@@ -461,6 +481,38 @@ class CommandParser {
         widgets.add(
           ButtonWidget(
             command: command,
+            requiredWidgets: [],
+            state: state,
+            surveyTitle: surveyTitle,
+          ),
+        );
+      } else if (command
+          .startsWith(RegExp(r'%%ButtonPlaceholder', caseSensitive: false))) {
+        // Build any unfinished groups
+        if (currentRadioGroupName != null) {
+          widgets.add(helpers.buildRadioGroup(
+              currentRadioGroupName, currentRadioOptions));
+          currentRadioGroupName = null;
+          currentRadioOptions = [];
+        }
+        if (currentCheckboxGroupName != null) {
+          widgets.add(helpers.buildCheckboxGroup(
+              currentCheckboxGroupName, currentCheckboxOptions));
+          currentCheckboxGroupName = null;
+          currentCheckboxOptions = [];
+        }
+        // Get the actual button command and required widgets.
+        final buttonInfo = buttonPlaceholders[command]!;
+        final commandStr = buttonInfo['command']!;
+        final requiredWidgetsStr = buttonInfo['requiredWidgets']!;
+        // Parse the required widgets list.
+        List<String> requiredWidgets =
+            _parseRequiredWidgets(requiredWidgetsStr);
+        // Create the ButtonWidget.
+        widgets.add(
+          ButtonWidget(
+            command: '%% Button($commandStr)',
+            requiredWidgets: requiredWidgets,
             state: state,
             surveyTitle: surveyTitle,
           ),
@@ -857,5 +909,19 @@ class CommandParser {
     widgets.add(SizedBox(height: lineHeight * endingLines));
 
     return widgets;
+  }
+
+  List<String> _parseRequiredWidgets(String content) {
+    final lines = content.split('\n');
+    final widgetNames = <String>[];
+    for (var line in lines) {
+      final trimmedLine = line.trim();
+      if (trimmedLine.startsWith('- ')) {
+        widgetNames.add(trimmedLine.substring(2).trim());
+      } else if (trimmedLine.isNotEmpty) {
+        widgetNames.add(trimmedLine);
+      }
+    }
+    return widgetNames;
   }
 }

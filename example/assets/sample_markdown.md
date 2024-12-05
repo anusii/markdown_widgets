@@ -31,7 +31,7 @@ Please select an option from the dropdown menu.
 %% EmptyLine
 
 1. This is Question 1. The following four options belong to the same group.
-   Only one option can be selected.
+   Only one option can be selected. (Required)
 
 %% Radio(Question 1,1,"Option 1 This is a long option that may wrap to the next
 line if it needs to. When wrapping it does so indented to align the paragraph.
@@ -80,7 +80,7 @@ as \".")
 
 %% EmptyLine
 
-4. This is Question 4. Multiple options can be selected as well.
+4. This is Question 4. Multiple options can be selected as well. (Required)
 
 %% Checkbox(Question 4,1,"Option 1")
 
@@ -113,11 +113,17 @@ server is running.
 
 %% EmptyLine
 
-%% Button(Save,0)
+%% Button-Begin(Save,0)
+- Question 1
+- Question 4
+%% Button-End
 
 %% EmptyLine
 
-%% Button(Submit,1,http://127.0.0.1:8081/receive-json)
+%% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
+- Question 1
+- Question 4
+%% Button-End
 
 %% EmptyLine
 
@@ -167,11 +173,13 @@ also use text formatting commands to add labels to the sliders.
 
 %% EmptyLine
 
-%% Button(Save,0)
+%% Button-Begin(Save,0)
+%% Button-End
 
 %% EmptyLine
 
-%% Button(Submit,1,http://127.0.0.1:8081/receive-json)
+%% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
+%% Button-End
 
 %% EmptyLine
 
@@ -251,11 +259,13 @@ The following is a single-line input field and a multiple-line input field.
 
 %% EmptyLine
 
-%% Button(Save,0)
+%% Button-Begin(Save,0)
+%% Button-End
 
 %% EmptyLine
 
-%% Button(Submit,1,http://127.0.0.1:8081/receive-json)
+%% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
+%% Button-End
 
 %% EmptyLine
 
@@ -320,10 +330,12 @@ according to the image height.
 
 %% EmptyLine
 
-%% Button(Save,0)
+%% Button-Begin(Save,0)
+%% Button-End
 
 %% EmptyLine
 
-%% Button(Submit,1,http://127.0.0.1:8081/receive-json)
+%% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
+%% Button-End
 
 %% EmptyLine
