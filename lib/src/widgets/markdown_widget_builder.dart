@@ -105,7 +105,8 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   final Map<String, AudioPlayer> _audioPlayers = {};
   final Map<String, GlobalKey<InputFieldState>> _inputFieldKeys = {};
 
-  // Initialize the hidden content visibility map
+  // Initialise the hidden content visibility map.
+
   final Map<String, bool> _hiddenContentVisibility = {};
 
   @override
