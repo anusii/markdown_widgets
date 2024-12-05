@@ -107,7 +107,13 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Add a half line height of blank line before the first option.
+
             SizedBox(height: halfLineHeight),
+
+            // Insert the options list into the children list using spread
+            // operator.
+
             ...widget.options.map((option) {
               bool isChecked = _selectedValues.contains(option['value']!);
               return GestureDetector(
@@ -116,6 +122,8 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
                       option['value']!, !isChecked, option['hiddenContentId']);
                 },
                 child: Row(
+                  // Align the checkbox and text vertically at the top.
+
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Checkbox(
@@ -127,6 +135,9 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
                     ),
                     Expanded(
                       child: Padding(
+                        // Add a small padding above the text to align with
+                        // checkbox.
+
                         padding: const EdgeInsets.only(top: 6.0),
                         child: Text(
                           option['label']!,
@@ -137,6 +148,9 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
                 ),
               );
             }).toList(),
+
+            // Add a half line height of blank line after the last option.
+
             SizedBox(height: halfLineHeight),
           ],
         ),

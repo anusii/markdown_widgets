@@ -342,9 +342,11 @@ class CommandParser {
 
       if (command
           .startsWith(RegExp(r'%%MenuPlaceholder', caseSensitive: false))) {
-        // Handle menu placeholder.
+        // Get the actual menu content.
 
         String menuContent = menuPlaceholders[command]!;
+
+        // Use the MenuWidget to build the menu.
 
         widgets.add(
           MenuWidget(
@@ -359,28 +361,32 @@ class CommandParser {
         );
       } else if (command.startsWith(
           RegExp(r'%%DescriptionPlaceholder', caseSensitive: false))) {
-        // Handle description placeholder.
+        // Description block placeholder to get the actual content.
 
         String descriptionContent = descriptionPlaceholders[command]!;
 
         widgets.add(helpers.buildDescriptionBox(descriptionContent));
       } else if (command
           .startsWith(RegExp(r'%%HeadingPlaceholder', caseSensitive: false))) {
-        // Handle heading placeholder.
+        // Heading block placeholder with alignment.
 
         final headingInfo = headingPlaceholders[command]!;
         final level = int.parse(headingInfo['level']!);
         final align = headingInfo['align']!;
         final headingContent = headingInfo['content']!;
 
+        // Build the heading widget.
+
         widgets.add(helpers.buildHeading(level, headingContent, align));
       } else if (command
           .startsWith(RegExp(r'%%AlignPlaceholder', caseSensitive: false))) {
-        // Handle alignment placeholder.
+        // Alignment block placeholder.
 
         final alignInfo = alignPlaceholders[command]!;
         final align = alignInfo['align']!;
         final alignContent = alignInfo['content']!;
+
+        // Build the aligned text widget.
 
         widgets.add(helpers.buildAlignedText(align, alignContent));
       } else if (command
@@ -445,6 +451,8 @@ class CommandParser {
         if (timerMatch != null) {
           final timeString = timerMatch.group(1)!.trim();
 
+          // Build the timer widget.
+
           widgets.add(helpers.buildTimerWidget(timeString));
         }
       } else if (command
@@ -486,6 +494,8 @@ class CommandParser {
           final defaultValue = double.parse(sliderMatch.group(4)!);
           final step = double.parse(sliderMatch.group(5)!);
 
+          // Store the slider parameters.
+
           _sliders[name] = {
             'min': min,
             'max': max,
@@ -493,9 +503,13 @@ class CommandParser {
             'step': step,
           };
 
+          // Initialise the slider value.
+
           if (!_sliderValues.containsKey(name)) {
             _sliderValues[name] = defaultValue;
           }
+
+          // Build the slider widget.
 
           widgets.add(helpers.buildSlider(name));
         }
@@ -515,6 +529,8 @@ class CommandParser {
           currentCheckboxGroupName = null;
           currentCheckboxOptions = [];
         }
+
+        // Create the ButtonWidget, passing the command and state variables.
 
         widgets.add(
           ButtonWidget(
@@ -540,11 +556,20 @@ class CommandParser {
           currentCheckboxGroupName = null;
           currentCheckboxOptions = [];
         }
+
+        // Get the actual button command and required widgets.
+
         final buttonInfo = buttonPlaceholders[command]!;
         final commandStr = buttonInfo['command']!;
         final requiredWidgetsStr = buttonInfo['requiredWidgets']!;
+
+        // Parse the required widgets list.
+
         List<String> requiredWidgets =
             _parseRequiredWidgets(requiredWidgetsStr);
+
+        // Create the ButtonWidget.
+
         widgets.add(
           ButtonWidget(
             command: '%% Button($commandStr)',
@@ -636,10 +661,14 @@ class CommandParser {
 
             currentRadioGroupName = name;
 
+            // Initialise the selected value of the group.
+
             if (!_radioValues.containsKey(name)) {
               _radioValues[name] = null;
             }
           }
+
+          // Add options to the current group.
 
           currentRadioOptions.add({
             'value': value,
@@ -663,6 +692,8 @@ class CommandParser {
               }
             }
           }
+
+          // If there are no more options, build the radio group.
 
           if (isLastOption) {
             widgets.add(helpers.buildRadioGroup(
@@ -716,10 +747,14 @@ class CommandParser {
 
             currentCheckboxGroupName = name;
 
+            // Initialise the selected values of the group.
+
             if (!_checkboxValues.containsKey(name)) {
               _checkboxValues[name] = {};
             }
           }
+
+          // Add options to the current group.
 
           currentCheckboxOptions.add({
             'value': value,
@@ -742,6 +777,8 @@ class CommandParser {
               }
             }
           }
+
+          // If there are no more options, build the checkbox group.
 
           if (isLastOption) {
             widgets.add(helpers.buildCheckboxGroup(
@@ -775,9 +812,13 @@ class CommandParser {
         if (calendarMatch != null) {
           final name = calendarMatch.group(1)!.trim();
 
+          // Initialise date value.
+
           if (!_dateValues.containsKey(name)) {
             _dateValues[name] = null;
           }
+
+          // Build the calendar field.
 
           widgets.add(helpers.buildCalendarField(name));
         }
@@ -806,6 +847,8 @@ class CommandParser {
         if (dropdownMatch != null) {
           final name = dropdownMatch.group(1)!.trim();
 
+          // Initialise dropdown options and selected value.
+
           if (!_dropdownValues.containsKey(name)) {
             _dropdownValues[name] = null;
           }
@@ -814,10 +857,13 @@ class CommandParser {
             _dropdownOptions[name] = [];
           }
 
-          // Parse options from the following markdown list.
+          // Parse the options from the following markdown list.
 
           int optionsStartIndex = match.end;
           int optionsEndIndex = modifiedContent.length;
+
+          // Look ahead to find where the options list ends. It ends when a line
+          // does not start with '-' or the next command starts.
 
           final lines =
               modifiedContent.substring(optionsStartIndex).split('\n');
@@ -841,9 +887,15 @@ class CommandParser {
 
           _dropdownOptions[name] = options;
 
+          // Build the dropdown widget.
+
           widgets.add(helpers.buildDropdown(name, options));
 
+          // Update the lastIndex to the end of the options list.
+
           lastIndex = optionsEndIndex;
+
+          // Skip updating lastIndex again at the end of loop.
 
           continue;
         }
@@ -871,6 +923,8 @@ class CommandParser {
 
         if (inputSLMatch != null) {
           final name = inputSLMatch.group(1)!.trim();
+
+          // Initialise the input value.
 
           if (!_inputValues.containsKey(name)) {
             _inputValues[name] = '';
@@ -903,6 +957,8 @@ class CommandParser {
         if (inputMLMatch != null) {
           final name = inputMLMatch.group(1)!.trim();
 
+          // Initialise the input value.
+
           if (!_inputValues.containsKey(name)) {
             _inputValues[name] = '';
           }
@@ -932,6 +988,9 @@ class CommandParser {
           currentCheckboxGroupName = null;
           currentCheckboxOptions = [];
         }
+
+        // If there is no menu, the content after the menu will need to be
+        // shown.
 
         if (!_hasMenu || isParsingHiddenContent) {
           widgets.add(MarkdownText(data: markdownContent));
