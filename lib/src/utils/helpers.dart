@@ -114,26 +114,59 @@ class Helpers {
     );
   }
 
-  Widget buildRadioGroup(String name, List<Map<String, String>> options) {
+  Widget buildRadioGroup(
+    String name,
+    List<Map<String, String?>> options,
+  ) {
     return RadioGroup(
       name: name,
       options: options,
       selectedValue: state['_radioValues'][name],
-      onChanged: (String? newValue) {
+      onChanged: (String? newValue, String? hiddenContentId) {
         setStateCallback();
         state['_radioValues'][name] = newValue;
+
+        // Update hidden content visibility.
+
+        for (var option in options) {
+          if (option['hiddenContentId'] != null) {
+            final id = option['hiddenContentId']!.trim();
+            state['_hiddenContentVisibility'][id] = false;
+          }
+        }
+
+        if (hiddenContentId != null) {
+          final id = hiddenContentId.trim();
+          state['_hiddenContentVisibility'][id] = true;
+        }
       },
     );
   }
 
-  Widget buildCheckboxGroup(String name, List<Map<String, String>> options) {
+  Widget buildCheckboxGroup(
+    String name,
+    List<Map<String, String?>> options,
+  ) {
     return CheckboxGroup(
       name: name,
       options: options,
       selectedValues: state['_checkboxValues'][name]!,
-      onChanged: (Set<String> selectedValues) {
+      onChanged: (Set<String> selectedValues, Set<String> hiddenContentIds) {
         setStateCallback();
         state['_checkboxValues'][name] = selectedValues;
+
+        // Update hidden content visibility.
+
+        for (var option in options) {
+          if (option['hiddenContentId'] != null) {
+            final id = option['hiddenContentId']!.trim();
+            if (selectedValues.contains(option['value'])) {
+              state['_hiddenContentVisibility'][id] = true;
+            } else {
+              state['_hiddenContentVisibility'][id] = false;
+            }
+          }
+        }
       },
     );
   }

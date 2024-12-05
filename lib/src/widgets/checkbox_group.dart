@@ -35,9 +35,10 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart'
 
 class CheckboxGroup extends StatefulWidget {
   final String name;
-  final List<Map<String, String>> options;
+  final List<Map<String, String?>> options;
   final Set<String> selectedValues;
-  final ValueChanged<Set<String>> onChanged;
+  final Function(Set<String> selectedValues, Set<String> hiddenContentIds)
+      onChanged;
 
   const CheckboxGroup({
     Key? key,
@@ -70,7 +71,7 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
     }
   }
 
-  void _onChanged(String value, bool? isChecked) {
+  void _onChanged(String value, bool? isChecked, String? hiddenContentId) {
     setState(() {
       if (isChecked == true) {
         _selectedValues.add(value);
@@ -78,7 +79,11 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
         _selectedValues.remove(value);
       }
     });
-    widget.onChanged(_selectedValues);
+    Set<String> hiddenContentIds = {};
+    if (hiddenContentId != null) {
+      hiddenContentIds.add(hiddenContentId);
+    }
+    widget.onChanged(_selectedValues, hiddenContentIds);
   }
 
   @override
@@ -102,35 +107,26 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Add a half line height of blank line before the first option.
-
             SizedBox(height: halfLineHeight),
-
-            // Insert the options list into the children list using spread
-            // operator.
-
             ...widget.options.map((option) {
               bool isChecked = _selectedValues.contains(option['value']!);
               return GestureDetector(
                 onTap: () {
-                  _onChanged(option['value']!, !isChecked);
+                  _onChanged(
+                      option['value']!, !isChecked, option['hiddenContentId']);
                 },
                 child: Row(
-                  // Align the checkbox and text vertically at the top.
-
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Checkbox(
                       value: isChecked,
                       onChanged: (bool? newValue) {
-                        _onChanged(option['value']!, newValue);
+                        _onChanged(option['value']!, newValue,
+                            option['hiddenContentId']);
                       },
                     ),
                     Expanded(
                       child: Padding(
-                        // Add a small padding above the text to align with
-                        // checkbox.
-
                         padding: const EdgeInsets.only(top: 6.0),
                         child: Text(
                           option['label']!,
@@ -141,9 +137,6 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
                 ),
               );
             }).toList(),
-
-            // Add a half line height of blank line after the last option.
-
             SizedBox(height: halfLineHeight),
           ],
         ),

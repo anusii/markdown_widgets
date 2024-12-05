@@ -35,9 +35,9 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart'
 
 class RadioGroup extends StatelessWidget {
   final String name;
-  final List<Map<String, String>> options;
+  final List<Map<String, String?>> options;
   final String? selectedValue;
-  final ValueChanged<String?> onChanged;
+  final Function(String? value, String? hiddenContentId) onChanged;
 
   const RadioGroup({
     Key? key,
@@ -68,32 +68,24 @@ class RadioGroup extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Add a half line height of blank line before the first option.
-
             SizedBox(height: halfLineHeight),
-
-            // Use the spread operator to insert the options list into the
-            // children list.
-
             ...options.map((option) {
               return InkWell(
                 onTap: () {
-                  onChanged(option['value']);
+                  onChanged(option['value'], option['hiddenContentId']);
                 },
                 child: Row(
-                  // Align the radio button and text vertically at the top.
-
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Radio<String>(
                       value: option['value']!,
                       groupValue: selectedValue,
-                      onChanged: onChanged,
+                      onChanged: (value) {
+                        onChanged(value, option['hiddenContentId']);
+                      },
                     ),
                     Expanded(
                       child: Padding(
-                        // Add a small padding above the text.
-
                         padding: const EdgeInsets.only(top: 6.0),
                         child: Text(
                           option['label']!,
@@ -104,9 +96,6 @@ class RadioGroup extends StatelessWidget {
                 ),
               );
             }).toList(),
-
-            // Add a half line height of blank line after the last option.
-
             SizedBox(height: halfLineHeight),
           ],
         ),
