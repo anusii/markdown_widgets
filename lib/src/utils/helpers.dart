@@ -1,6 +1,6 @@
 /// Helper methods for markdown widgets.
 ///
-// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
+/// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor;
+    show contentWidthFactor, screenWidth;
 import 'package:markdown_widget_builder/src/utils/parse_time_string.dart';
 import 'package:markdown_widget_builder/src/widgets/audio_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/calendar_field.dart';
@@ -61,7 +61,7 @@ class Helpers {
   Widget buildDescriptionBox(String content, {bool isRequired = false}) {
     Widget description = DescriptionBox(content: content);
     if (isRequired) {
-      return _wrapWithRequired(description);
+      return _wrapWithRequiredLabel(description);
     } else {
       return description;
     }
@@ -69,9 +69,10 @@ class Helpers {
 
   Widget buildHeading(int level, String content, String align,
       {bool isRequired = false}) {
-    Widget heading = TextHeadingWidget(level: level, content: content, align: align);
+    Widget heading =
+    TextHeadingWidget(level: level, content: content, align: align);
     if (isRequired) {
-      return _wrapWithRequired(heading);
+      return _wrapWithRequiredLabel(heading);
     } else {
       return heading;
     }
@@ -79,9 +80,10 @@ class Helpers {
 
   Widget buildAlignedText(String align, String content,
       {bool isRequired = false}) {
-    Widget alignedText = TextAlignmentWidget(align: align, content: content);
+    Widget alignedText =
+    TextAlignmentWidget(align: align, content: content);
     if (isRequired) {
-      return _wrapWithRequired(alignedText);
+      return _wrapWithRequiredLabel(alignedText);
     } else {
       return alignedText;
     }
@@ -95,7 +97,7 @@ class Helpers {
       height: height,
     );
     if (isRequired) {
-      return _wrapWithRequired(image);
+      return _wrapWithRequiredLabel(image);
     } else {
       return image;
     }
@@ -104,7 +106,7 @@ class Helpers {
   Widget buildVideoWidget(String filename, {bool isRequired = false}) {
     Widget video = VideoWidget(filename: filename);
     if (isRequired) {
-      return _wrapWithRequired(video);
+      return _wrapWithRequiredLabel(video);
     } else {
       return video;
     }
@@ -113,7 +115,7 @@ class Helpers {
   Widget buildAudioWidget(String filename, {bool isRequired = false}) {
     Widget audio = AudioWidget(filename: filename);
     if (isRequired) {
-      return _wrapWithRequired(audio);
+      return _wrapWithRequiredLabel(audio);
     } else {
       return audio;
     }
@@ -130,7 +132,9 @@ class Helpers {
     );
 
     if (isRequired) {
-      // For timer, place the label below the widget
+      // Timer does not allow being marked as required, but to maintain consistency,
+      // add the label here if needed.
+      // The label is placed below the widget.
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -166,18 +170,8 @@ class Helpers {
     );
 
     if (isRequired) {
-      // For slider, place the label below the widget
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          slider,
-          const SizedBox(height: 4.0),
-          const Text(
-            '(Required)',
-            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-          ),
-        ],
-      );
+      // Position the (Required) label above the Slider.
+      return _wrapWithRequiredLabel(slider, labelAbove: true);
     } else {
       return slider;
     }
@@ -262,7 +256,7 @@ class Helpers {
     );
 
     if (isRequired) {
-      return _wrapWithRequired(inputField);
+      return _wrapWithRequiredLabel(inputField);
     } else {
       return inputField;
     }
@@ -279,7 +273,7 @@ class Helpers {
     );
 
     if (isRequired) {
-      return _wrapWithRequired(calendarField);
+      return _wrapWithRequiredLabel(calendarField);
     } else {
       return calendarField;
     }
@@ -298,29 +292,59 @@ class Helpers {
     );
 
     if (isRequired) {
-      return _wrapWithRequired(dropdownWidget);
+      return _wrapWithRequiredLabel(dropdownWidget);
     } else {
       return dropdownWidget;
     }
   }
 
-  // Helper method to wrap a widget with a (Required) label within central content area.
-  Widget _wrapWithRequired(Widget widget) {
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: contentWidthFactor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
+  /// Helper method to wrap a widget with a (Required) label within a central content area.
+  ///
+  /// The [labelAbove] parameter determines whether the label is placed above or below the widget.
+  Widget _wrapWithRequiredLabel(Widget widget, {bool labelAbove = true}) {
+    List<Widget> children = [];
+
+    if (labelAbove) {
+      // Add the (Required) label, centered and width-constrained by contentWidthFactor
+      children.add(
+        Center(
+          child: FractionallySizedBox(
+            widthFactor: contentWidthFactor,
+            child: const Text(
               '(Required)',
+              textAlign: TextAlign.left,
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 4.0),
-            widget,
-          ],
+          ),
         ),
-      ),
+      );
+      children.add(const SizedBox(height: 4.0));
+      // Add the widget without width constraints, so it retains its original width
+      children.add(widget);
+    } else {
+      // Widget first
+      children.add(widget);
+      children.add(const SizedBox(height: 4.0));
+      // (Required) label after the widget, also centered and constrained
+      children.add(
+        Center(
+          child: FractionallySizedBox(
+            widthFactor: contentWidthFactor,
+            child: const Text(
+              '(Required)',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Return a simple Column that stacks the label (centered region) and the widget.
+    // The widget itself is not wrapped by FractionallySizedBox, so it can have its original width.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
     );
   }
 }
