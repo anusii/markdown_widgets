@@ -131,15 +131,24 @@ server is running.
 
 %% EmptyLine
 
+For saving the data to a local JSON file, the date, the dropdown menu and
+Questions 1 and 4 are required.
+
 %% Button-Begin(Save,0)
+- Date
+- Dropdown Menu
 - Question 1
 - Question 4
 %% Button-End
 
 %% EmptyLine
 
+For submitting the data to a server, Question 1, Question 2 and Question 4 are
+required.
+
 %% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
 - Question 1
+- Question 2
 - Question 4
 %% Button-End
 
@@ -191,12 +200,17 @@ also use text formatting commands to add labels to the sliders.
 
 %% EmptyLine
 
+For both saving the data to a local JSON file and submitting the data to a 
+server, no question is required.
+
 %% Button-Begin(Save,0)
+- Question 1
 %% Button-End
 
 %% EmptyLine
 
 %% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
+- Question 1
 %% Button-End
 
 %% EmptyLine
@@ -277,12 +291,19 @@ The following is a single-line input field and a multiple-line input field.
 
 %% EmptyLine
 
+For both saving the data to a local JSON file and submitting the data to a
+server, Question 1 is required.
+
 %% Button-Begin(Save,0)
+- Question 1
+- Question 2
 %% Button-End
 
 %% EmptyLine
 
 %% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
+- Question 1
+- Question 2
 %% Button-End
 
 %% EmptyLine
