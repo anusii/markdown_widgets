@@ -57,8 +57,11 @@ class CommandParser {
   late final Map<String, DateTime?> _dateValues;
   late final Map<String, String?> _dropdownValues;
   late final Map<String, List<String>> _dropdownOptions;
+  late final Map<String, bool> _hiddenContentVisibility;
+  late final Map<String, String> _hiddenContentMap;
 
   bool _hasMenu = false;
+  final bool isParsingHiddenContent;
 
   CommandParser({
     required this.context,
@@ -68,6 +71,7 @@ class CommandParser {
     required this.state,
     required this.setStateCallback,
     required this.surveyTitle,
+    this.isParsingHiddenContent = false,
   }) {
     // Initialise Helpers.
 
@@ -87,6 +91,14 @@ class CommandParser {
     _dateValues = state['_dateValues'] as Map<String, DateTime?>;
     _dropdownValues = state['_dropdownValues'] as Map<String, String?>;
     _dropdownOptions = state['_dropdownOptions'] as Map<String, List<String>>;
+    _hiddenContentVisibility =
+        state['_hiddenContentVisibility'] as Map<String, bool>? ?? {};
+
+    // Access or initialise the hidden content map.
+
+    _hiddenContentMap =
+        state['_hiddenContentMap'] as Map<String, String>? ?? {};
+    state['_hiddenContentMap'] = _hiddenContentMap;
   }
 
   List<Widget> parse() {
@@ -134,11 +146,48 @@ class CommandParser {
         RegExp(r'%% Menu-Begin([\s\S]*?)%% Menu-End', caseSensitive: false);
 
     // Regular expression to match %% Button-Begin blocks.
+
     final RegExp buttonBlockExp = RegExp(
         r'%% Button-Begin\((.*?)\)([\s\S]*?)%% Button-End',
         caseSensitive: false);
 
+    // Regular expression to match hidden content blocks.
+
+    final RegExp hiddenBlockExp = RegExp(
+      r'%% Hidden-Begin\(([^)]+)\)([\s\S]*?)%% Hidden-End',
+      caseSensitive: false,
+    );
+
+    // Regular expression to match hidden content placeholders.
+
+    final RegExp hiddenPlaceholderExp = RegExp(
+      r'%% Hidden\(([^)]+)\)',
+      caseSensitive: false,
+    );
+
     String modifiedContent = content;
+
+    // Parse the hidden content blocks and store in _hiddenContentMap.
+
+    modifiedContent = modifiedContent.replaceAllMapped(hiddenBlockExp, (match) {
+      String id = match.group(1)!.trim();
+      String content = match.group(2)!;
+
+      _hiddenContentMap[id] = content;
+      state['_hiddenContentMap'] = _hiddenContentMap;
+
+      // Replace the hidden block with a placeholder.
+      return '%%HiddenPlaceholder($id)%%';
+    });
+
+    // Parse the hidden content placeholders and replace with placeholders.
+
+    modifiedContent =
+        modifiedContent.replaceAllMapped(hiddenPlaceholderExp, (match) {
+      String id = match.group(1)!.trim();
+      String placeholder = '%%HiddenPlaceholder($id)%%';
+      return placeholder;
+    });
 
     // Parse the menu blocks and replace with placeholders.
 
@@ -171,7 +220,7 @@ class CommandParser {
 
     // If there is a menu, trim the content to only process the menu part.
 
-    if (_hasMenu) {
+    if (_hasMenu && !isParsingHiddenContent) {
       // If there is a menu, only process the menu part and ignore the rest.
 
       final menuPlaceholderPattern = RegExp(r'%%MenuPlaceholder\d+%%');
@@ -228,7 +277,7 @@ class CommandParser {
       return placeholder;
     });
 
-    // Regular expression to match custom commands.
+    // Regular expression to match custom commands, including placeholders.
 
     final RegExp customCommandExp = RegExp(
         r'(%% Slider\([^\)]+\)|%% Submit|'
@@ -241,7 +290,8 @@ class CommandParser {
         r'%%HeadingPlaceholder\d+%%|'
         r'%%AlignPlaceholder\d+%%|'
         r'%%MenuPlaceholder\d+%%|'
-        r'%%ButtonPlaceholder\d+%%)',
+        r'%%ButtonPlaceholder\d+%%|'
+        r'%%HiddenPlaceholder\([^\)]+\)%%)',
         caseSensitive: false);
 
     final matches = customCommandExp.allMatches(modifiedContent).toList();
@@ -251,12 +301,12 @@ class CommandParser {
     // Parse the radio group variables.
 
     String? currentRadioGroupName;
-    List<Map<String, String>> currentRadioOptions = [];
+    List<Map<String, String?>> currentRadioOptions = [];
 
     // Parse the checkbox group variables.
 
     String? currentCheckboxGroupName;
-    List<Map<String, String>> currentCheckboxOptions = [];
+    List<Map<String, String?>> currentCheckboxOptions = [];
 
     for (int i = 0; i < matches.length; i++) {
       final match = matches[i];
@@ -315,8 +365,6 @@ class CommandParser {
 
         String descriptionContent = descriptionPlaceholders[command]!;
 
-        // Add the description box directly to the widgets list.
-
         widgets.add(helpers.buildDescriptionBox(descriptionContent));
       } else if (command
           .startsWith(RegExp(r'%%HeadingPlaceholder', caseSensitive: false))) {
@@ -343,6 +391,8 @@ class CommandParser {
         widgets.add(helpers.buildAlignedText(align, alignContent));
       } else if (command
           .startsWith(RegExp(r'%% Image', caseSensitive: false))) {
+        // Handle image command.
+
         final imageMatch = imageExp.firstMatch(command);
         if (imageMatch != null) {
           final filename = imageMatch.group(1)!.trim();
@@ -361,6 +411,8 @@ class CommandParser {
         }
       } else if (command
           .startsWith(RegExp(r'%% Video', caseSensitive: false))) {
+        // Handle video command.
+
         final videoMatch = videoExp.firstMatch(command);
         if (videoMatch != null) {
           final filename = videoMatch.group(1)!.trim();
@@ -368,6 +420,8 @@ class CommandParser {
         }
       } else if (command
           .startsWith(RegExp(r'%% Audio', caseSensitive: false))) {
+        // Handle audio command.
+
         final audioMatch = audioExp.firstMatch(command);
         if (audioMatch != null) {
           final filename = audioMatch.group(1)!.trim();
@@ -375,7 +429,7 @@ class CommandParser {
         }
       } else if (command
           .startsWith(RegExp(r'%% Timer', caseSensitive: false))) {
-        // Build any unfinished radio or checkbox groups.
+        // Handle timer command.
 
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -391,7 +445,7 @@ class CommandParser {
           currentCheckboxOptions = [];
         }
 
-        final timerExp = RegExp(r'%% Timer\(([^\)]+)\)', caseSensitive: false);
+        final timerExp = RegExp(r'%% Timer\(([^)]+)\)', caseSensitive: false);
         final timerMatch = timerExp.firstMatch(command);
 
         if (timerMatch != null) {
@@ -403,7 +457,7 @@ class CommandParser {
         }
       } else if (command
           .startsWith(RegExp(r'%% EmptyLine', caseSensitive: false))) {
-        // Build any unfinished radio or checkbox groups.
+        // Handle empty line command.
 
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -425,7 +479,7 @@ class CommandParser {
         widgets.add(SizedBox(height: lineHeight));
       } else if (command
           .startsWith(RegExp(r'%% Slider', caseSensitive: false))) {
-        // Parse the slider parameters.
+        // Handle slider command.
 
         final sliderExp = RegExp(
             r'%% Slider\(([^,]+),\s*([\d\.]+),'
@@ -460,7 +514,7 @@ class CommandParser {
           widgets.add(helpers.buildSlider(name));
         }
       } else if (command.startsWith('%% Button')) {
-        // Build any unfinished radio or checkbox groups.
+        // Handle button command.
 
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -488,7 +542,8 @@ class CommandParser {
         );
       } else if (command
           .startsWith(RegExp(r'%%ButtonPlaceholder', caseSensitive: false))) {
-        // Build any unfinished groups
+        // Handle button placeholder.
+
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
               currentRadioGroupName, currentRadioOptions));
@@ -501,14 +556,20 @@ class CommandParser {
           currentCheckboxGroupName = null;
           currentCheckboxOptions = [];
         }
+
         // Get the actual button command and required widgets.
+
         final buttonInfo = buttonPlaceholders[command]!;
         final commandStr = buttonInfo['command']!;
         final requiredWidgetsStr = buttonInfo['requiredWidgets']!;
+
         // Parse the required widgets list.
+
         List<String> requiredWidgets =
             _parseRequiredWidgets(requiredWidgetsStr);
+
         // Create the ButtonWidget.
+
         widgets.add(
           ButtonWidget(
             command: '%% Button($commandStr)',
@@ -518,8 +579,47 @@ class CommandParser {
           ),
         );
       } else if (command
+          .startsWith(RegExp(r'%%HiddenPlaceholder', caseSensitive: false))) {
+        // Handle hidden content placeholder.
+
+        final hiddenPlaceholderExp =
+            RegExp(r'%%HiddenPlaceholder\(([^)]+)\)%%', caseSensitive: false);
+        final placeholderMatch = hiddenPlaceholderExp.firstMatch(command);
+
+        if (placeholderMatch != null) {
+          final id = placeholderMatch.group(1)!.trim();
+          final hiddenContent = _hiddenContentMap[id] ?? '';
+
+          if (!_hiddenContentVisibility.containsKey(id)) {
+            _hiddenContentVisibility[id] = false;
+          }
+
+          // Parse the hidden content.
+
+          final hiddenWidgets = CommandParser(
+            context: context,
+            content: hiddenContent,
+            fullContent: fullContent,
+            onMenuItemSelected: onMenuItemSelected,
+            state: state,
+            setStateCallback: setStateCallback,
+            surveyTitle: surveyTitle,
+            isParsingHiddenContent: true,
+          ).parse();
+
+          widgets.add(
+            Visibility(
+              visible: _hiddenContentVisibility[id] ?? false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: hiddenWidgets,
+              ),
+            ),
+          );
+        }
+      } else if (command
           .startsWith(RegExp(r'%% Radio', caseSensitive: false))) {
-        // Build any unfinished checkbox groups.
+        // Handle radio command.
 
         if (currentCheckboxGroupName != null) {
           widgets.add(helpers.buildCheckboxGroup(
@@ -529,9 +629,10 @@ class CommandParser {
         }
 
         final radioExp = RegExp(
-          r'%% Radio\(([^,]+),\s*([^,]+),\s*"((?:[^"\\]|\\.)*)"\)',
+          r'%% Radio\(([^,]+),\s*([^,]+),\s*"((?:[^"\\]|\\.)*)"(?:,\s*([^)]+))?\)',
           caseSensitive: false,
         );
+
         final radioMatch = radioExp.firstMatch(command);
 
         if (radioMatch != null) {
@@ -545,10 +646,12 @@ class CommandParser {
           label = label.replaceAll('\n', ' ');
           label = label.trim();
 
-          // If starting a new radio group or the group name has changed.
+          // Get the optional hidden content ID.
+
+          String? hiddenContentId = radioMatch.group(4)?.trim();
 
           if (currentRadioGroupName == null || currentRadioGroupName != name) {
-            // If there is a previous radio group, build it first.
+            // Build previous radio group.
 
             if (currentRadioGroupName != null) {
               widgets.add(helpers.buildRadioGroup(
@@ -567,7 +670,11 @@ class CommandParser {
 
           // Add options to the current group.
 
-          currentRadioOptions.add({'value': value, 'label': label});
+          currentRadioOptions.add({
+            'value': value,
+            'label': label,
+            'hiddenContentId': hiddenContentId,
+          });
 
           // Check if the next command belongs to the same group.
 
@@ -597,7 +704,7 @@ class CommandParser {
         }
       } else if (command
           .startsWith(RegExp(r'%% Checkbox', caseSensitive: false))) {
-        // Build any unfinished radio groups.
+        // Handle checkbox command.
 
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -607,9 +714,10 @@ class CommandParser {
         }
 
         final checkboxExp = RegExp(
-          r'%% Checkbox\(([^,]+),\s*([^,]+),\s*"((?:[^"\\]|\\.)*)"\)',
+          r'%% Checkbox\(([^,]+),\s*([^,]+),\s*"((?:[^"\\]|\\.)*)"(?:,\s*([^)]+))?\)',
           caseSensitive: false,
         );
+
         final checkboxMatch = checkboxExp.firstMatch(command);
 
         if (checkboxMatch != null) {
@@ -623,11 +731,13 @@ class CommandParser {
           label = label.replaceAll('\n', ' ');
           label = label.trim();
 
-          // If starting a new checkbox group or the group name has changed.
+          // Get the optional hidden content ID.
+
+          String? hiddenContentId = checkboxMatch.group(4)?.trim();
 
           if (currentCheckboxGroupName == null ||
               currentCheckboxGroupName != name) {
-            // If there is a previous checkbox group, build it first.
+            // Build previous checkbox group.
 
             if (currentCheckboxGroupName != null) {
               widgets.add(helpers.buildCheckboxGroup(
@@ -646,7 +756,11 @@ class CommandParser {
 
           // Add options to the current group.
 
-          currentCheckboxOptions.add({'value': value, 'label': label});
+          currentCheckboxOptions.add({
+            'value': value,
+            'label': label,
+            'hiddenContentId': hiddenContentId,
+          });
 
           // Check if the next command belongs to the same group.
 
@@ -675,7 +789,7 @@ class CommandParser {
         }
       } else if (command
           .startsWith(RegExp(r'%% Calendar', caseSensitive: false))) {
-        // Build any unfinished radio or checkbox groups.
+        // Handle calendar command.
 
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -692,7 +806,7 @@ class CommandParser {
         }
 
         final calendarExp =
-            RegExp(r'%% Calendar\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% Calendar\(([^)]+)\)', caseSensitive: false);
         final calendarMatch = calendarExp.firstMatch(command);
 
         if (calendarMatch != null) {
@@ -710,7 +824,7 @@ class CommandParser {
         }
       } else if (command
           .startsWith(RegExp(r'%% Dropdown', caseSensitive: false))) {
-        // Build any unfinished radio or checkbox groups.
+        // Handle dropdown command.
 
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -727,7 +841,7 @@ class CommandParser {
         }
 
         final dropdownExp =
-            RegExp(r'%% Dropdown\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% Dropdown\(([^)]+)\)', caseSensitive: false);
         final dropdownMatch = dropdownExp.firstMatch(command);
 
         if (dropdownMatch != null) {
@@ -785,13 +899,9 @@ class CommandParser {
 
           continue;
         }
-      }
-
-      // Parse the input field command for single-line and multi-line input.
-
-      else if (command
+      } else if (command
           .startsWith(RegExp(r'%% InputSL', caseSensitive: false))) {
-        // Build any unfinished radio or checkbox groups.
+        // Handle single-line input field.
 
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -808,7 +918,7 @@ class CommandParser {
         }
 
         final inputSLExp =
-            RegExp(r'%% InputSL\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% InputSL\(([^)]+)\)', caseSensitive: false);
         final inputSLMatch = inputSLExp.firstMatch(command);
 
         if (inputSLMatch != null) {
@@ -824,7 +934,7 @@ class CommandParser {
         }
       } else if (command
           .startsWith(RegExp(r'%% InputML', caseSensitive: false))) {
-        // Build any unfinished radio or checkbox groups.
+        // Handle multi-line input field.
 
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
@@ -841,7 +951,7 @@ class CommandParser {
         }
 
         final inputMLExp =
-            RegExp(r'%% InputML\(([^\)]+)\)', caseSensitive: false);
+            RegExp(r'%% InputML\(([^)]+)\)', caseSensitive: false);
         final inputMLMatch = inputMLExp.firstMatch(command);
 
         if (inputMLMatch != null) {
@@ -865,9 +975,6 @@ class CommandParser {
     if (lastIndex < modifiedContent.length) {
       String markdownContent = modifiedContent.substring(lastIndex);
       if (markdownContent.trim().isNotEmpty) {
-        // Build any unfinished radio or checkbox groups before adding new
-        // content.
-
         if (currentRadioGroupName != null) {
           widgets.add(helpers.buildRadioGroup(
               currentRadioGroupName, currentRadioOptions));
@@ -885,7 +992,7 @@ class CommandParser {
         // If there is no menu, the content after the menu will need to be
         // shown.
 
-        if (!_hasMenu) {
+        if (!_hasMenu || isParsingHiddenContent) {
           widgets.add(MarkdownText(data: markdownContent));
         }
       }

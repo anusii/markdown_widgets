@@ -105,6 +105,10 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
   final Map<String, AudioPlayer> _audioPlayers = {};
   final Map<String, GlobalKey<InputFieldState>> _inputFieldKeys = {};
 
+  // Initialise the hidden content visibility map.
+
+  final Map<String, bool> _hiddenContentVisibility = {};
+
   @override
   void initState() {
     super.initState();
@@ -166,6 +170,7 @@ class _MarkdownWidgetBuilderState extends State<MarkdownWidgetBuilder> {
         '_dropdownValues': _dropdownValues,
         '_dropdownOptions': _dropdownOptions,
         '_inputFieldKeys': _inputFieldKeys,
+        '_hiddenContentVisibility': _hiddenContentVisibility,
       },
       setStateCallback: () => setState(() {}),
       surveyTitle: widget.title,

@@ -35,9 +35,9 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart'
 
 class RadioGroup extends StatelessWidget {
   final String name;
-  final List<Map<String, String>> options;
+  final List<Map<String, String?>> options;
   final String? selectedValue;
-  final ValueChanged<String?> onChanged;
+  final Function(String? value, String? hiddenContentId) onChanged;
 
   const RadioGroup({
     Key? key,
@@ -78,7 +78,7 @@ class RadioGroup extends StatelessWidget {
             ...options.map((option) {
               return InkWell(
                 onTap: () {
-                  onChanged(option['value']);
+                  onChanged(option['value'], option['hiddenContentId']);
                 },
                 child: Row(
                   // Align the radio button and text vertically at the top.
@@ -88,7 +88,9 @@ class RadioGroup extends StatelessWidget {
                     Radio<String>(
                       value: option['value']!,
                       groupValue: selectedValue,
-                      onChanged: onChanged,
+                      onChanged: (value) {
+                        onChanged(value, option['hiddenContentId']);
+                      },
                     ),
                     Expanded(
                       child: Padding(

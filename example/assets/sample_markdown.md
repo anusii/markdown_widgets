@@ -50,13 +50,25 @@ This example also demonstrates the use of escape characters, such as \".")
    selections for these two groups are independent and will not affect each 
    other. 
 
-%% Radio(Question 2,1,"Option 1")
+%% Radio(Question 2,1,"Option 1. If you choose this option, you will need to 
+answer a follow-up question.",Hidden 1)
 
-%% Radio(Question 2,2,"Option 2")
+%% Radio(Question 2,2,"Option 2. If you choose this option, you will need to
+answer another follow-up question.",Hidden 2)
 
 %% Radio(Question 2,3,"Option 3")
 
 %% Radio(Question 2,4,"Option 4")
+
+%% Hidden-Begin(Hidden 1)
+This is a follow-up question for Option 1.
+%% InputML(Question 2.1)
+%% Hidden-End
+
+%% Hidden-Begin(Hidden 2)
+This is a follow-up question for Option 2.
+%% InputML(Question 2.2)
+%% Hidden-End
 
 %% EmptyLine
 
@@ -68,7 +80,8 @@ next line if it needs to. When wrapping it does so indented to align the
 paragraph. This example also demonstrates the use of escape characters, such
 as \".")
 
-%% Checkbox(Question 3,2,"Option 2")
+%% Checkbox(Question 3,2,"Option 2. If you choose this option, you will need to
+answer another follow-up question.",Hidden 3)
 
 %% Checkbox(Question 3,3,"Option 3")
 
@@ -77,6 +90,11 @@ as \".")
 %% Checkbox(Question 3,5,"Option 5")
 
 %% Checkbox(Question 3,6,"Option 6")
+
+%% Hidden-Begin(Hidden 3)
+This is a follow-up question for Option 2.
+%% InputML(Question 3.2)
+%% Hidden-End
 
 %% EmptyLine
 

@@ -96,8 +96,8 @@ on the `Survey Details` page.
 For example, the following snippet from the markdown file:
 
 ```markdown
-%% Radio(Radio1,1,Option 1)
-%% Radio(Radio1,2,Option 2)
+%% Radio(Radio1,1,"Option 1")
+%% Radio(Radio1,2,"Option 2")
 ```
 
 ## Checkbox
@@ -109,9 +109,34 @@ on the `Survey Details` page.
 For example, the following snippet from the markdown file:
 
 ```markdown
-%% Checkbox(Checkbox1,A,Option 1)
-%% Checkbox(Checkbox1,B,Option 2)
-%% Checkbox(Checkbox1,C,Option 3)
+%% Checkbox(Checkbox1,A,"Option 1")
+%% Checkbox(Checkbox1,B,"Option 2")
+%% Checkbox(Checkbox1,C,"Option 3")
+```
+
+## Hidden
+
+If the user needs to answer the next question after selecting a specific radio
+button or checkbox, you can use the `%% Hidden` command. The `Hidden` command
+consists of two parts: `Hidden-Begin` and `Hidden-End`. The content to be
+hidden is placed between these two parts.
+
+For example, the following snippet from the markdown file:
+
+```markdown
+%% Hidden-Begin(Hidden 1)
+Please answer the following question after selecting Option 1.
+InputML(HiddenQuestion)
+%% Hidden-End
+```
+
+In this example, `Hidden 1` is the ID of the hidden content. We can add
+parameters to the `%% Radio` or `%% Checkbox` command to bind this hidden
+content. The specific approach is as follows:
+
+```markdown
+%% Radio(Radio1,1,"Option 1",Hidden 1)
+%% Checkbox(Checkbox1,A,"Option 1",Hidden 1)
 ```
 
 ## Input Box
