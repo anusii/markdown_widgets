@@ -52,12 +52,15 @@ class RadioGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the font size of the text, default value is 14.0.
+
     double fontSize = Theme.of(context).textTheme.bodyLarge?.fontSize ?? 14.0;
 
     // Assume the line height is 1.2 times the font size.
+
     double lineHeight = fontSize * 1.2;
 
     // Half line height.
+
     double halfLineHeight = lineHeight / 2;
 
     List<Widget> children = [];
@@ -78,6 +81,7 @@ class RadioGroup extends StatelessWidget {
         },
         child: Row(
           // Align the radio button and text vertically at the top.
+
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Radio<String>(
@@ -90,6 +94,7 @@ class RadioGroup extends StatelessWidget {
             Expanded(
               child: Padding(
                 // Add a small padding above the text.
+
                 padding: const EdgeInsets.only(top: 6.0),
                 child: Text(
                   option['label']!,
@@ -108,9 +113,12 @@ class RadioGroup extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Add a half line height of blank line before the first option.
+
             if (isRequired) SizedBox(height: halfLineHeight),
             ...children,
+
             // Add a half line height of blank line after the last option.
+
             SizedBox(height: halfLineHeight),
           ],
         ),

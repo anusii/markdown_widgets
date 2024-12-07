@@ -1,6 +1,6 @@
 /// Helper methods for markdown widgets.
 ///
-/// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
+// Time-stamp: <Thursday 2024-11-14 21:33:15 +1100 Graham Williams>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -70,7 +70,7 @@ class Helpers {
   Widget buildHeading(int level, String content, String align,
       {bool isRequired = false}) {
     Widget heading =
-    TextHeadingWidget(level: level, content: content, align: align);
+        TextHeadingWidget(level: level, content: content, align: align);
     if (isRequired) {
       return _wrapWithRequiredLabel(heading);
     } else {
@@ -80,8 +80,7 @@ class Helpers {
 
   Widget buildAlignedText(String align, String content,
       {bool isRequired = false}) {
-    Widget alignedText =
-    TextAlignmentWidget(align: align, content: content);
+    Widget alignedText = TextAlignmentWidget(align: align, content: content);
     if (isRequired) {
       return _wrapWithRequiredLabel(alignedText);
     } else {
@@ -132,9 +131,10 @@ class Helpers {
     );
 
     if (isRequired) {
-      // Timer does not allow being marked as required, but to maintain consistency,
-      // add the label here if needed.
+      // Timer does not allow being marked as required, but to maintain
+      // consistency, add the label here if needed.
       // The label is placed below the widget.
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -171,6 +171,7 @@ class Helpers {
 
     if (isRequired) {
       // Position the (Required) label above the Slider.
+
       return _wrapWithRequiredLabel(slider, labelAbove: true);
     } else {
       return slider;
@@ -178,10 +179,10 @@ class Helpers {
   }
 
   Widget buildRadioGroup(
-      String name,
-      List<Map<String, String?>> options, {
-        bool isRequired = false,
-      }) {
+    String name,
+    List<Map<String, String?>> options, {
+    bool isRequired = false,
+  }) {
     return RadioGroup(
       name: name,
       options: options,
@@ -191,6 +192,7 @@ class Helpers {
         state['_radioValues'][name] = newValue;
 
         // Update hidden content visibility.
+
         for (var option in options) {
           if (option['hiddenContentId'] != null) {
             final id = option['hiddenContentId']!.trim();
@@ -208,10 +210,10 @@ class Helpers {
   }
 
   Widget buildCheckboxGroup(
-      String name,
-      List<Map<String, String?>> options, {
-        bool isRequired = false,
-      }) {
+    String name,
+    List<Map<String, String?>> options, {
+    bool isRequired = false,
+  }) {
     return CheckboxGroup(
       name: name,
       options: options,
@@ -221,6 +223,7 @@ class Helpers {
         state['_checkboxValues'][name] = selectedValues;
 
         // Update hidden content visibility.
+
         for (var option in options) {
           if (option['hiddenContentId'] != null) {
             final id = option['hiddenContentId']!.trim();
@@ -298,14 +301,19 @@ class Helpers {
     }
   }
 
-  /// Helper method to wrap a widget with a (Required) label within a central content area.
+  /// Helper method to wrap a widget with a (Required) label within a central
+  /// content area.
   ///
-  /// The [labelAbove] parameter determines whether the label is placed above or below the widget.
+  /// The [labelAbove] parameter determines whether the label is placed above
+  /// or below the widget.
+
   Widget _wrapWithRequiredLabel(Widget widget, {bool labelAbove = true}) {
     List<Widget> children = [];
 
     if (labelAbove) {
-      // Add the (Required) label, centered and width-constrained by contentWidthFactor
+      // Add the (Required) label, centered and width-constrained by
+      // contentWidthFactor.
+
       children.add(
         Center(
           child: FractionallySizedBox(
@@ -319,13 +327,19 @@ class Helpers {
         ),
       );
       children.add(const SizedBox(height: 4.0));
-      // Add the widget without width constraints, so it retains its original width
+
+      // Add the widget without width constraints, so it retains its original
+      // width.
+
       children.add(widget);
     } else {
-      // Widget first
+      // Widget first.
+
       children.add(widget);
       children.add(const SizedBox(height: 4.0));
-      // (Required) label after the widget, also centered and constrained
+
+      // "(Required)" label after the widget, also centered and constrained.
+
       children.add(
         Center(
           child: FractionallySizedBox(
@@ -340,8 +354,10 @@ class Helpers {
       );
     }
 
-    // Return a simple Column that stacks the label (centered region) and the widget.
-    // The widget itself is not wrapped by FractionallySizedBox, so it can have its original width.
+    // Return a simple Column that stacks the label (centered region) and the
+    // widget. The widget itself is not wrapped by FractionallySizedBox, so
+    // it can have its original width.
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,

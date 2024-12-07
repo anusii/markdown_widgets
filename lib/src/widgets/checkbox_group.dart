@@ -39,7 +39,7 @@ class CheckboxGroup extends StatefulWidget {
   final Set<String> selectedValues;
   final bool isRequired;
   final Function(Set<String> selectedValues, Set<String> hiddenContentIds)
-  onChanged;
+      onChanged;
 
   const CheckboxGroup({
     Key? key,
@@ -91,12 +91,15 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
   @override
   Widget build(BuildContext context) {
     // Get the font size of the text, default value is 14.0.
+
     double fontSize = Theme.of(context).textTheme.bodyLarge?.fontSize ?? 14.0;
 
     // Assume the line height is 1.2 times the font size.
+
     double lineHeight = fontSize * 1.2;
 
     // Calculate half line height.
+
     double halfLineHeight = lineHeight / 2;
 
     List<Widget> children = [];
@@ -113,24 +116,24 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
       bool isChecked = _selectedValues.contains(option['value']!);
       return GestureDetector(
         onTap: () {
-          _onChanged(
-              option['value']!, !isChecked, option['hiddenContentId']);
+          _onChanged(option['value']!, !isChecked, option['hiddenContentId']);
         },
         child: Row(
           // Align the checkbox and text vertically at the top.
+
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Checkbox(
               value: isChecked,
               onChanged: (bool? newValue) {
-                _onChanged(option['value']!, newValue,
-                    option['hiddenContentId']);
+                _onChanged(
+                    option['value']!, newValue, option['hiddenContentId']);
               },
             ),
             Expanded(
               child: Padding(
-                // Add a small padding above the text to align with
-                // checkbox.
+                // Add a small padding above the text to align with checkbox.
+
                 padding: const EdgeInsets.only(top: 6.0),
                 child: Text(
                   option['label']!,
@@ -149,9 +152,12 @@ class _CheckboxGroupState extends State<CheckboxGroup> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Add a half line height of blank line before the first option.
+
             if (widget.isRequired) SizedBox(height: halfLineHeight),
             ...children,
+
             // Add a half line height of blank line after the last option.
+
             SizedBox(height: halfLineHeight),
           ],
         ),
