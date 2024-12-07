@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor, screenWidth;
+    show contentWidthFactor;
 import 'package:markdown_widget_builder/src/utils/parse_time_string.dart';
 import 'package:markdown_widget_builder/src/widgets/audio_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/calendar_field.dart';

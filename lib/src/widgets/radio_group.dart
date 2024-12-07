@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor, screenWidth;
+    show contentWidthFactor;
 
 class RadioGroup extends StatelessWidget {
   final String name;
@@ -74,7 +74,7 @@ class RadioGroup extends StatelessWidget {
     }
 
     children.addAll(options.map((option) {
-      bool isChecked = selectedValue == option['value'];
+      // bool isChecked = selectedValue == option['value'];
       return InkWell(
         onTap: () {
           onChanged(option['value'], option['hiddenContentId']);

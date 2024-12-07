@@ -31,7 +31,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor, screenWidth;
+    show contentWidthFactor;
 
 class CheckboxGroup extends StatefulWidget {
   final String name;
