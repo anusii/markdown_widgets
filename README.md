@@ -306,3 +306,14 @@ For example, the following snippet from the markdown file:
 ```markdown
 %% EmptyLine
 ```
+
+## Pagination
+
+`%% PageBreak` will be recognised as a page break. The content after the
+`PageBreak` tag will be displayed on the next page.
+
+For example, the following snippet from the markdown file:
+
+```markdown
+%% PageBreak
+```
