@@ -40,6 +40,7 @@ import 'package:markdown_widget_builder/src/widgets/description_box.dart';
 import 'package:markdown_widget_builder/src/widgets/dropdown_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/image_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/input_field.dart';
+import 'package:markdown_widget_builder/src/widgets/page_break_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/radio_group.dart';
 import 'package:markdown_widget_builder/src/widgets/slider_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/text_alignment_widget.dart';
@@ -47,16 +48,28 @@ import 'package:markdown_widget_builder/src/widgets/text_heading_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/timer_widget.dart';
 import 'package:markdown_widget_builder/src/widgets/video_widget.dart';
 
+/// The Helpers class provides methods for building and wrapping various widgets
+/// used in markdown parsing. It encapsulates the logic to handle state changes,
+/// add "Required" labels to fields, and integrate user interactions.
+
 class Helpers {
   final BuildContext context;
   final Map<String, dynamic> state;
   final VoidCallback setStateCallback;
+
+  /// Constructor for Helpers.
+  ///
+  /// - [context]: The Flutter build context.
+  /// - [state]: The shared state holding widget values.
+  /// - [setStateCallback]: A callback function that triggers a widget rebuild.
 
   Helpers({
     required this.context,
     required this.state,
     required this.setStateCallback,
   });
+
+  /// Builds a description box widget, optionally marking it as required.
 
   Widget buildDescriptionBox(String content, {bool isRequired = false}) {
     Widget description = DescriptionBox(content: content);
@@ -66,6 +79,9 @@ class Helpers {
       return description;
     }
   }
+
+  /// Builds a heading widget with the specified [level] and [align], optionally
+  /// required.
 
   Widget buildHeading(int level, String content, String align,
       {bool isRequired = false}) {
@@ -78,6 +94,8 @@ class Helpers {
     }
   }
 
+  /// Builds a text widget with specified alignment, optionally required.
+
   Widget buildAlignedText(String align, String content,
       {bool isRequired = false}) {
     Widget alignedText = TextAlignmentWidget(align: align, content: content);
@@ -87,6 +105,9 @@ class Helpers {
       return alignedText;
     }
   }
+
+  /// Builds an image widget with optional dimensions and optional required
+  /// label.
 
   Widget buildImageWidget(String filename,
       {double? width, double? height, bool isRequired = false}) {
@@ -102,6 +123,8 @@ class Helpers {
     }
   }
 
+  /// Builds a video widget from a specified filename, optionally required.
+
   Widget buildVideoWidget(String filename, {bool isRequired = false}) {
     Widget video = VideoWidget(filename: filename);
     if (isRequired) {
@@ -110,6 +133,8 @@ class Helpers {
       return video;
     }
   }
+
+  /// Builds an audio widget from a specified filename, optionally required.
 
   Widget buildAudioWidget(String filename, {bool isRequired = false}) {
     Widget audio = AudioWidget(filename: filename);
@@ -120,21 +145,18 @@ class Helpers {
     }
   }
 
+  /// Builds a timer widget with the specified time string.
+  /// If required, it will add a "(Required)" label.
+
   Widget buildTimerWidget(String timeString, {bool isRequired = false}) {
     final totalSeconds = parseTimeString(timeString);
     if (totalSeconds <= 0) {
       return const Text('Invalid timer duration');
     }
-
     Widget timer = TimerWidget(
       totalSeconds: totalSeconds,
     );
-
     if (isRequired) {
-      // Timer does not allow being marked as required, but to maintain
-      // consistency, add the label here if needed.
-      // The label is placed below the widget.
-
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -151,6 +173,8 @@ class Helpers {
     }
   }
 
+  /// Builds a slider widget tied to the specified [name], optionally required.
+
   Widget buildSlider(String name, {bool isRequired = false}) {
     final sliderInfo = state['_sliders'][name]!;
     final min = sliderInfo['min'];
@@ -164,19 +188,20 @@ class Helpers {
       max: max,
       step: step,
       onChanged: (newValue) {
-        setStateCallback();
         state['_sliderValues'][name] = newValue;
+        setStateCallback();
       },
     );
 
     if (isRequired) {
-      // Position the (Required) label above the Slider.
-
       return _wrapWithRequiredLabel(slider, labelAbove: true);
     } else {
       return slider;
     }
   }
+
+  /// Builds a radio group widget with given [options]. The state of selected
+  /// value and hidden content visibility is handled here.
 
   Widget buildRadioGroup(
     String name,
@@ -188,10 +213,9 @@ class Helpers {
       options: options,
       selectedValue: state['_radioValues'][name],
       onChanged: (String? newValue, String? hiddenContentId) {
-        setStateCallback();
         state['_radioValues'][name] = newValue;
 
-        // Update hidden content visibility.
+        // Hide all hidden content first.
 
         for (var option in options) {
           if (option['hiddenContentId'] != null) {
@@ -200,14 +224,21 @@ class Helpers {
           }
         }
 
+        // Show the hidden content related to the newly selected option.
+
         if (hiddenContentId != null) {
           final id = hiddenContentId.trim();
           state['_hiddenContentVisibility'][id] = true;
         }
+
+        setStateCallback();
       },
       isRequired: isRequired,
     );
   }
+
+  /// Builds a checkbox group widget with given [options]. Selected values and
+  /// visibility of hidden content is managed here.
 
   Widget buildCheckboxGroup(
     String name,
@@ -219,28 +250,30 @@ class Helpers {
       options: options,
       selectedValues: state['_checkboxValues'][name]!,
       onChanged: (Set<String> selectedValues, Set<String> hiddenContentIds) {
-        setStateCallback();
         state['_checkboxValues'][name] = selectedValues;
 
-        // Update hidden content visibility.
+        // Update visibility for hidden content based on selected checkboxes.
 
         for (var option in options) {
           if (option['hiddenContentId'] != null) {
             final id = option['hiddenContentId']!.trim();
-            if (selectedValues.contains(option['value'])) {
-              state['_hiddenContentVisibility'][id] = true;
-            } else {
-              state['_hiddenContentVisibility'][id] = false;
-            }
+            state['_hiddenContentVisibility'][id] =
+                selectedValues.contains(option['value']);
           }
         }
+
+        setStateCallback();
       },
       isRequired: isRequired,
     );
   }
 
+  /// Builds an input field (single or multi-line) and updates state on changes.
+
   Widget buildInputField(String name,
       {bool isMultiLine = false, bool isRequired = false}) {
+    // Initialise a global key for the input field if not present.
+
     if (!state.containsKey('_inputFieldKeys')) {
       state['_inputFieldKeys'] = {};
     }
@@ -255,6 +288,7 @@ class Helpers {
       isMultiLine: isMultiLine,
       onChanged: (value) {
         state['_inputValues'][name] = value;
+        setStateCallback();
       },
     );
 
@@ -265,13 +299,16 @@ class Helpers {
     }
   }
 
+  /// Builds a calendar field, allowing users to select a date. The selection
+  /// updates state accordingly.
+
   Widget buildCalendarField(String name, {bool isRequired = false}) {
     Widget calendarField = CalendarField(
       name: name,
       initialDate: state['_dateValues'][name],
       onDateSelected: (DateTime? selectedDate) {
-        setStateCallback();
         state['_dateValues'][name] = selectedDate;
+        setStateCallback();
       },
     );
 
@@ -282,6 +319,9 @@ class Helpers {
     }
   }
 
+  /// Builds a dropdown widget with given [options]. Updates state on selection
+  /// changes.
+
   Widget buildDropdown(String name, List<String> options,
       {bool isRequired = false}) {
     Widget dropdownWidget = DropdownWidget(
@@ -289,8 +329,8 @@ class Helpers {
       options: options,
       value: state['_dropdownValues'][name],
       onChanged: (String? newValue) {
-        setStateCallback();
         state['_dropdownValues'][name] = newValue;
+        setStateCallback();
       },
     );
 
@@ -301,19 +341,31 @@ class Helpers {
     }
   }
 
-  /// Helper method to wrap a widget with a (Required) label within a central
-  /// content area.
-  ///
-  /// The [labelAbove] parameter determines whether the label is placed above
-  /// or below the widget.
+  /// Builds a page break widget with navigation callbacks, useful for
+  /// multi-page forms.
+
+  Widget buildPageBreakWidget({
+    required int currentPage,
+    required int totalPages,
+    required VoidCallback onNext,
+    required VoidCallback onPrev,
+  }) {
+    return PageBreakWidget(
+      currentPage: currentPage,
+      totalPages: totalPages,
+      onNext: onNext,
+      onPrev: onPrev,
+    );
+  }
+
+  /// Private helper method to wrap a widget with a "(Required)" label.
+  /// If [labelAbove] is true, the label is placed above the widget;
+  /// otherwise, below the widget.
 
   Widget _wrapWithRequiredLabel(Widget widget, {bool labelAbove = true}) {
     List<Widget> children = [];
 
     if (labelAbove) {
-      // Add the (Required) label, centered and width-constrained by
-      // contentWidthFactor.
-
       children.add(
         Center(
           child: FractionallySizedBox(
@@ -327,19 +379,10 @@ class Helpers {
         ),
       );
       children.add(const SizedBox(height: 4.0));
-
-      // Add the widget without width constraints, so it retains its original
-      // width.
-
       children.add(widget);
     } else {
-      // Widget first.
-
       children.add(widget);
       children.add(const SizedBox(height: 4.0));
-
-      // "(Required)" label after the widget, also centered and constrained.
-
       children.add(
         Center(
           child: FractionallySizedBox(
@@ -353,10 +396,6 @@ class Helpers {
         ),
       );
     }
-
-    // Return a simple Column that stacks the label (centered region) and the
-    // widget. The widget itself is not wrapped by FractionallySizedBox, so
-    // it can have its original width.
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
