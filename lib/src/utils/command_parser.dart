@@ -289,7 +289,7 @@ class CommandParser {
 
     final RegExp customCommandExp = RegExp(
         r'(%% Slider\([^\)]+\)|%% Submit|'
-        r'%% Radio\([^\)]+\)|%% Checkbox\([^\)]+\)|'
+        r'%% (Radio|Checkbox)\((?:[^\\()]|\\.)+\)|'
         r'%% InputSL\([^\)]+\)|%% InputML\([^\)]+\)|'
         r'%% Calendar\([^\)]+\)|%% Dropdown\([^\)]+\)|'
         r'%% Image\([^\)]+\)|%% Video\([^\)]+\)|%% Audio\([^\)]+\)|'
@@ -603,7 +603,12 @@ class CommandParser {
           final name = radioMatch.group(1)!.trim();
           final value = radioMatch.group(2)!.trim();
           String label = radioMatch.group(3)!;
+
+          // Define escape characters for the label.
+
           label = label.replaceAll(r'\"', '"');
+          label = label.replaceAll(r'\(', '(');
+          label = label.replaceAll(r'\)', ')');
           label = label.replaceAll('\n', ' ');
           label = label.trim();
           String? hiddenContentId = radioMatch.group(4)?.trim();
@@ -651,7 +656,8 @@ class CommandParser {
 
         flushCurrentRadioGroup();
         final checkboxExp = RegExp(
-          r'%% Checkbox\(([^,]+),\s*([^,]+),\s*"((?:[^"\\]|\\.)*)"(?:,\s*([^)]+))?\)',
+          r'%% Checkbox'
+          r'\(([^,]+),\s*([^,]+),\s*"((?:[^"\\]|\\.)*)"(?:,\s*([^)]+))?\)',
           caseSensitive: false,
         );
         final checkboxMatch = checkboxExp.firstMatch(command);
@@ -660,6 +666,8 @@ class CommandParser {
           final value = checkboxMatch.group(2)!.trim();
           String label = checkboxMatch.group(3)!;
           label = label.replaceAll(r'\"', '"');
+          label = label.replaceAll(r'\(', '(');
+          label = label.replaceAll(r'\)', ')');
           label = label.replaceAll('\n', ' ');
           label = label.trim();
           String? hiddenContentId = checkboxMatch.group(4)?.trim();
