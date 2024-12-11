@@ -31,7 +31,7 @@ Please select an option from the dropdown menu.
 %% EmptyLine
 
 1. This is Question 1. The following four options belong to the same group.
-   Only one option can be selected. (Required)
+   Only one option can be selected.
 
 %% Radio(Question 1,1,"Option 1 This is a long option that may wrap to the next
 line if it needs to. When wrapping it does so indented to align the paragraph.
@@ -45,7 +45,7 @@ This example also demonstrates the use of escape characters, such as \".")
 
 %% EmptyLine
 
-2. This is Question 2. Only one option can be selected. The following four 
+1. This is Question 2. Only one option can be selected. The following four 
    options belong to a different group from Question 1, and the user's 
    selections for these two groups are independent and will not affect each 
    other. 
