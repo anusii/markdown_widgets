@@ -78,6 +78,10 @@ class InputFieldState extends State<InputField> {
     super.dispose();
   }
 
+  void setValidationError(bool value) {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(

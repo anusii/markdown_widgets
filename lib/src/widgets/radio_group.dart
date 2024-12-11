@@ -31,12 +31,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor, screenWidth;
+    show contentWidthFactor;
 
 class RadioGroup extends StatelessWidget {
   final String name;
   final List<Map<String, String?>> options;
   final String? selectedValue;
+  final bool isRequired;
   final Function(String? value, String? hiddenContentId) onChanged;
 
   const RadioGroup({
@@ -45,6 +46,7 @@ class RadioGroup extends StatelessWidget {
     required this.options,
     this.selectedValue,
     required this.onChanged,
+    this.isRequired = false,
   }) : super(key: key);
 
   @override
@@ -61,51 +63,59 @@ class RadioGroup extends StatelessWidget {
 
     double halfLineHeight = lineHeight / 2;
 
+    List<Widget> children = [];
+
+    if (isRequired) {
+      children.add(const Text(
+        '(Required)',
+        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+      ));
+      children.add(const SizedBox(height: 4.0));
+    }
+
+    children.addAll(options.map((option) {
+      // bool isChecked = selectedValue == option['value'];
+      return InkWell(
+        onTap: () {
+          onChanged(option['value'], option['hiddenContentId']);
+        },
+        child: Row(
+          // Align the radio button and text vertically at the top.
+
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Radio<String>(
+              value: option['value']!,
+              groupValue: selectedValue,
+              onChanged: (value) {
+                onChanged(value, option['hiddenContentId']);
+              },
+            ),
+            Expanded(
+              child: Padding(
+                // Add a small padding above the text.
+
+                padding: const EdgeInsets.only(top: 6.0),
+                child: Text(
+                  option['label']!,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }).toList());
+
     return Center(
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(maxWidth: screenWidth(context) * contentWidthFactor),
+      child: FractionallySizedBox(
+        widthFactor: contentWidthFactor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Add a half line height of blank line before the first option.
 
-            SizedBox(height: halfLineHeight),
-
-            // Use the spread operator to insert the options list into the
-            // children list.
-
-            ...options.map((option) {
-              return InkWell(
-                onTap: () {
-                  onChanged(option['value'], option['hiddenContentId']);
-                },
-                child: Row(
-                  // Align the radio button and text vertically at the top.
-
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Radio<String>(
-                      value: option['value']!,
-                      groupValue: selectedValue,
-                      onChanged: (value) {
-                        onChanged(value, option['hiddenContentId']);
-                      },
-                    ),
-                    Expanded(
-                      child: Padding(
-                        // Add a small padding above the text.
-
-                        padding: const EdgeInsets.only(top: 6.0),
-                        child: Text(
-                          option['label']!,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
+            if (isRequired) SizedBox(height: halfLineHeight),
+            ...children,
 
             // Add a half line height of blank line after the last option.
 
