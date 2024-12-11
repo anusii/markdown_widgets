@@ -33,11 +33,12 @@ Please select an option from the dropdown menu.
 1. This is Question 1. The following four options belong to the same group.
    Only one option can be selected. (Required)
 
-%% Radio(Question 1,1,"Option 1 This is a long option that may wrap to the next
+%% Radio(Question 1,1,"Option 1. This is a long option that may wrap to the next
 line if it needs to. When wrapping it does so indented to align the paragraph.
 This example also demonstrates the use of escape characters, such as \".")
 
-%% Radio(Question 1,2,"Option 2")
+%% Radio(Question 1,2,"Option 2. Escape characters can also be used in the
+label, such as \( and \).")
 
 %% Radio(Question 1,3,"Option 3")
 
