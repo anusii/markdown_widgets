@@ -89,29 +89,31 @@ For example, the following snippet from the markdown file:
 
 ## Radio Button
 
-`%% Radio(name,value,label)` will be recognised as a radio button with
-the given `name`, `value`, and `label`. The radio button will be displayed
-on the `Survey Details` page.
+`%% Radio(name,value,label,hidden)` will be recognised as a radio button with
+the given `name`, `value`, `label` and `hidden_content`. Users can use escape 
+characters `\(`, `\)`, and `\"` to display parentheses and quotation marks 
+in the label. The radio button will be displayed on the `Survey Details` page.
 
 For example, the following snippet from the markdown file:
 
 ```markdown
 %% Radio(Radio1,1,"Option 1")
-%% Radio(Radio1,2,"Option 2")
+%% Radio(Radio1,2,"Option 2 \(Recommended\)",Hidden 1)
 ```
 
 ## Checkbox
 
-`%% Checkbox(name,value,label)` will be recognised as a checkbox with
-the given `name`, `value`, and `label`. The checkbox will be displayed
-on the `Survey Details` page.
+`%% Checkbox(name,value,label,hidden)` will be recognised as a checkbox with
+the given `name`, `value`, `label` and `hidden_content`. Users can use escape
+characters `\(`, `\)`, and `\"` to display parentheses and quotation marks
+in the label. The checkbox will be displayed on the `Survey Details` page.
 
 For example, the following snippet from the markdown file:
 
 ```markdown
 %% Checkbox(Checkbox1,A,"Option 1")
-%% Checkbox(Checkbox1,B,"Option 2")
-%% Checkbox(Checkbox1,C,"Option 3")
+%% Checkbox(Checkbox1,B,"Option 2 \(Recommended\)")
+%% Checkbox(Checkbox1,C,"Option 3",Hidden 1)
 ```
 
 ## Hidden
@@ -131,7 +133,7 @@ InputML(HiddenQuestion)
 ```
 
 In this example, `Hidden 1` is the ID of the hidden content. We can add
-parameters to the `%% Radio` or `%% Checkbox` command to bind this hidden
+arguments to the `%% Radio` or `%% Checkbox` command to bind this hidden
 content. The specific approach is as follows:
 
 ```markdown
@@ -305,4 +307,15 @@ For example, the following snippet from the markdown file:
 
 ```markdown
 %% EmptyLine
+```
+
+## Pagination
+
+`%% PageBreak` will be recognised as a page break. The content after the
+`PageBreak` tag will be displayed on the next page.
+
+For example, the following snippet from the markdown file:
+
+```markdown
+%% PageBreak
 ```

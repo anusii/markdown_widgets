@@ -33,11 +33,12 @@ Please select an option from the dropdown menu.
 1. This is Question 1. The following four options belong to the same group.
    Only one option can be selected.
 
-%% Radio(Question 1,1,"Option 1 This is a long option that may wrap to the next
+%% Radio(Question 1,1,"Option 1. This is a long option that may wrap to the next
 line if it needs to. When wrapping it does so indented to align the paragraph.
 This example also demonstrates the use of escape characters, such as \".")
 
-%% Radio(Question 1,2,"Option 2")
+%% Radio(Question 1,2,"Option 2. Escape characters can also be used in the
+label, such as \( and \).")
 
 %% Radio(Question 1,3,"Option 3")
 
@@ -204,13 +205,11 @@ For both saving the data to a local JSON file and submitting the data to a
 server, no question is required.
 
 %% Button-Begin(Save,0)
-- Question 1
 %% Button-End
 
 %% EmptyLine
 
 %% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
-- Question 1
 %% Button-End
 
 %% EmptyLine
@@ -261,7 +260,7 @@ Next is a set of text examples with different font sizes and alignment options.
 %% AlignJustify-Begin Text justified with words evenly distributed at both ends.
 %% AlignJustify-End
 
-%% EmptyLine
+%% PageBreak
 
 %% Description-Begin
 The following is a single-line input field and a multiple-line input field.
@@ -285,6 +284,74 @@ The following is a single-line input field and a multiple-line input field.
 
 %% InputML(Question 2)
 
+%% PageBreak
+
+3. This is Question 3. The following four options belong to the same group.
+   Only one option can be selected. (Required)
+
+%% Radio(Question 3,1,"Option 1 This is a long option that may wrap to the next
+line if it needs to. When wrapping it does so indented to align the paragraph.
+This example also demonstrates the use of escape characters, such as \".")
+
+%% Radio(Question 3,2,"Option 2")
+
+%% Radio(Question 3,3,"Option 3")
+
+%% Radio(Question 3,4,"Option 4")
+
+%% EmptyLine
+
+4. This is Question 4. Only one option can be selected. The following four
+   options belong to a different group from Question 1, and the user's
+   selections for these two groups are independent and will not affect each
+   other.
+
+%% Radio(Question 4,1,"Option 1. If you choose this option, you will need to
+answer a follow-up question.",Hidden 1)
+
+%% Radio(Question 4,2,"Option 2. If you choose this option, you will need to
+answer another follow-up question.",Hidden 2)
+
+%% Radio(Question 4,3,"Option 3")
+
+%% Radio(Question 4,4,"Option 4")
+
+%% Hidden-Begin(Hidden 1)
+This is a follow-up question for Option 1.
+%% InputML(Question 4.1)
+%% Hidden-End
+
+%% Hidden-Begin(Hidden 2)
+This is a follow-up question for Option 2.
+%% InputML(Question 4.2)
+%% Hidden-End
+
+%% EmptyLine
+
+5. The following are two groups of checkboxes. This is Question 5. Multiple
+   options can be selected.
+
+%% Checkbox(Question 5,1,"Option 1 This is a long option that may wrap to the
+next line if it needs to. When wrapping it does so indented to align the
+paragraph. This example also demonstrates the use of escape characters, such
+as \".")
+
+%% Checkbox(Question 5,2,"Option 2. If you choose this option, you will need to
+answer another follow-up question.",Hidden 3)
+
+%% Checkbox(Question 5,3,"Option 3")
+
+%% Checkbox(Question 5,4,"Option 4")
+
+%% Checkbox(Question 5,5,"Option 5")
+
+%% Checkbox(Question 5,6,"Option 6")
+
+%% Hidden-Begin(Hidden 3)
+This is a follow-up question for Option 2.
+%% InputML(Question 5.2)
+%% Hidden-End
+
 %% EmptyLine
 
 %% EmptyLine
@@ -297,6 +364,9 @@ server, Question 1 is required.
 %% Button-Begin(Save,0)
 - Question 1
 - Question 2
+- Question 3
+- Question 4
+- Question 5
 %% Button-End
 
 %% EmptyLine
@@ -304,6 +374,9 @@ server, Question 1 is required.
 %% Button-Begin(Submit,1,http://127.0.0.1:8081/receive-json)
 - Question 1
 - Question 2
+- Question 3
+- Question 4
+- Question 5
 %% Button-End
 
 %% EmptyLine

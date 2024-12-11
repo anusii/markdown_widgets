@@ -276,8 +276,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     if (!isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-              'Please fill in all required fields: ${invalidWidgets.join(', ')}'),
+          content: Text('Please fill in all required fields: '
+              '${invalidWidgets.join(', ')}'),
         ),
       );
     }
