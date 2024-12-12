@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  markdown_widget_builder: # ^0.0.2
+  markdown_widget_builder: # ^0.0.3
     path: ../
 
 dev_dependencies:
@@ -24,7 +24,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
-dependency_overrides:
+#dependency_overrides:
 
 flutter:
   uses-material-design: true
