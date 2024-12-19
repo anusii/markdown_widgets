@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -40,7 +42,7 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart'
 class AudioWidget extends StatefulWidget {
   final String filename;
 
-  const AudioWidget({Key? key, required this.filename}) : super(key: key);
+  const AudioWidget({super.key, required this.filename});
 
   @override
   _AudioWidgetState createState() => _AudioWidgetState();

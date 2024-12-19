@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -63,12 +65,12 @@ class MarkdownWidgetBuilder extends StatefulWidget {
   final void Function(String title, String content)? onMenuItemSelected;
 
   const MarkdownWidgetBuilder({
-    Key? key,
+    super.key,
     required this.content,
     required this.title,
     this.submitUrl,
     this.onMenuItemSelected,
-  }) : super(key: key);
+  });
 
   @override
   _MarkdownWidgetBuilderState createState() => _MarkdownWidgetBuilderState();

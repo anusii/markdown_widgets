@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
@@ -367,10 +369,10 @@ class Helpers {
 
     if (labelAbove) {
       children.add(
-        Center(
+        const Center(
           child: FractionallySizedBox(
             widthFactor: contentWidthFactor,
-            child: const Text(
+            child: Text(
               '(Required)',
               textAlign: TextAlign.left,
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
@@ -384,10 +386,10 @@ class Helpers {
       children.add(widget);
       children.add(const SizedBox(height: 4.0));
       children.add(
-        Center(
+        const Center(
           child: FractionallySizedBox(
             widthFactor: contentWidthFactor,
-            child: const Text(
+            child: Text(
               '(Required)',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),

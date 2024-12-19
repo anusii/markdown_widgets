@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 /// Parse the time string and return the total number of seconds.
 /// Supported formats include:
 /// - "1h30m45s"

@@ -512,7 +512,7 @@ class CommandParser {
         currentPageWidgets.add(
           ButtonWidget(
             command: command,
-            requiredWidgets: [],
+            requiredWidgets: const [],
             state: state,
             surveyTitle: surveyTitle,
           ),

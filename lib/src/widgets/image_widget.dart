@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
@@ -39,11 +41,11 @@ class ImageWidget extends StatelessWidget {
   final double? height;
 
   const ImageWidget({
-    Key? key,
+    super.key,
     required this.filename,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

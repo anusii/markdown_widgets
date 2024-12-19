@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
@@ -42,13 +44,13 @@ class CheckboxGroup extends StatefulWidget {
       onChanged;
 
   const CheckboxGroup({
-    Key? key,
+    super.key,
     required this.name,
     required this.options,
     required this.selectedValues,
     required this.onChanged,
     this.isRequired = false,
-  }) : super(key: key);
+  });
 
   @override
   _CheckboxGroupState createState() => _CheckboxGroupState();

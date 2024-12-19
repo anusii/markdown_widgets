@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
@@ -40,12 +42,12 @@ class InputField extends StatefulWidget {
   final ValueChanged<String> onChanged;
 
   const InputField({
-    Key? key,
+    super.key,
     required this.name,
     this.initialValue,
     this.isMultiLine = false,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   InputFieldState createState() => InputFieldState();

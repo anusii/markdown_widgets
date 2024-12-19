@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -38,7 +40,7 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart'
 class TimerWidget extends StatefulWidget {
   final int totalSeconds;
 
-  const TimerWidget({Key? key, required this.totalSeconds}) : super(key: key);
+  const TimerWidget({super.key, required this.totalSeconds});
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();

@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -41,11 +43,11 @@ class MenuWidget extends StatelessWidget {
   final void Function(String title, String content) onMenuItemSelected;
 
   const MenuWidget({
-    Key? key,
+    super.key,
     required this.menuContent,
     required this.fullContent,
     required this.onMenuItemSelected,
-  }) : super(key: key);
+  });
 
   /// Parse menu items.
 

@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show File;
@@ -47,13 +49,13 @@ class ButtonWidget extends StatefulWidget {
   final Map<String, dynamic> state;
   final String surveyTitle;
 
-  ButtonWidget({
-    Key? key,
+  const ButtonWidget({
+    super.key,
     required this.command,
     required this.requiredWidgets,
     required this.state,
     required this.surveyTitle,
-  }) : super(key: key);
+  });
 
   @override
   _ButtonWidgetState createState() => _ButtonWidgetState();
@@ -105,30 +107,30 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
     final Map<String, dynamic> responses = {};
 
-    final _inputValues = widget.state['_inputValues'] as Map<String, String>;
-    final _sliderValues = widget.state['_sliderValues'] as Map<String, double>;
-    final _radioValues = widget.state['_radioValues'] as Map<String, String?>;
-    final _checkboxValues =
+    final inputValues = widget.state['_inputValues'] as Map<String, String>;
+    final sliderValues = widget.state['_sliderValues'] as Map<String, double>;
+    final radioValues = widget.state['_radioValues'] as Map<String, String?>;
+    final checkboxValues =
         widget.state['_checkboxValues'] as Map<String, Set<String>>;
-    final _dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
-    final _dropdownValues =
+    final dateValues = widget.state['_dateValues'] as Map<String, DateTime?>;
+    final dropdownValues =
         widget.state['_dropdownValues'] as Map<String, String?>;
 
     // Add slider values.
 
-    _sliderValues.forEach((key, value) {
+    sliderValues.forEach((key, value) {
       responses[key] = value;
     });
 
     // Add radio values.
 
-    _radioValues.forEach((key, value) {
+    radioValues.forEach((key, value) {
       responses[key] = value;
     });
 
     // Add checkbox values.
 
-    _checkboxValues.forEach((key, value) {
+    checkboxValues.forEach((key, value) {
       // Convert Set to List.
 
       responses[key] = value.toList();
@@ -136,7 +138,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
     // Add date values.
 
-    _dateValues.forEach((key, value) {
+    dateValues.forEach((key, value) {
       if (value != null) {
         responses[key] =
             '${value.year}-${value.month.toString().padLeft(2, '0')}-'
@@ -148,13 +150,13 @@ class _ButtonWidgetState extends State<ButtonWidget> {
 
     // Add dropdown values.
 
-    _dropdownValues.forEach((key, value) {
+    dropdownValues.forEach((key, value) {
       responses[key] = value;
     });
 
     // Add text input values.
 
-    _inputValues.forEach((key, value) {
+    inputValues.forEach((key, value) {
       responses[key] = value;
     });
 
@@ -307,7 +309,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     }
   }
 
-  JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+  JsonEncoder encoder = const JsonEncoder.withIndent('  ');
 
   Future<void> _saveDataLocally(Map<String, dynamic> data) async {
     debugPrint('Collected Data:');
@@ -338,10 +340,10 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Save As'),
+          title: const Text('Save As'),
           content: TextField(
             controller: _filenameController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'Enter filename',
             ),
           ),
@@ -350,13 +352,13 @@ class _ButtonWidgetState extends State<ButtonWidget> {
               onPressed: () {
                 Navigator.of(context).pop(null);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(_filenameController.text);
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -385,7 +387,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Save cancelled.')),
+        const SnackBar(content: Text('Save cancelled.')),
       );
     }
   }

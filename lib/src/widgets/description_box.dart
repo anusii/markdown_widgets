@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -39,7 +41,7 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart'
 class DescriptionBox extends StatelessWidget {
   final String content;
 
-  const DescriptionBox({Key? key, required this.content}) : super(key: key);
+  const DescriptionBox({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {

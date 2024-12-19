@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:media_kit/media_kit.dart';
@@ -39,7 +41,7 @@ import 'package:markdown_widget_builder/src/constants/pkg.dart'
 class VideoWidget extends StatefulWidget {
   final String filename;
 
-  const VideoWidget({Key? key, required this.filename}) : super(key: key);
+  const VideoWidget({super.key, required this.filename});
 
   @override
   _VideoWidgetState createState() => _VideoWidgetState();
@@ -86,7 +88,7 @@ class _VideoWidgetState extends State<VideoWidget> {
     if (_isVideoInitialized) {
       return _buildVideoPlayer();
     } else {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
   }
 

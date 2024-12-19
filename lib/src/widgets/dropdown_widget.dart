@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+library;
+
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
@@ -40,12 +42,12 @@ class DropdownWidget extends StatefulWidget {
   final ValueChanged<String?> onChanged;
 
   const DropdownWidget({
-    Key? key,
+    super.key,
     required this.name,
     required this.options,
     this.value,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   _DropdownWidgetState createState() => _DropdownWidgetState();
