@@ -1,40 +1,95 @@
+/// An example of loading a markdown with 4 surveys and rendering them.
+///
+// Time-stamp: <Sunday 2025-01-14 10:00:31 +1100 Graham Williams>
+///
+/// Copyright (C) 2024, Software Innovation Institute, ANU.
+///
+/// Licensed under the MIT License (the "License").
+///
+/// License: https://choosealicense.com/licenses/mit/.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+///
+/// Authors: Tony Chen
+
+library;
+
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
+
 import 'package:markdown_widget_builder/markdown_widget_builder.dart';
 
-/// A simple Config class to parse "config.json".
-class Config {
+/// A simple class to represent the structure:
+/// { "path": "some/path", "type": "local/pod" }
+
+class PathType {
   final String path;
   final String type;
 
-  Config({required this.path, required this.type});
+  PathType({required this.path, required this.type});
 
-  factory Config.fromJson(Map<String, dynamic> json) {
-    final mdPath = json['md_path'] as Map<String, dynamic>;
-    return Config(
-      path: mdPath['path'] as String,
-      type: mdPath['type'] as String,
+  factory PathType.fromJson(Map<String, dynamic> json) {
+    return PathType(
+      path: json['path'] as String,
+      type: json['type'] as String,
     );
   }
 }
 
-/// Returns the path to config.json placed in the same directory as the .app file.
+/// The Config class.
+
+class Config {
+  final PathType markdown;
+  final PathType media;
+
+  Config({required this.markdown, required this.media});
+
+  factory Config.fromJson(Map<String, dynamic> json) {
+    return Config(
+      markdown: PathType.fromJson(json['markdown']),
+      media: PathType.fromJson(json['media']),
+    );
+  }
+}
+
+/// Returns the path to 'config.json' placed in the same directory as the app
+/// file.
+
 String getConfigPathInSameDirAsApp() {
   final exePath = Platform.resolvedExecutable;
   final exeDir = p.dirname(exePath);
   final contentsDir = p.dirname(exeDir);
   final appDir = p.dirname(contentsDir);
   final outerDir = p.dirname(appDir);
-  // "config.json" is in the same directory as MyApp.app
   return p.join(outerDir, 'config.json');
 }
 
 void main() {
   runApp(const MyApp());
 }
+
+/// A simple Flutter application demonstrating how to use the
+/// MarkdownWidgetBuilder from the markdown_widget_builder package.
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -49,6 +104,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// A StatefulWidget that loads markdown content from an asset
+/// and displays it using the MarkdownWidgetBuilder.
+
 class MarkdownExamplePage extends StatefulWidget {
   const MarkdownExamplePage({super.key});
 
@@ -58,16 +116,21 @@ class MarkdownExamplePage extends StatefulWidget {
 
 class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
   late Future<Config> _configFuture;
+  late String _absoluteConfigPath;
   StreamSubscription<FileSystemEvent>? _fileWatchSub;
   String _markdownContent = 'Loading...';
 
   @override
   void initState() {
     super.initState();
-    // [CHANGED] Use our function to get config.json path.
-    final configPath = getConfigPathInSameDirAsApp();
-    _configFuture = _loadConfig(configPath);
+
+    // Store absolute config.json path.
+
+    _absoluteConfigPath = getConfigPathInSameDirAsApp();
+    _configFuture = _loadConfig(_absoluteConfigPath);
   }
+
+  /// Loads config.json from the given absolute path.
 
   Future<Config> _loadConfig(String configPath) async {
     final file = File(configPath);
@@ -78,6 +141,21 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     final jsonMap = json.decode(content) as Map<String, dynamic>;
     return Config.fromJson(jsonMap);
   }
+
+  /// A generic function to resolve any relative path.
+  /// If 'filePath' is already absolute, return it directly.
+  /// Otherwise, interpret it relative to config.json's parent directory.
+
+  String _resolvePath(String filePath) {
+    if (p.isAbsolute(filePath)) {
+      return filePath;
+    } else {
+      final configDir = p.dirname(_absoluteConfigPath);
+      return p.join(configDir, filePath);
+    }
+  }
+
+  /// Loads the markdown from the file at [filePath], updates _markdownContent.
 
   Future<void> _loadMarkdown(String filePath) async {
     final file = File(filePath);
@@ -93,9 +171,13 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     }
   }
 
+  /// Sets up a file watcher on the specified path, reloading the markdown
+  /// content whenever the file is modified.
+
   void _setupFileWatcher(String filePath) async {
     final file = File(filePath);
     if (!(await file.exists())) return;
+
     _fileWatchSub = file.watch().listen((event) async {
       if (event.type == FileSystemEvent.modify) {
         final updatedContent = await file.readAsString();
@@ -117,11 +199,16 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     return FutureBuilder<Config>(
       future: _configFuture,
       builder: (context, snapshot) {
+        // Still loading config.json...
+
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
+
+        // Error reading or parsing config.json...
+
         if (snapshot.hasError) {
           return Scaffold(
             appBar: AppBar(title: const Text('Markdown Widgets Example')),
@@ -131,9 +218,21 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
           );
         }
 
+        // Config.json loaded successfully...
+
         final config = snapshot.data!;
-        // Load and watch the markdown file
-        _loadMarkdown(config.path).then((_) => _setupFileWatcher(config.path));
+
+        // Resolve final absolute path for markdown file.
+
+        final mdFilePath = _resolvePath(config.markdown.path);
+
+        // Resolve final absolute path for media folder (or file).
+
+        final mediaFilePath = _resolvePath(config.media.path);
+
+        // Load markdown and set up watcher.
+
+        _loadMarkdown(mdFilePath).then((_) => _setupFileWatcher(mdFilePath));
 
         return Scaffold(
           appBar: AppBar(
@@ -161,6 +260,11 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     );
   }
 }
+
+/// A StatelessWidget that displays detailed markdown content.
+///
+/// This page is navigated to when a menu item is selected in the
+/// MarkdownWidgetBuilder.
 
 class MarkdownDetailPage extends StatelessWidget {
   final String title;
