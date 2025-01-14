@@ -28,6 +28,8 @@
 ///
 /// Authors: Tony Chen
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
@@ -47,13 +49,24 @@ class ImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String imgPath = '$mediaPath/$filename';
+    // Build the local raw path by concatenating mediaPath + filename.
+
+    final String rawLocalPath = '$mediaPath/$filename';
+
+    // Convert it to an OS path (without file://).
+
+    String localPath;
+    if (rawLocalPath.startsWith('file://')) {
+      localPath = Uri.parse(rawLocalPath).toFilePath();
+    } else {
+      localPath = rawLocalPath;
+    }
 
     return Center(
       child: FractionallySizedBox(
         widthFactor: contentWidthFactor,
-        child: Image.asset(
-          imgPath,
+        child: Image.file(
+          File(localPath),
           width: width,
           height: height,
           fit: BoxFit.contain,

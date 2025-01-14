@@ -63,7 +63,16 @@ class _VideoWidgetState extends State<VideoWidget> {
   }
 
   Future<void> _initializeVideo() async {
-    final String videoAssetPath = '$mediaPath/${widget.filename}';
+    // Build the raw local path by concatenating mediaPath + filename.
+
+    final String rawLocalPath = '$mediaPath/${widget.filename}';
+
+    // Convert to a 'file://' URI so media_kit treats it as a local file,
+    // not a Flutter asset.
+
+    final String fileUri = rawLocalPath.startsWith('file://')
+        ? rawLocalPath
+        : 'file://$rawLocalPath';
 
     // Initialise the player.
 
@@ -72,7 +81,7 @@ class _VideoWidgetState extends State<VideoWidget> {
 
     // Open the video.
 
-    await _player.open(Media('asset://$videoAssetPath'), play: false);
+    await _player.open(Media(fileUri), play: false);
 
     // Set video initialised.
 

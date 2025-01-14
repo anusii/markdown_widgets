@@ -1,6 +1,6 @@
 /// An example of loading a markdown with 4 surveys and rendering them.
 ///
-// Time-stamp: <Sunday 2025-01-14 10:00:31 +1100 Graham Williams>
+// Time-stamp: <Tuesday 2025-01-14 10:00:31 +1100 Tony Chen>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -38,6 +38,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:markdown_widget_builder/markdown_widget_builder.dart';
+import 'package:markdown_widget_builder/src/constants/pkg.dart' as pkg;
 
 /// A simple class to represent the structure:
 /// { "path": "some/path", "type": "local/pod" }
@@ -229,6 +230,10 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
         // Resolve final absolute path for media folder (or file).
 
         final mediaFilePath = _resolvePath(config.media.path);
+
+        // Update the global mediaPath in pkg.dart with the resolved media path.
+
+        pkg.setMediaPath(mediaFilePath);
 
         // Load markdown and set up watcher.
 
