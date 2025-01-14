@@ -12,9 +12,11 @@ syntax, making it suitable for use in surveys and similar scenarios.
 The following is the syntax to generate interactive surveys in
 markdown pages.
 
-In the example code of this package, the path of the sample markdown file is
-`example/assets/sample_markdown.md`. This path can be set in the code to load
-the markdown file at runtime.
+In the example code of this package, users can customise the paths for 
+markdown files and media files by modifying the `config.json` file. The
+`config.json` file is located in the `Debug` and `Release` folders, at the same
+level as the app folder. Additionally, the `example` directory provides an
+`assets` folder, which contains sample markdown files and media files.
 
 ## Survey Menu
 
