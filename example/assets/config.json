@@ -1,0 +1,10 @@
+{
+  "markdown": {
+    "path": "sample_markdown.md",
+    "type": "local/http"
+  },
+  "media": {
+    "path": "media",
+    "type": "local/http"
+  }
+}
