@@ -35,13 +35,16 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart'
+    show getApplicationDocumentsDirectory;
 
-import 'package:markdown_widget_builder/markdown_widget_builder.dart';
-import 'package:markdown_widget_builder/src/constants/pkg.dart' as pkg;
+import 'package:markdown_widget_builder/markdown_widget_builder.dart'
+    show MarkdownWidgetBuilder, setMarkdownMediaPath;
 
 /// A simple class to represent the structure:
-/// { "path": "some/path", "type": "local/pod" }
+/// { "path": "file path", "type": "local/http, pod" }
 
 class PathType {
   final String path;
@@ -73,18 +76,6 @@ class Config {
   }
 }
 
-/// Returns the path to 'config.json' placed in the same directory as the app
-/// file.
-
-String getConfigPathInSameDirAsApp() {
-  final exePath = Platform.resolvedExecutable;
-  final exeDir = p.dirname(exePath);
-  final contentsDir = p.dirname(exeDir);
-  final appDir = p.dirname(contentsDir);
-  final outerDir = p.dirname(appDir);
-  return p.join(outerDir, 'config.json');
-}
-
 void main() {
   runApp(const MyApp());
 }
@@ -105,6 +96,28 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// Returns the directory where the app is running.
+
+Future<String> getAppDirectory() async {
+  final os = Platform.operatingSystem;
+  final exePath = Platform.resolvedExecutable;
+
+  if (os == 'macos') {
+    final exeDir = p.dirname(exePath);
+    final contentsDir = p.dirname(exeDir);
+    final appDir = p.dirname(contentsDir);
+    final outerDir = p.dirname(appDir);
+    return outerDir;
+  } else if (os == 'windows' || os == 'linux') {
+    return p.dirname(exePath);
+  } else if (os == 'android' || os == 'ios') {
+    final docDir = await getApplicationDocumentsDirectory();
+    return docDir.path;
+  } else {
+    return p.dirname(exePath);
+  }
+}
+
 /// A StatefulWidget that loads markdown content from an asset
 /// and displays it using the MarkdownWidgetBuilder.
 
@@ -117,9 +130,12 @@ class MarkdownExamplePage extends StatefulWidget {
 
 class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
   late Future<Config> _configFuture;
-  late String _absoluteConfigPath;
   StreamSubscription<FileSystemEvent>? _fileWatchSub;
   String _markdownContent = 'Loading...';
+
+  // Guard to avoid re-loading markdown multiple times in build().
+
+  bool _hasLoadedMarkdown = false;
 
   @override
   void initState() {
@@ -127,66 +143,80 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
 
     // Store absolute config.json path.
 
-    _absoluteConfigPath = getConfigPathInSameDirAsApp();
-    _configFuture = _loadConfig(_absoluteConfigPath);
+    _configFuture = _loadConfigFromAssets();
   }
 
-  /// Loads config.json from the given absolute path.
+  /// Loads config.json from 'assets/config.json'.
 
-  Future<Config> _loadConfig(String configPath) async {
-    final file = File(configPath);
-    if (!await file.exists()) {
-      throw Exception('config.json not found at $configPath');
-    }
-    final content = await file.readAsString();
-    final jsonMap = json.decode(content) as Map<String, dynamic>;
+  Future<Config> _loadConfigFromAssets() async {
+    final jsonStr = await rootBundle.loadString('assets/config.json');
+    final jsonMap = json.decode(jsonStr) as Map<String, dynamic>;
     return Config.fromJson(jsonMap);
   }
 
-  /// A generic function to resolve any relative path.
-  /// If 'filePath' is already absolute, return it directly.
-  /// Otherwise, interpret it relative to config.json's parent directory.
+  /// Interprets rawPath as:
+  /// 1) absolute => local file.
+  /// 2) relative => local file relative to [getAppDirectory()].
 
-  String _resolvePath(String filePath) {
-    if (p.isAbsolute(filePath)) {
-      return filePath;
-    } else {
-      final configDir = p.dirname(_absoluteConfigPath);
-      return p.join(configDir, filePath);
+  Future<String> _interpretPath(String rawPath) async {
+    // 1) Absolute path.
+
+    if (p.isAbsolute(rawPath)) {
+      return rawPath;
     }
+
+    // 2) Relative path.
+
+    final appDir = await getAppDirectory();
+    return p.join(appDir, rawPath);
   }
 
-  /// Loads the markdown from the file at [filePath], updates _markdownContent.
+  /// Loads the markdown from a local path.
 
-  Future<void> _loadMarkdown(String filePath) async {
-    final file = File(filePath);
+  Future<void> _loadMarkdown(String rawPath) async {
+    final interpretedPath = await _interpretPath(rawPath);
+
+    // Cancel any old watcher.
+
+    _fileWatchSub?.cancel();
+    _fileWatchSub = null;
+
+    final file = File(interpretedPath);
     if (await file.exists()) {
-      final mdContent = await file.readAsString();
-      setState(() {
-        _markdownContent = mdContent;
+      final content = await file.readAsString();
+      setState(() => _markdownContent = content);
+
+      // Watch for changes.
+
+      _fileWatchSub = file.watch().listen((event) async {
+        if (event.type == FileSystemEvent.modify) {
+          if (await file.exists()) {
+            final updated = await file.readAsString();
+            setState(() => _markdownContent = updated);
+          }
+        }
       });
     } else {
       setState(() {
-        _markdownContent = 'Error: Markdown file not found at $filePath';
+        _markdownContent = 'Error: Markdown file not found at $interpretedPath';
       });
     }
   }
 
-  /// Sets up a file watcher on the specified path, reloading the markdown
-  /// content whenever the file is modified.
+  /// Handle config after it's loaded, ensuring it is loaded only once.
 
-  void _setupFileWatcher(String filePath) async {
-    final file = File(filePath);
-    if (!(await file.exists())) return;
+  void _initMarkdownLoading(Config config) async {
+    if (_hasLoadedMarkdown) return;
+    _hasLoadedMarkdown = true;
 
-    _fileWatchSub = file.watch().listen((event) async {
-      if (event.type == FileSystemEvent.modify) {
-        final updatedContent = await file.readAsString();
-        setState(() {
-          _markdownContent = updatedContent;
-        });
-      }
-    });
+    // Interpret & set media path.
+
+    final resolvedMediaPath = await _interpretPath(config.media.path);
+    setMarkdownMediaPath(resolvedMediaPath);
+
+    // Load the markdown.
+
+    await _loadMarkdown(config.markdown.path);
   }
 
   @override
@@ -222,22 +252,7 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
         // Config.json loaded successfully...
 
         final config = snapshot.data!;
-
-        // Resolve final absolute path for markdown file.
-
-        final mdFilePath = _resolvePath(config.markdown.path);
-
-        // Resolve final absolute path for media folder (or file).
-
-        final mediaFilePath = _resolvePath(config.media.path);
-
-        // Update the global mediaPath in pkg.dart with the resolved media path.
-
-        pkg.setMediaPath(mediaFilePath);
-
-        // Load markdown and set up watcher.
-
-        _loadMarkdown(mdFilePath).then((_) => _setupFileWatcher(mdFilePath));
+        _initMarkdownLoading(config);
 
         return Scaffold(
           appBar: AppBar(

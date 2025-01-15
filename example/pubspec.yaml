@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  path: ^1.9.0
+  path_provider: ^2.1.5
   markdown_widget_builder: # ^0.0.3
     path: ../
 
@@ -28,3 +30,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/config.json

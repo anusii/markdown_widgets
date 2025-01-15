@@ -33,3 +33,11 @@ library markdown_widget_builder;
 // Markdown widget builder.
 
 export 'src/widgets/markdown_widget_builder.dart' show MarkdownWidgetBuilder;
+
+import 'src/constants/pkg.dart' as pkg;
+
+/// Public method that sets the media path inside the package.
+
+void setMarkdownMediaPath(String newMediaPath) {
+  pkg.setMediaPath(newMediaPath);
+}
