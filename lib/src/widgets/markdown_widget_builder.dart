@@ -35,6 +35,13 @@ import 'package:media_kit/media_kit.dart';
 
 import 'package:markdown_widget_builder/src/utils/command_parser.dart';
 import 'package:markdown_widget_builder/src/widgets/input_field.dart';
+import 'package:markdown_widget_builder/src/constants/pkg.dart' as pkg;
+
+/// Sets the media path inside the package.
+
+void setMarkdownMediaPath(String newMediaPath) {
+  pkg.setMediaPath(newMediaPath);
+}
 
 /// The MarkdownWidgetBuilder is a stateful widget that takes in markdown-like
 /// content and a title. It uses the CommandParser to interpret custom commands
