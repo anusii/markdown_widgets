@@ -30,18 +30,17 @@
 
 library;
 
-import 'dart:io';
-import 'dart:convert';
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:markdown_widget_builder/markdown_widget_builder.dart'
+    show MarkdownWidgetBuilder, setMarkdownMediaPath;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
-
-import 'package:markdown_widget_builder/markdown_widget_builder.dart'
-    show MarkdownWidgetBuilder, setMarkdownMediaPath;
 
 /// A simple class to represent the structure:
 /// { "path": "file path", "type": "local/http, pod" }
@@ -188,8 +187,10 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
 
       // Watch for changes.
 
-      _fileWatchSub = file.watch().listen((event) async {
-        if (event.type == FileSystemEvent.modify) {
+      final parentDirectory = Directory(p.dirname(interpretedPath));
+      _fileWatchSub = parentDirectory.watch().listen((event) async {
+        if (event.type == FileSystemEvent.modify &&
+            event.path == interpretedPath) {
           if (await file.exists()) {
             final updated = await file.readAsString();
             setState(() => _markdownContent = updated);
