@@ -1,6 +1,6 @@
 name: markdown_widget_builder
 description: "Widget builder for surveys defined using markdown-like syntax."
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/anusii/markdown_widget_builder
 
 environment:

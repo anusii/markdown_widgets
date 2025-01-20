@@ -1,3 +1,9 @@
+## 0.0.4
+
++ Allowed researchers to specify the location of the survey markdown file and 
+  media files from a local path.
++ Automatically load the new file after the markdown file is modified.
+
 ## 0.0.3
 
 + Added an argument to indicate whether the input widget is required.
