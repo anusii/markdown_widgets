@@ -1,7 +1,7 @@
 name: example
 description: "A sample app for markdown widgets."
 publish_to: 'none'
-version: 0.0.1
+version: 0.0.2
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  path: ^1.9.0
+  path_provider: ^2.1.5
   markdown_widget_builder: # ^0.0.3
     path: ../
 
@@ -24,10 +26,11 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
-#dependency_overrides:
+dependency_overrides:
+  flutter_secure_storage_linux: ^2.0.1
+  flutter_secure_storage_platform_interface: ^2.0.0
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/sample_markdown.md
-    - assets/media/
+    - assets/config.json

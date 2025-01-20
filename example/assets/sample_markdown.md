@@ -46,7 +46,7 @@ label, such as \( and \).")
 
 %% EmptyLine
 
-1. This is Question 2. Only one option can be selected. The following four 
+2. This is Question 2. Only one option can be selected. The following four 
    options belong to a different group from Question 1, and the user's 
    selections for these two groups are independent and will not affect each 
    other. 

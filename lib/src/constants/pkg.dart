@@ -37,12 +37,29 @@ const String applicationVersion = '0.1.0';
 const String applicationRepo =
     'https://github.com/anusii/markdown_widget_builder';
 const String siiUrl = 'https://sii.anu.edu.au';
-const String assetsPath = 'assets';
-const String mediaPath = 'assets/media';
-const String surveyAsset = 'assets/surveys.md';
 
 const String defaultFileName = 'survey.json';
 const String defaultButtonText = 'Save';
+
+String _assetsPath = 'assets';
+String _mediaPath = 'assets/media';
+String _mdPath = 'assets/surveys.md';
+
+String get assetsPath => _assetsPath;
+String get mediaPath => _mediaPath;
+String get mdPath => _mdPath;
+
+void setAssetsPath(String newAssetsPath) {
+  _assetsPath = newAssetsPath;
+}
+
+void setMediaPath(String newMediaPath) {
+  _mediaPath = newMediaPath;
+}
+
+void setMdPath(String newMdPath) {
+  _mdPath = newMdPath;
+}
 
 double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
 double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;

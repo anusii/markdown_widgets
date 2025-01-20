@@ -32,4 +32,5 @@ library markdown_widget_builder;
 
 // Markdown widget builder.
 
-export 'src/widgets/markdown_widget_builder.dart' show MarkdownWidgetBuilder;
+export 'src/widgets/markdown_widget_builder.dart'
+    show MarkdownWidgetBuilder, setMarkdownMediaPath;

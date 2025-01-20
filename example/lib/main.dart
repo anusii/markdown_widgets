@@ -1,6 +1,6 @@
 /// An example of loading a markdown with 4 surveys and rendering them.
 ///
-// Time-stamp: <Sunday 2024-11-17 10:10:59 +1100 Graham Williams>
+// Time-stamp: <Tuesday 2025-01-14 10:00:31 +1100 Tony Chen>
 ///
 /// Copyright (C) 2024, Software Innovation Institute, ANU.
 ///
@@ -30,10 +30,50 @@
 
 library;
 
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:markdown_widget_builder/markdown_widget_builder.dart'
+    show MarkdownWidgetBuilder, setMarkdownMediaPath;
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart'
+    show getApplicationDocumentsDirectory;
 
-import 'package:markdown_widget_builder/markdown_widget_builder.dart';
+/// A simple class to represent the structure:
+/// { "path": "file path", "type": "local/http, pod" }
+
+class PathType {
+  final String path;
+  final String type;
+
+  PathType({required this.path, required this.type});
+
+  factory PathType.fromJson(Map<String, dynamic> json) {
+    return PathType(
+      path: json['path'] as String,
+      type: json['type'] as String,
+    );
+  }
+}
+
+/// The Config class.
+
+class Config {
+  final PathType markdown;
+  final PathType media;
+
+  Config({required this.markdown, required this.media});
+
+  factory Config.fromJson(Map<String, dynamic> json) {
+    return Config(
+      markdown: PathType.fromJson(json['markdown']),
+      media: PathType.fromJson(json['media']),
+    );
+  }
+}
 
 void main() {
   runApp(const MyApp());
@@ -49,11 +89,31 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Markdown Widgets Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const MarkdownExamplePage(),
     );
+  }
+}
+
+/// Returns the directory where the app is running.
+
+Future<String> getAppDirectory() async {
+  final os = Platform.operatingSystem;
+  final exePath = Platform.resolvedExecutable;
+
+  if (os == 'macos') {
+    final exeDir = p.dirname(exePath);
+    final contentsDir = p.dirname(exeDir);
+    final appDir = p.dirname(contentsDir);
+    final outerDir = p.dirname(appDir);
+    return outerDir;
+  } else if (os == 'windows' || os == 'linux') {
+    return p.dirname(exePath);
+  } else if (os == 'android' || os == 'ios') {
+    final docDir = await getApplicationDocumentsDirectory();
+    return docDir.path;
+  } else {
+    return p.dirname(exePath);
   }
 }
 
@@ -68,70 +128,155 @@ class MarkdownExamplePage extends StatefulWidget {
 }
 
 class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
-  late Future<String> _markdownContentFuture;
+  late Future<Config> _configFuture;
+  StreamSubscription<FileSystemEvent>? _fileWatchSub;
+  String _markdownContent = 'Loading...';
+
+  // Guard to avoid re-loading markdown multiple times in build().
+
+  bool _hasLoadedMarkdown = false;
 
   @override
   void initState() {
     super.initState();
-    _markdownContentFuture = _loadMarkdownContent();
+
+    // Store absolute config.json path.
+
+    _configFuture = _loadConfigFromAssets();
   }
 
-  /// Loads the markdown content from the assets/sample_markdown.md file.
+  /// Loads config.json from 'assets/config.json'.
 
-  Future<String> _loadMarkdownContent() async {
-    return await rootBundle.loadString('assets/sample_markdown.md');
+  Future<Config> _loadConfigFromAssets() async {
+    final jsonStr = await rootBundle.loadString('assets/config.json');
+    final jsonMap = json.decode(jsonStr) as Map<String, dynamic>;
+    return Config.fromJson(jsonMap);
+  }
+
+  /// Interprets rawPath as:
+  /// 1) absolute => local file.
+  /// 2) relative => local file relative to [getAppDirectory()].
+
+  Future<String> _interpretPath(String rawPath) async {
+    // 1) Absolute path.
+
+    if (p.isAbsolute(rawPath)) {
+      return rawPath;
+    }
+
+    // 2) Relative path.
+
+    final appDir = await getAppDirectory();
+    return p.join(appDir, rawPath);
+  }
+
+  /// Loads the markdown from a local path.
+
+  Future<void> _loadMarkdown(String rawPath) async {
+    final interpretedPath = await _interpretPath(rawPath);
+
+    // Cancel any old watcher.
+
+    _fileWatchSub?.cancel();
+    _fileWatchSub = null;
+
+    final file = File(interpretedPath);
+    if (await file.exists()) {
+      final content = await file.readAsString();
+      setState(() => _markdownContent = content);
+
+      // Watch for changes.
+
+      final parentDirectory = Directory(p.dirname(interpretedPath));
+      _fileWatchSub = parentDirectory.watch().listen((event) async {
+        if (event.type == FileSystemEvent.modify &&
+            event.path == interpretedPath) {
+          if (await file.exists()) {
+            final updated = await file.readAsString();
+            setState(() => _markdownContent = updated);
+          }
+        }
+      });
+    } else {
+      setState(() {
+        _markdownContent = 'Error: Markdown file not found at $interpretedPath';
+      });
+    }
+  }
+
+  /// Handle config after it's loaded, ensuring it is loaded only once.
+
+  void _initMarkdownLoading(Config config) async {
+    if (_hasLoadedMarkdown) return;
+    _hasLoadedMarkdown = true;
+
+    // Interpret & set media path.
+
+    final resolvedMediaPath = await _interpretPath(config.media.path);
+    setMarkdownMediaPath(resolvedMediaPath);
+
+    // Load the markdown.
+
+    await _loadMarkdown(config.markdown.path);
+  }
+
+  @override
+  void dispose() {
+    _fileWatchSub?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: _markdownContentFuture,
+    return FutureBuilder<Config>(
+      future: _configFuture,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final markdownContent = snapshot.data!;
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Markdown Widgets Example'),
-            ),
-            body: SingleChildScrollView(
-              child: MarkdownWidgetBuilder(
-                content: markdownContent,
-                title: 'Sample Markdown',
-                onMenuItemSelected: (selectedTitle, selectedContent) {
-                  // Navigate to a detailed page when a menu item is selected.
+        // Still loading config.json...
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MarkdownDetailPage(
-                        title: selectedTitle,
-                        content: selectedContent,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
           );
-        } else if (snapshot.hasError) {
+        }
+
+        // Error reading or parsing config.json...
+
+        if (snapshot.hasError) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Markdown Widgets Example'),
-            ),
-            body: const Center(
-              child: Text('Error loading markdown content'),
-            ),
-          );
-        } else {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Markdown Widgets Example'),
-            ),
-            body: const Center(
-              child: CircularProgressIndicator(),
+            appBar: AppBar(title: const Text('Markdown Widgets Example')),
+            body: Center(
+              child: Text('Error loading config.json: ${snapshot.error}'),
             ),
           );
         }
+
+        // Config.json loaded successfully...
+
+        final config = snapshot.data!;
+        _initMarkdownLoading(config);
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Markdown Widgets Example'),
+          ),
+          body: SingleChildScrollView(
+            child: MarkdownWidgetBuilder(
+              content: _markdownContent,
+              title: 'Sample Markdown',
+              onMenuItemSelected: (selectedTitle, selectedContent) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MarkdownDetailPage(
+                      title: selectedTitle,
+                      content: selectedContent,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
       },
     );
   }
@@ -163,8 +308,6 @@ class MarkdownDetailPage extends StatelessWidget {
           content: content,
           title: title,
           onMenuItemSelected: (selectedTitle, selectedContent) {
-            // Navigate to another detail page if a menu item is selected.
-
             Navigator.push(
               context,
               MaterialPageRoute(

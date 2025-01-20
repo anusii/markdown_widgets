@@ -35,7 +35,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show contentWidthFactor;
+    show contentWidthFactor, mediaPath;
 
 class AudioWidget extends StatefulWidget {
   final String filename;
@@ -67,11 +67,23 @@ class _AudioWidgetState extends State<AudioWidget> {
   }
 
   void _initAudioPlayer() async {
-    final String audioAssetPath = 'media/${widget.filename}';
+    // Build the raw path from mediaPath + filename.
 
-    // Load the audio file.
+    final String rawLocalPath = '$mediaPath/${widget.filename}';
 
-    await _player.setSource(AssetSource(audioAssetPath));
+    // If rawLocalPath has 'file://', parse it to pure local path;
+    // otherwise use rawLocalPath as is.
+
+    String localPath;
+    if (rawLocalPath.startsWith('file://')) {
+      localPath = Uri.parse(rawLocalPath).toFilePath();
+    } else {
+      localPath = rawLocalPath;
+    }
+
+    await _player.setSource(
+      DeviceFileSource(localPath),
+    );
 
     // Listen for audio duration.
 
