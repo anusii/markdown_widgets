@@ -67,10 +67,52 @@ class Config {
 
   Config({required this.markdown, required this.media});
 
+  // 1) If the whole "markdown" or "media" object is missing (null),
+  //    we fallback to default path immediately (assets/surveys).
+  // 2) If present but 'path' is an empty string, we keep it as "" here,
+  //    so that the later logic can detect it and fallback.
+  // 3) If present and non-empty but the file doesn't exist, we'll
+  //    also do fallback in the code that loads the file.
+
   factory Config.fromJson(Map<String, dynamic> json) {
+    // Attempt to read "markdown" object.
+
+    final rawMarkdown = json['markdown'] as Map<String, dynamic>?;
+    String markdownPath = '';
+    String markdownType = 'local';
+
+    if (rawMarkdown == null) {
+      // If the "markdown" object is completely missing, fallback now.
+
+      markdownPath = 'assets/surveys/surveys.md';
+      markdownType = 'local';
+    } else {
+      // If it's present, read the fields. If "path" is empty string,
+      // we keep it as empty, so that the loading function can handle fallback.
+
+      markdownPath = (rawMarkdown['path'] as String?)?.trim() ?? '';
+      markdownType = (rawMarkdown['type'] as String?)?.trim() ?? 'local';
+    }
+
+    // Attempt to read "media" object.
+
+    final rawMedia = json['media'] as Map<String, dynamic>?;
+    String mediaPath = '';
+    String mediaType = 'local';
+
+    if (rawMedia == null) {
+      // If the "media" object is completely missing, fallback now.
+
+      mediaPath = 'assets/surveys/media';
+      mediaType = 'local';
+    } else {
+      mediaPath = (rawMedia['path'] as String?)?.trim() ?? '';
+      mediaType = (rawMedia['type'] as String?)?.trim() ?? 'local';
+    }
+
     return Config(
-      markdown: PathType.fromJson(json['markdown']),
-      media: PathType.fromJson(json['media']),
+      markdown: PathType(path: markdownPath, type: markdownType),
+      media: PathType(path: mediaPath, type: mediaType),
     );
   }
 }
@@ -148,14 +190,28 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
   /// Loads config.json from 'assets/config.json'.
 
   Future<Config> _loadConfigFromAssets() async {
-    final jsonStr = await rootBundle.loadString('assets/config.json');
-    final jsonMap = json.decode(jsonStr) as Map<String, dynamic>;
-    return Config.fromJson(jsonMap);
+    try {
+      final jsonStr = await rootBundle.loadString('assets/config.json');
+      final jsonMap = json.decode(jsonStr) as Map<String, dynamic>;
+      return Config.fromJson(jsonMap);
+    } catch (e) {
+      // If there's any error (e.g. config.json not found or parse error),
+      // return a default Config using the fallback paths.
+
+      debugPrint('Error loading config.json: $e');
+      return Config(
+        markdown: PathType(path: 'assets/surveys/surveys.md', type: 'local'),
+        media: PathType(path: 'assets/surveys/media', type: 'local'),
+      );
+    }
   }
 
-  /// Interprets rawPath as:
+  /// Interprets rawPath.
+  ///
   /// 1) absolute => local file.
   /// 2) relative => local file relative to [getAppDirectory()].
+  /// 3) If the path is meant to be from Flutter assets, we do not use this
+  /// method. Instead, we use rootBundle.loadString() directly.
 
   Future<String> _interpretPath(String rawPath) async {
     // 1) Absolute path.
@@ -170,52 +226,114 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     return p.join(appDir, rawPath);
   }
 
-  /// Loads the markdown from a local path.
+  /// Loads media files.
+  ///
+  /// If user provides a local/relative path for "media" that exists,
+  /// then we set that as the media path. Otherwise, we fallback
+  /// to the Flutter asset path "assets/surveys/media" (no file watch).
 
-  Future<void> _loadMarkdown(String rawPath) async {
-    final interpretedPath = await _interpretPath(rawPath);
+  Future<void> _loadMediaFiles(String rawMediaPath) async {
+    // 1) If rawMediaPath is empty => fallback to assets.
 
-    // Cancel any old watcher.
+    if (rawMediaPath.trim().isEmpty) {
+      debugPrint(
+          'Media path in config is empty. Fallback to "assets/surveys/media"');
+      setMarkdownMediaPath('assets/surveys/media');
+      return;
+    }
 
-    _fileWatchSub?.cancel();
-    _fileWatchSub = null;
+    // 2) Otherwise, interpret the path as local.
 
-    final file = File(interpretedPath);
-    if (await file.exists()) {
-      final content = await file.readAsString();
-      setState(() => _markdownContent = content);
+    final interpretedMediaPath = await _interpretPath(rawMediaPath);
+    final dir = Directory(interpretedMediaPath);
 
-      // Watch for changes.
-
-      final parentDirectory = Directory(p.dirname(interpretedPath));
-      _fileWatchSub = parentDirectory.watch().listen((event) async {
-        if (event.type == FileSystemEvent.modify &&
-            event.path == interpretedPath) {
-          if (await file.exists()) {
-            final updated = await file.readAsString();
-            setState(() => _markdownContent = updated);
-          }
-        }
-      });
+    if (await dir.exists()) {
+      debugPrint('Using local media directory: $interpretedMediaPath');
+      setMarkdownMediaPath(interpretedMediaPath);
     } else {
-      setState(() {
-        _markdownContent = 'Error: Markdown file not found at $interpretedPath';
-      });
+      // Fallback to assets.
+
+      debugPrint(
+          'Local media directory "$interpretedMediaPath" does not exist. '
+          'Fallback to assets/surveys/media');
+      setMarkdownMediaPath('assets/surveys/media');
     }
   }
 
-  /// Handle config after it's loaded, ensuring it is loaded only once.
+  /// Loads markdown file.
+
+  Future<void> _loadMarkdown(String rawPath) async {
+    // 1) If config.json path is empty => fallback to assets.
+
+    if (rawPath.trim().isEmpty) {
+      debugPrint('Markdown path in config is empty. Fallback to '
+          '"assets/surveys/surveys.md" from assets.');
+      final assetContent =
+          await rootBundle.loadString('assets/surveys/surveys.md');
+      setState(() => _markdownContent = assetContent);
+      return;
+    }
+
+    // 2) Check if user-provided path (absolute or relative) is valid.
+
+    final interpretedPath = await _interpretPath(rawPath);
+    final file = File(interpretedPath);
+
+    if (!await file.exists()) {
+      // If the file doesn't actually exist => fallback to assets.
+
+      debugPrint('Markdown file not found at "$interpretedPath". '
+          'Fallback to assets/surveys/surveys.md');
+      try {
+        final assetContent =
+            await rootBundle.loadString('assets/surveys/surveys.md');
+        setState(() => _markdownContent = assetContent);
+      } catch (e) {
+        // If fallback also fails for some reason, show an error message.
+
+        setState(() {
+          _markdownContent = 'Error: Could not load fallback asset. $e';
+        });
+      }
+      return;
+    }
+
+    // If we get here, it means the local file exists.
+
+    final content = await file.readAsString();
+    setState(() => _markdownContent = content);
+
+    // Watch for changes in local file.
+    // (We cannot watch changes in Flutter assets.)
+
+    _fileWatchSub?.cancel();
+    _fileWatchSub = parentDirectoryWatch(interpretedPath);
+  }
+
+  StreamSubscription<FileSystemEvent> parentDirectoryWatch(String path) {
+    final parentDir = Directory(p.dirname(path));
+    return parentDir.watch().listen((event) async {
+      if (event.type == FileSystemEvent.modify && event.path == path) {
+        final f = File(path);
+        if (await f.exists()) {
+          final updated = await f.readAsString();
+          setState(() => _markdownContent = updated);
+        }
+      }
+    });
+  }
+
+  /// Initialises the markdown loading process.
 
   void _initMarkdownLoading(Config config) async {
     if (_hasLoadedMarkdown) return;
     _hasLoadedMarkdown = true;
 
-    // Interpret & set media path.
+    // Loads media path with fallback.
 
-    final resolvedMediaPath = await _interpretPath(config.media.path);
-    setMarkdownMediaPath(resolvedMediaPath);
+    await _loadMediaFiles(config.media.path);
 
-    // Load the markdown.
+    // Loads markdown with fallback.
 
     await _loadMarkdown(config.markdown.path);
   }

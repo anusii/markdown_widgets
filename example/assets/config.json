@@ -1,10 +1,10 @@
 {
   "markdown": {
-    "path": "sample_markdown.md",
+    "path": "",
     "type": "local"
   },
   "media": {
-    "path": "media",
+    "path": "",
     "type": "local"
   }
 }
