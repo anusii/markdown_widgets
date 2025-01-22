@@ -67,19 +67,15 @@ class _AudioWidgetState extends State<AudioWidget> {
   }
 
   void _initAudioPlayer() async {
-    // Build the path: e.g. 'assets/surveys/media/sample_audio.mp3'.
+    // Build the path.
 
     final String fullPath = '$mediaPath/${widget.filename}';
 
     // Check if it's an asset path.
 
     if (mediaPath.startsWith('assets/')) {
-      // For AudioPlayers to load an asset, we must remove 'assets/' prefix
-      // from the final path we pass to AssetSource.
-      // e.g. 'surveys/media/sample_audio.mp3'.
-
       final relativeAsset = fullPath.replaceFirst('assets/', '');
-      await _player.play(AssetSource(relativeAsset));
+      await _player.setSource(AssetSource(relativeAsset));
     } else {
       // local file approach.
 
@@ -127,6 +123,8 @@ class _AudioWidgetState extends State<AudioWidget> {
   @override
   Widget build(BuildContext context) {
     final isPlaying = _playerState == PlayerState.playing;
+    final int durationMs = _duration?.inMilliseconds ?? 0;
+    final int positionMs = _position.inMilliseconds;
 
     return Center(
       child: FractionallySizedBox(
@@ -136,12 +134,18 @@ class _AudioWidgetState extends State<AudioWidget> {
             // Progress bar.
 
             Slider(
-              value: _position.inMilliseconds.toDouble(),
+              // Prevent errors when positionMs > durationMs by clamping.
+
+              value: positionMs.clamp(0, durationMs).toDouble(),
               min: 0.0,
-              max: (_duration?.inMilliseconds ?? 0).toDouble(),
+              max: durationMs > 0 ? durationMs.toDouble() : 1.0,
               onChanged: (double value) {
-                final newPosition = Duration(milliseconds: value.toInt());
-                _player.seek(newPosition);
+                // If durationMs is not loaded yet (=0), prevent dragging.
+
+                if (durationMs > 0) {
+                  final newPosition = Duration(milliseconds: value.toInt());
+                  _player.seek(newPosition);
+                }
               },
             ),
 
@@ -156,11 +160,17 @@ class _AudioWidgetState extends State<AudioWidget> {
                   icon: Icon(
                     isPlaying ? Icons.pause : Icons.play_arrow,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (isPlaying) {
-                      _player.pause();
+                      await _player.pause();
                     } else {
-                      _player.resume();
+                      if (_playerState == PlayerState.paused ||
+                          _playerState == PlayerState.stopped ||
+                          _playerState == PlayerState.completed) {
+                        await _player.resume();
+                      } else {
+                        await _player.resume();
+                      }
                     }
                   },
                 ),

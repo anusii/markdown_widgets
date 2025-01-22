@@ -307,10 +307,10 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     // (We cannot watch changes in Flutter assets.)
 
     _fileWatchSub?.cancel();
-    _fileWatchSub = parentDirectoryWatch(interpretedPath);
+    _fileWatchSub = _watchFileChanges(interpretedPath);
   }
 
-  StreamSubscription<FileSystemEvent> parentDirectoryWatch(String path) {
+  StreamSubscription<FileSystemEvent> _watchFileChanges(String path) {
     final parentDir = Directory(p.dirname(path));
     return parentDir.watch().listen((event) async {
       if (event.type == FileSystemEvent.modify && event.path == path) {
