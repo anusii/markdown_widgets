@@ -277,7 +277,7 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     final dir = Directory(interpretedMediaPath);
 
     if (await dir.exists()) {
-      _showErrorDialog('Using local media directory: $interpretedMediaPath');
+      _showErrorDialog('Media directory not found: $interpretedMediaPath');
       setMarkdownMediaPath(interpretedMediaPath);
     } else {
       // Fallback to assets.
@@ -389,7 +389,7 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
       return Scaffold(
         appBar: AppBar(title: const Text('Markdown Widgets Example')),
         body: Center(
-          child: Text('Error loading config.json: $_configLoadError'),
+          child: Text('Error: $_configLoadError'),
         ),
       );
     }
