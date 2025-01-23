@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart'
 import 'package:markdown_widget_builder/markdown_widget_builder.dart'
     show setMarkdownMediaPath;
 import 'package:markdown_widget_builder/src/constants/pkg.dart'
-    show defaultConfigFile, mdPath, mediaPath, setMdPath, setMediaPath;
+    show defaultConfigFile, mdPath, mediaPath;
 
 /// Structure of config.json.
 
@@ -151,10 +151,8 @@ Future<void> loadMediaFiles(
   if (!await dir.exists()) {
     // If the media directory does not exist, fallback to the default.
 
-    onError?.call(
-        'Media directory not found: $interpretedMediaPath. '
-        'Fallback to default: $mediaPath'
-    );
+    onError?.call('Media directory not found: $interpretedMediaPath. '
+        'Fallback to default: $mediaPath');
     setMarkdownMediaPath(mediaPath);
   } else {
     // Otherwise, use this local path.
