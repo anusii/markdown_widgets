@@ -170,12 +170,12 @@ class MarkdownExamplePage extends StatefulWidget {
 }
 
 class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
-  late Future<Config> _configFuture;
+  bool _isLoadingConfig = true;
+  Object? _configLoadError;
+  Config? _config;
+
   StreamSubscription<FileSystemEvent>? _fileWatchSub;
   String _markdownContent = 'Loading...';
-
-  // Guard to avoid re-loading markdown multiple times in build().
-
   bool _hasLoadedMarkdown = false;
 
   @override
@@ -184,7 +184,38 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
 
     // Store absolute config.json path.
 
-    _configFuture = _loadConfigFromAssets();
+    _loadConfigFromAssets().then((config) {
+      _config = config;
+      return _initMarkdownLoading(config);
+    }).catchError((error) {
+      _configLoadError = error;
+    }).whenComplete(() {
+      setState(() {
+        _isLoadingConfig = false; // done loading config
+      });
+    });
+  }
+
+  /// Show error dialog.
+
+  void _showErrorDialog(String message) {
+    if (!mounted) return;
+    debugPrint(message);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error Occurred'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   /// Loads config.json from 'assets/config.json'.
@@ -198,7 +229,7 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
       // If there's any error (e.g. config.json not found or parse error),
       // return a default Config using the fallback paths.
 
-      debugPrint('Error loading config.json: $e');
+      _showErrorDialog('Error loading config.json: $e');
       return Config(
         markdown: PathType(path: 'assets/surveys/surveys.md', type: 'local'),
         media: PathType(path: 'assets/surveys/media', type: 'local'),
@@ -248,12 +279,12 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     final dir = Directory(interpretedMediaPath);
 
     if (await dir.exists()) {
-      debugPrint('Using local media directory: $interpretedMediaPath');
+      _showErrorDialog('Using local media directory: $interpretedMediaPath');
       setMarkdownMediaPath(interpretedMediaPath);
     } else {
       // Fallback to assets.
 
-      debugPrint(
+      _showErrorDialog(
           'Local media directory "$interpretedMediaPath" does not exist. '
           'Fallback to assets/surveys/media');
       setMarkdownMediaPath('assets/surveys/media');
@@ -282,7 +313,7 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     if (!await file.exists()) {
       // If the file doesn't actually exist => fallback to assets.
 
-      debugPrint('Markdown file not found at "$interpretedPath". '
+      _showErrorDialog('Markdown file not found at "$interpretedPath". '
           'Fallback to assets/surveys/surveys.md');
       try {
         final assetContent =
@@ -346,56 +377,48 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Config>(
-      future: _configFuture,
-      builder: (context, snapshot) {
-        // Still loading config.json...
+    // If still loading config, show a loading indicator.
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+    if (_isLoadingConfig) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
-        // Error reading or parsing config.json...
+    // If loading config had an error, show an error message.
 
-        if (snapshot.hasError) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Markdown Widgets Example')),
-            body: Center(
-              child: Text('Error loading config.json: ${snapshot.error}'),
-            ),
-          );
-        }
+    if (_configLoadError != null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Markdown Widgets Example')),
+        body: Center(
+          child: Text('Error loading config.json: $_configLoadError'),
+        ),
+      );
+    }
 
-        // Config.json loaded successfully...
+    // If config is successfully loaded, show main UI.
 
-        final config = snapshot.data!;
-        _initMarkdownLoading(config);
-
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Markdown Widgets Example'),
-          ),
-          body: SingleChildScrollView(
-            child: MarkdownWidgetBuilder(
-              content: _markdownContent,
-              title: 'Sample Markdown',
-              onMenuItemSelected: (selectedTitle, selectedContent) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MarkdownDetailPage(
-                      title: selectedTitle,
-                      content: selectedContent,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Markdown Widgets Example'),
+      ),
+      body: SingleChildScrollView(
+        child: MarkdownWidgetBuilder(
+          content: _markdownContent,
+          title: 'Sample Markdown',
+          onMenuItemSelected: (selectedTitle, selectedContent) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MarkdownDetailPage(
+                  title: selectedTitle,
+                  content: selectedContent,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
