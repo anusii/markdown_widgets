@@ -41,6 +41,8 @@ const String siiUrl = 'https://sii.anu.edu.au';
 const String defaultFileName = 'survey.json';
 const String defaultButtonText = 'Save';
 
+const String defaultConfigFile = 'assets/config.json';
+
 String _assetsPath = 'assets';
 String _mediaPath = 'assets/surveys/media';
 String _mdPath = 'assets/surveys/surveys.md';
