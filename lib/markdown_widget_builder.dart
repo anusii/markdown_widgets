@@ -30,7 +30,30 @@
 
 library markdown_widget_builder;
 
-// Markdown widget builder.
-
 export 'src/widgets/markdown_widget_builder.dart'
     show MarkdownWidgetBuilder, setMarkdownMediaPath;
+
+export 'src/utils/file_ops.dart'
+    show
+        PathType,
+        Config,
+        loadConfigFromAssets,
+        loadMediaFiles,
+        loadMarkdownContent,
+        watchFileChanges,
+        interpretPath,
+        getAppDirectory;
+
+export 'src/constants/pkg.dart'
+    show
+        applicationName,
+        applicationVersion,
+        applicationRepo,
+        siiUrl,
+        defaultConfigFile,
+        assetsPath,
+        mediaPath,
+        mdPath,
+        setAssetsPath,
+        setMediaPath,
+        setMdPath;

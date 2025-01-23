@@ -67,53 +67,41 @@ class _AudioWidgetState extends State<AudioWidget> {
   }
 
   void _initAudioPlayer() async {
-    // Build the raw path from mediaPath + filename.
+    // Build the path.
 
-    final String rawLocalPath = '$mediaPath/${widget.filename}';
+    final String fullPath = '$mediaPath/${widget.filename}';
 
-    // If rawLocalPath has 'file://', parse it to pure local path;
-    // otherwise use rawLocalPath as is.
+    // Check if it's an asset path.
 
-    String localPath;
-    if (rawLocalPath.startsWith('file://')) {
-      localPath = Uri.parse(rawLocalPath).toFilePath();
+    if (mediaPath.startsWith('assets/')) {
+      final relativeAsset = fullPath.replaceFirst('assets/', '');
+      await _player.setSource(AssetSource(relativeAsset));
     } else {
-      localPath = rawLocalPath;
-    }
+      // local file approach.
 
-    await _player.setSource(
-      DeviceFileSource(localPath),
-    );
+      String localPath = fullPath;
+      if (fullPath.startsWith('file://')) {
+        localPath = Uri.parse(fullPath).toFilePath();
+      }
+      await _player.setSource(DeviceFileSource(localPath));
+    }
 
     // Listen for audio duration.
 
-    _durationSubscription = _player.onDurationChanged.listen((Duration d) {
-      if (mounted) {
-        setState(() {
-          _duration = d;
-        });
-      }
+    _durationSubscription = _player.onDurationChanged.listen((d) {
+      if (mounted) setState(() => _duration = d);
     });
 
     // Listen for audio position.
 
-    _positionSubscription = _player.onPositionChanged.listen((Duration p) {
-      if (mounted) {
-        setState(() {
-          _position = p;
-        });
-      }
+    _positionSubscription = _player.onPositionChanged.listen((p) {
+      if (mounted) setState(() => _position = p);
     });
 
-    // Listen for player state changes.
+    // Listen for player state.
 
-    _playerStateSubscription =
-        _player.onPlayerStateChanged.listen((PlayerState s) {
-      if (mounted) {
-        setState(() {
-          _playerState = s;
-        });
-      }
+    _playerStateSubscription = _player.onPlayerStateChanged.listen((s) {
+      if (mounted) setState(() => _playerState = s);
     });
   }
 
@@ -135,6 +123,8 @@ class _AudioWidgetState extends State<AudioWidget> {
   @override
   Widget build(BuildContext context) {
     final isPlaying = _playerState == PlayerState.playing;
+    final int durationMs = _duration?.inMilliseconds ?? 0;
+    final int positionMs = _position.inMilliseconds;
 
     return Center(
       child: FractionallySizedBox(
@@ -144,12 +134,18 @@ class _AudioWidgetState extends State<AudioWidget> {
             // Progress bar.
 
             Slider(
-              value: _position.inMilliseconds.toDouble(),
+              // Prevent errors when positionMs > durationMs by clamping.
+
+              value: positionMs.clamp(0, durationMs).toDouble(),
               min: 0.0,
-              max: (_duration?.inMilliseconds ?? 0).toDouble(),
+              max: durationMs > 0 ? durationMs.toDouble() : 1.0,
               onChanged: (double value) {
-                final newPosition = Duration(milliseconds: value.toInt());
-                _player.seek(newPosition);
+                // If durationMs is not loaded yet (=0), prevent dragging.
+
+                if (durationMs > 0) {
+                  final newPosition = Duration(milliseconds: value.toInt());
+                  _player.seek(newPosition);
+                }
               },
             ),
 
@@ -164,11 +160,17 @@ class _AudioWidgetState extends State<AudioWidget> {
                   icon: Icon(
                     isPlaying ? Icons.pause : Icons.play_arrow,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (isPlaying) {
-                      _player.pause();
+                      await _player.pause();
                     } else {
-                      _player.resume();
+                      if (_playerState == PlayerState.paused ||
+                          _playerState == PlayerState.stopped ||
+                          _playerState == PlayerState.completed) {
+                        await _player.resume();
+                      } else {
+                        await _player.resume();
+                      }
                     }
                   },
                 ),
