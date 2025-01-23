@@ -172,7 +172,6 @@ class MarkdownExamplePage extends StatefulWidget {
 class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
   bool _isLoadingConfig = true;
   Object? _configLoadError;
-  Config? _config;
 
   StreamSubscription<FileSystemEvent>? _fileWatchSub;
   String _markdownContent = 'Loading...';
@@ -185,7 +184,6 @@ class _MarkdownExamplePageState extends State<MarkdownExamplePage> {
     // Store absolute config.json path.
 
     _loadConfigFromAssets().then((config) {
-      _config = config;
       return _initMarkdownLoading(config);
     }).catchError((error) {
       _configLoadError = error;
