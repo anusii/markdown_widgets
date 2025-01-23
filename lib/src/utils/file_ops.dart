@@ -104,11 +104,16 @@ Future<String> getAppDirectory() async {
 /// absolute, return it as is.
 
 Future<String> interpretPath(String rawPath) async {
-  if (p.isAbsolute(rawPath)) {
-    return rawPath;
+  String trimmed = rawPath;
+  while (trimmed.endsWith('/') || trimmed.endsWith('\\')) {
+    trimmed = trimmed.substring(0, trimmed.length - 1);
+  }
+
+  if (p.isAbsolute(trimmed)) {
+    return p.normalize(trimmed);
   }
   final appDir = await getAppDirectory();
-  return p.join(appDir, rawPath);
+  return p.normalize(p.join(appDir, trimmed));
 }
 
 /// Returns a Config object; if an error occurs, returns a Config with default.
@@ -141,12 +146,18 @@ Future<void> loadMediaFiles(
   Function(String)? onError,
 }) async {
   if (rawMediaPath.trim().isEmpty) {
+    // If the path is empty, fallback to assets.
+
+    // onError?.call(
+    //     'Media path is empty, fallback to $mdPath from assets.'
+    // );
+
     setMarkdownMediaPath(mediaPath);
     return;
   }
 
   final interpretedMediaPath = await interpretPath(rawMediaPath);
-  final dir = Directory(interpretedMediaPath);
+  Directory dir = Directory(interpretedMediaPath);
 
   if (!await dir.exists()) {
     // If the media directory does not exist, fallback to the default.
@@ -176,7 +187,7 @@ Future<String> loadMarkdownContent(
     return rootBundle.loadString(mdPath);
   }
   final interpretedPath = await interpretPath(rawPath);
-  final file = File(interpretedPath);
+  File file = File(interpretedPath);
 
   if (!await file.exists()) {
     // If the file does not exist, fallback to assets.
