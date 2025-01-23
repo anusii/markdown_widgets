@@ -1,7 +1,10 @@
 ## 0.0.4
 
-+ Allowed researchers to specify the location of the survey markdown file and 
-  media files from a local path.
++ Set Flutter's assets folder as the default directory of markdown file and
+  media files and allow users to specify the location of markdown file and 
+  media files in config.json file.
++ Use pop-up dialogues to display error messages when a file or directory is 
+  not found.
 + Automatically load the new file after the markdown file is modified.
 
 ## 0.0.3
