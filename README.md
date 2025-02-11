@@ -12,20 +12,6 @@ syntax, making it suitable for use in surveys and similar scenarios.
 The following is the syntax to generate interactive surveys in
 markdown pages.
 
-In the example code of this package, users can customise the paths for 
-markdown files and media files by modifying the `config.json` file. The
-`config.json` file is located in the `assets` folder. The location of the 
-`assets` folder may be different on different platform:
-
-On macOS, it is at `riopod/build/macos/Build/Products/Debug/riopod.app/Contents
-/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets`.
-
-On Windows, it is at `riopod\build\windows\x64\runner\Debug\data\flutter_assets
-\assets`.
-
-On Linux, it is at `riopod/build/linux/x64/debug/bundle/data/flutter_assets/
-assets`.
-
 ## Survey Menu
 
 `%% Menu-Begin` and `%% Menu-End` will be recognised as the beginning and

@@ -32,8 +32,8 @@ library;
 
 import 'package:flutter/material.dart';
 
-const String applicationName = 'MarkDown Widgets';
-const String applicationVersion = '0.1.0';
+const String applicationName = 'Markdown Widgets Builder';
+const String applicationVersion = '0.0.4';
 const String applicationRepo =
     'https://github.com/anusii/markdown_widget_builder';
 const String siiUrl = 'https://sii.anu.edu.au';
@@ -41,9 +41,11 @@ const String siiUrl = 'https://sii.anu.edu.au';
 const String defaultFileName = 'survey.json';
 const String defaultButtonText = 'Save';
 
+const String defaultConfigFile = 'assets/config.json';
+
 String _assetsPath = 'assets';
-String _mediaPath = 'assets/media';
-String _mdPath = 'assets/surveys.md';
+String _mediaPath = 'assets/surveys/media';
+String _mdPath = 'assets/surveys/surveys.md';
 
 String get assetsPath => _assetsPath;
 String get mediaPath => _mediaPath;
